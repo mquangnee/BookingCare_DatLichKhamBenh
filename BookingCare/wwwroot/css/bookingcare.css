@@ -91,6 +91,7 @@
 }
 /* Logo trong navbar */
 .booking-logo {
-    border-radius: 12px; /* bo góc 12px, có thể chỉnh 50% nếu muốn tròn hẳn */
-    object-fit: contain;
+    height: 60px; /* chiều cao logo */
+    width: auto; /* giữ tỷ lệ ảnh */
+    border-radius: 12px; /* bo góc */
 }
