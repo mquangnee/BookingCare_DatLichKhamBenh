@@ -1,0 +1,23 @@
+﻿@model BookingCare.Models.ViewModel.RegisterViewModel
+@{
+    ViewData["Title"] = "Register - Step 2";
+}
+
+<h2>Step 2: Verify Email</h2>
+<p>We sent a verification code to @TempData["Email"]</p>
+
+<form asp-controller="Account" asp-action="RegisterOTP" method="post">
+    <div class="form-group">
+        <label>Mã OTP</label>
+        <input name="otp" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Xác nhận OTP</button>
+</form>
+
+<form asp-action="RegisterEmailPassword" method="post" style="margin-top:10px;">
+    <button type="submit" class="btn btn-secondary">Gửi lại OTP</button>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
