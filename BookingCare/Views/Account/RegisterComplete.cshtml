@@ -3,39 +3,55 @@
     ViewData["Title"] = "Hoàn tất đăng ký - Bước 3";
 }
 
-<h2>Hoàn tất đăng ký</h2>
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="bc-box">
+        <h2 class="text-center bc-title mb-3">Bước 3: Hoàn tất đăng ký</h2>
 
-<form asp-action="RegisterComplete" method="post">
-    <input type="hidden" name="Email" value="@TempData["Email"]" />
-    <input type="hidden" name="Password" value="@TempData["Password"]" />
+        <!-- Stepper -->
+        <div class="d-flex justify-content-between mb-4">
+            <div class="step-indicator step-active">1</div>
+            <div class="flex-grow-1 border-top mx-2"></div>
+            <div class="step-indicator step-active">2</div>
+            <div class="flex-grow-1 border-top mx-2"></div>
+            <div class="step-indicator step-active">3</div>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="FullName"></label>
-        <input asp-for="FullName" class="form-control" />
-        <span asp-validation-for="FullName" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Gender"></label>
-        <select asp-for="Gender" class="form-control">
-            <option value="">Chọn giới tính</option>
-            <option value="Male">Nam</option>
-            <option value="Female">Nữ</option>
-        </select>
-        <span asp-validation-for="Gender" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="BirthOfDate"></label>
-        <input asp-for="BirthOfDate" type="date" class="form-control" />
-        <span asp-validation-for="BirthOfDate" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Address"></label>
-        <input asp-for="Address" class="form-control" />
-        <span asp-validation-for="Address" class="text-danger"></span>
-    </div>
+        <form asp-action="RegisterComplete" method="post">
+            <input type="hidden" name="Email" value="@TempData["Email"]" />
+            <input type="hidden" name="Password" value="@TempData["Password"]" />
 
-    <button type="submit" class="btn btn-success">Hoàn tất</button>
-</form>
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control" placeholder="Họ và tên" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Gender" class="form-label"></label>
+                <select asp-for="Gender" class="form-control">
+                    <option value="">Chọn giới tính</option>
+                    <option value="Male">Nam</option>
+                    <option value="Female">Nữ</option>
+                </select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="BirthOfDate" class="form-label"></label>
+                <input asp-for="BirthOfDate" type="date" class="form-control" />
+                <span asp-validation-for="BirthOfDate" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Address" class="form-label"></label>
+                <input asp-for="Address" class="form-control" placeholder="Địa chỉ" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn bc-btn w-100">Hoàn tất</button>
+        </form>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

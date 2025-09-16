@@ -1,0 +1,96 @@
+﻿/* bookingcare.css */
+
+/* Màu thương hiệu BookingCare */
+:root {
+    --booking-color: #45c3d2; /* xanh đặc trưng BookingCare */
+    --booking-dark: #02838f; /* xanh đậm hơn để hover */
+}
+
+/* ====== Navbar ====== */
+.booking-navbar {
+    background-color: var(--booking-color) !important;
+}
+
+.booking-navbar .nav-link {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 10px;
+}
+
+.booking-navbar .nav-link:hover {
+    text-decoration: underline;
+}
+
+/* ====== Footer ====== */
+.booking-footer {
+    background-color: var(--booking-color);
+    padding: 20px 0;
+}
+
+/* ====== Box Form ====== */
+.bc-box {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 420px;
+}
+
+.bc-title {
+    font-weight: bold;
+    color: var(--booking-color);
+}
+
+/* ====== Button ====== */
+.btn-booking {
+    background-color: var(--booking-color);
+    color: #fff;
+    font-weight: 600;
+    border: none;
+}
+
+    .btn-booking:hover {
+        background-color: var(--booking-dark);
+        color: #fff;
+    }
+
+/* Link màu xanh BookingCare */
+.text-booking {
+    color: var(--booking-color);
+    font-weight: 500;
+}
+
+    .text-booking:hover {
+        color: var(--booking-dark);
+        text-decoration: underline;
+    }
+
+/* ====== Stepper ====== */
+.step-indicator {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    background-color: #e0e0e0;
+    color: #555;
+}
+
+.step-active {
+    background-color: var(--booking-color);
+    color: #fff;
+}
+
+.step-inactive {
+    background-color: #e0e0e0;
+    color: #555;
+}
+/* Logo trong navbar */
+.booking-logo {
+    border-radius: 12px; /* bo góc 12px, có thể chỉnh 50% nếu muốn tròn hẳn */
+    object-fit: contain;
+}

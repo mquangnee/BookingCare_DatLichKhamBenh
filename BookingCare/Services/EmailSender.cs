@@ -11,10 +11,10 @@ namespace BookingCare.Services
         {
             using var client = new SmtpClient("smtp.gmail.com", 587)
             {
-                Credentials = new NetworkCredential("ngminhquangg0301@gmail.com", "lynf iota uoza hzzm"),
+                Credentials = new NetworkCredential("nguyenminhquangg03012004@gmail.com", "yqcz ibyy zsxm zuzq"),
                 EnableSsl = true
             };
-            var mailMessage = new MailMessage("ngminhquangg0301@gmail.com", email, subject, htmlMessage)
+            var mailMessage = new MailMessage("nguyenminhquangg03012004@gmail.com", email, subject, htmlMessage)
             {
                 IsBodyHtml = true
             };
