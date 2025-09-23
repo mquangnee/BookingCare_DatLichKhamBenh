@@ -31,7 +31,7 @@ namespace BookingCare.Data.Seed
                         Department = "Phòng tiếp bệnh nhân"
                     };
                     await dbContext.SupportStaffs.AddAsync(staffEntity); //Thêm bản ghi vào bảng SupportStaffs
-                    dbContext.SaveChangesAsync();
+                    await dbContext.SaveChangesAsync();
                 }
             }
         }

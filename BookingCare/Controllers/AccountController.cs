@@ -84,7 +84,7 @@ namespace BookingCare.Controllers
             // Tạo và gửi mã OTP
             string otp = new Random().Next(100000, 999999).ToString();
             _otpService.SetOtp(model.Email, otp);
-            await _emailSender.SendEmailAsync(model.Email, "Mã OTP xác thực", $"Mã OTP của bạn là: {otp}. Mã có hiệu lực trong 5 phút.");
+            await _emailSender.SendEmailAsync(model.Email, "Mã OTP xác thực", $@"<p>Mã OTP của bạn là: <strong style='color:red; font-weight:bold;'>{otp}</strong>.</p><p>Mã có hiệu lực trong 5 phút.</p>");
             //Lưu tạm thông tin đăng ký vào TempData để sử dụng ở bước tiếp theo
             HttpContext.Session.SetString("Email", model.Email); //Lưu email và password vào session để dùng cho các bước tiếp theo
             HttpContext.Session.SetString("Password", model.Password);
@@ -105,7 +105,7 @@ namespace BookingCare.Controllers
                 return RedirectToAction("RegisterEmailPassword", "Account");
             }
             string email = HttpContext.Session.GetString("Email");
-            string password = TempData.Peek("Password") as string;
+            string password = HttpContext.Session.GetString("Password");
             string cachedOtp = _otpService.GetOtp(email);
             if(cachedOtp == null || cachedOtp != otp)
             {
@@ -124,6 +124,7 @@ namespace BookingCare.Controllers
             {
                 return RedirectToAction("RegisterEmailPassword", "Account");
             }
+            ViewBag.Email = HttpContext.Session.GetString("Email");
             return View();
         }
         [HttpPost]
@@ -167,8 +168,9 @@ namespace BookingCare.Controllers
                     MedicalHistory = "Chưa có tiền sử bệnh"
                 };
                 //Lưu bản ghi Patient vào CSDL
-                await _dbContext.Patients.AddAsync(patientEntity);
+                _dbContext.Patients.Add(patientEntity);
                 await _dbContext.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Đăng ký tài khoản thành công! Vui lòng đăng nhập.";
                 return RedirectToAction("Login", "Account");
             }
             foreach (var error in result.Errors)

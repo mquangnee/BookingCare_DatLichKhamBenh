@@ -14,10 +14,10 @@ namespace BookingCare.Models
         public int DoctorAvailableTimeId { get; set; }
         public DoctorAvailableTime DoctorAvailableTime { get; set; }
         //Khóa ngoài với bảng Patient
-        public string PatientId { get; set; }
+        public int PatientId { get; set; }
         public Patient Patient { get; set; }
         //Khóa ngoài với bảng Doctor
-        public string DoctorId { get; set; }
+        public int DoctorId { get; set; }
         public Doctor Doctor { get; set; }
     }
 }

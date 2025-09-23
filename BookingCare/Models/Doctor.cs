@@ -16,6 +16,13 @@ namespace BookingCare.Models
         //Khóa ngoài với bảng Specialty
         public int SpecialtyId { get; set; }
         public Specialty Specialty { get; set; }
+        //Khóa ngoài với bảng Room
+        public int RoomId { get; set; }
+        public Room Room { get; set; }
+        //Quan hệ 1-N với bảng DoctorAvailableTime
+        public ICollection<DoctorAvailableTime> DoctorAvailableTimes { get; set; }
+        //Quan hệ 1-N với bảng Appointment
+        public ICollection<Appointment> Appointments { get; set; }
         //Khóa ngoài với bảng AspNetUsers
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }

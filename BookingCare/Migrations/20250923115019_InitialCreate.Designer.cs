@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingCare.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250915133844_UpdateTableAppointmentAndDoctorAvailableTime")]
-    partial class UpdateTableAppointmentAndDoctorAvailableTime
+    [Migration("20250923115019_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,21 +36,16 @@ namespace BookingCare.Migrations
                     b.Property<DateTime>("AppointmentDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DoctorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DoctorAvailableTimeId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("DoctorId1")
+                    b.Property<int>("DoctorId")
                         .HasColumnType("int");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PatientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PatientId1")
+                    b.Property<int>("PatientId")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -59,9 +54,12 @@ namespace BookingCare.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DoctorId1");
+                    b.HasIndex("DoctorAvailableTimeId")
+                        .IsUnique();
 
-                    b.HasIndex("PatientId1");
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
 
                     b.ToTable("Appointments");
                 });
@@ -82,6 +80,9 @@ namespace BookingCare.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SpecialtyId")
                         .HasColumnType("int");
 
@@ -93,6 +94,8 @@ namespace BookingCare.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("DoctorId");
+
+                    b.HasIndex("RoomId");
 
                     b.HasIndex("SpecialtyId");
 
@@ -151,6 +154,27 @@ namespace BookingCare.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Patients");
+                });
+
+            modelBuilder.Entity("BookingCare.Models.Room", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("BookingCare.Models.Specialty", b =>
@@ -348,10 +372,12 @@ namespace BookingCare.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -388,10 +414,12 @@ namespace BookingCare.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -427,25 +455,39 @@ namespace BookingCare.Migrations
 
             modelBuilder.Entity("BookingCare.Models.Appointment", b =>
                 {
+                    b.HasOne("BookingCare.Models.DoctorAvailableTime", "DoctorAvailableTime")
+                        .WithOne("Appointment")
+                        .HasForeignKey("BookingCare.Models.Appointment", "DoctorAvailableTimeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("BookingCare.Models.Doctor", "Doctor")
-                        .WithMany()
-                        .HasForeignKey("DoctorId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("Appointments")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BookingCare.Models.Patient", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("Appointments")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Doctor");
+
+                    b.Navigation("DoctorAvailableTime");
 
                     b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("BookingCare.Models.Doctor", b =>
                 {
+                    b.HasOne("BookingCare.Models.Room", "Room")
+                        .WithMany("Doctors")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BookingCare.Models.Specialty", "Specialty")
                         .WithMany("Doctors")
                         .HasForeignKey("SpecialtyId")
@@ -458,6 +500,8 @@ namespace BookingCare.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Room");
+
                     b.Navigation("Specialty");
 
                     b.Navigation("User");
@@ -466,7 +510,7 @@ namespace BookingCare.Migrations
             modelBuilder.Entity("BookingCare.Models.DoctorAvailableTime", b =>
                 {
                     b.HasOne("BookingCare.Models.Doctor", "Doctor")
-                        .WithMany()
+                        .WithMany("DoctorAvailableTimes")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -545,6 +589,28 @@ namespace BookingCare.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BookingCare.Models.Doctor", b =>
+                {
+                    b.Navigation("Appointments");
+
+                    b.Navigation("DoctorAvailableTimes");
+                });
+
+            modelBuilder.Entity("BookingCare.Models.DoctorAvailableTime", b =>
+                {
+                    b.Navigation("Appointment");
+                });
+
+            modelBuilder.Entity("BookingCare.Models.Patient", b =>
+                {
+                    b.Navigation("Appointments");
+                });
+
+            modelBuilder.Entity("BookingCare.Models.Room", b =>
+                {
+                    b.Navigation("Doctors");
                 });
 
             modelBuilder.Entity("BookingCare.Models.Specialty", b =>
