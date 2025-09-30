@@ -20,7 +20,7 @@ namespace BookingCare.Models
         public int RoomId { get; set; }
         public Room Room { get; set; }
         //Quan hệ 1-N với bảng DoctorAvailableTime
-        public ICollection<DoctorAvailableTime> DoctorAvailableTimes { get; set; }
+        public ICollection<DoctorSchedule> DoctorSchedules { get; set; }
         //Quan hệ 1-N với bảng Appointment
         public ICollection<Appointment> Appointments { get; set; }
         //Khóa ngoài với bảng AspNetUsers

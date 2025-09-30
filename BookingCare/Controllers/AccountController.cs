@@ -56,8 +56,24 @@ namespace BookingCare.Controllers
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                TempData["SuccessMessage"] = "Đăng nhập tài khoản thành công";
-                return RedirectToAction("Index", "Account");
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                var roles = await _userManager.GetRolesAsync(user);
+                if (roles.Contains("Admin"))
+                {
+                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                }
+                else if (roles.Contains("Doctor"))
+                {
+                    return RedirectToAction("Index", "Doctor", new { area = "Doctor" });
+                }
+                else if (roles.Contains("SupportStaff"))
+                {
+                    return RedirectToAction("Index", "Doctor", new { area = "SupportStaff" });
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Patient", new { area = "Patient" });
+                }
             }
             return View();
         }

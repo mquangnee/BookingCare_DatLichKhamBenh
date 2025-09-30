@@ -33,26 +33,25 @@ namespace BookingCare.Migrations
                     b.Property<DateTime>("AppointmentDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DoctorAvailableTimeId")
-                        .HasColumnType("int");
+                    b.Property<string>("AppointmentTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DoctorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ReasonForVisit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DoctorAvailableTimeId")
-                        .IsUnique();
 
                     b.HasIndex("DoctorId");
 
@@ -101,7 +100,7 @@ namespace BookingCare.Migrations
                     b.ToTable("Doctors");
                 });
 
-            modelBuilder.Entity("BookingCare.Models.DoctorAvailableTime", b =>
+            modelBuilder.Entity("BookingCare.Models.DoctorSchedule", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -115,20 +114,18 @@ namespace BookingCare.Migrations
                     b.Property<int>("DoctorId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("EndTime")
-                        .HasColumnType("time");
+                    b.Property<string>("Shift")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsBooked")
+                    b.Property<bool>("Status")
                         .HasColumnType("bit");
-
-                    b.Property<TimeSpan>("StartTime")
-                        .HasColumnType("time");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("DoctorAvailableTimes");
+                    b.ToTable("DoctorSchedules");
                 });
 
             modelBuilder.Entity("BookingCare.Models.Patient", b =>
@@ -452,12 +449,6 @@ namespace BookingCare.Migrations
 
             modelBuilder.Entity("BookingCare.Models.Appointment", b =>
                 {
-                    b.HasOne("BookingCare.Models.DoctorAvailableTime", "DoctorAvailableTime")
-                        .WithOne("Appointment")
-                        .HasForeignKey("BookingCare.Models.Appointment", "DoctorAvailableTimeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("BookingCare.Models.Doctor", "Doctor")
                         .WithMany("Appointments")
                         .HasForeignKey("DoctorId")
@@ -467,12 +458,10 @@ namespace BookingCare.Migrations
                     b.HasOne("BookingCare.Models.Patient", "Patient")
                         .WithMany("Appointments")
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Doctor");
-
-                    b.Navigation("DoctorAvailableTime");
 
                     b.Navigation("Patient");
                 });
@@ -504,10 +493,10 @@ namespace BookingCare.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BookingCare.Models.DoctorAvailableTime", b =>
+            modelBuilder.Entity("BookingCare.Models.DoctorSchedule", b =>
                 {
                     b.HasOne("BookingCare.Models.Doctor", "Doctor")
-                        .WithMany("DoctorAvailableTimes")
+                        .WithMany("DoctorSchedules")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -592,12 +581,7 @@ namespace BookingCare.Migrations
                 {
                     b.Navigation("Appointments");
 
-                    b.Navigation("DoctorAvailableTimes");
-                });
-
-            modelBuilder.Entity("BookingCare.Models.DoctorAvailableTime", b =>
-                {
-                    b.Navigation("Appointment");
+                    b.Navigation("DoctorSchedules");
                 });
 
             modelBuilder.Entity("BookingCare.Models.Patient", b =>

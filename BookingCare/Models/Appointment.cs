@@ -8,11 +8,9 @@ namespace BookingCare.Models
         public int Id { get; set; }
         [Required]
         public DateTime AppointmentDate { get; set; }
+        public string AppointmentTime { get; set; }
+        public string ReasonForVisit { get; set; }
         public string Status { get; set; }
-        public string? Note { get; set; }
-        //Quan hệ 1-1 với bảng DoctorAvailableTime
-        public int DoctorAvailableTimeId { get; set; }
-        public DoctorAvailableTime DoctorAvailableTime { get; set; }
         //Khóa ngoài với bảng Patient
         public int PatientId { get; set; }
         public Patient Patient { get; set; }

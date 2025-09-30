@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookingCare.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -265,50 +265,21 @@ namespace BookingCare.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DoctorAvailableTimes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    EndTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    IsBooked = table.Column<bool>(type: "bit", nullable: false),
-                    DoctorId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DoctorAvailableTimes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DoctorAvailableTimes_Doctors_DoctorId",
-                        column: x => x.DoctorId,
-                        principalTable: "Doctors",
-                        principalColumn: "DoctorId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Appointments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AppointmentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AppointmentTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReasonForVisit = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DoctorAvailableTimeId = table.Column<int>(type: "int", nullable: false),
                     PatientId = table.Column<int>(type: "int", nullable: false),
                     DoctorId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Appointments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Appointments_DoctorAvailableTimes_DoctorAvailableTimeId",
-                        column: x => x.DoctorAvailableTimeId,
-                        principalTable: "DoctorAvailableTimes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Appointments_Doctors_DoctorId",
                         column: x => x.DoctorId,
@@ -320,14 +291,30 @@ namespace BookingCare.Migrations
                         column: x => x.PatientId,
                         principalTable: "Patients",
                         principalColumn: "PatientId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Appointments_DoctorAvailableTimeId",
-                table: "Appointments",
-                column: "DoctorAvailableTimeId",
-                unique: true);
+            migrationBuilder.CreateTable(
+                name: "DoctorSchedules",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Shift = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    DoctorId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DoctorSchedules", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DoctorSchedules_Doctors_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctors",
+                        principalColumn: "DoctorId",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_DoctorId",
@@ -379,11 +366,6 @@ namespace BookingCare.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DoctorAvailableTimes_DoctorId",
-                table: "DoctorAvailableTimes",
-                column: "DoctorId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Doctors_RoomId",
                 table: "Doctors",
                 column: "RoomId");
@@ -397,6 +379,11 @@ namespace BookingCare.Migrations
                 name: "IX_Doctors_UserId",
                 table: "Doctors",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoctorSchedules_DoctorId",
+                table: "DoctorSchedules",
+                column: "DoctorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Patients_UserId",
@@ -431,10 +418,10 @@ namespace BookingCare.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "SupportStaffs");
+                name: "DoctorSchedules");
 
             migrationBuilder.DropTable(
-                name: "DoctorAvailableTimes");
+                name: "SupportStaffs");
 
             migrationBuilder.DropTable(
                 name: "Patients");

@@ -18,7 +18,7 @@ namespace BookingCare.Data.Seed
             await SeedRole.SeedAsync(roleManager);
             await SeedSpecialty.SeedAsync(dbContext);
             await SeedDoctor.SeedAsync(userManager, dbContext);
-            await SeedPatient.SeedAsync(userManager, dbContext);
+            await SeedAdmin.SeedAsync(userManager, dbContext);
             await SeedSupportStaff.SeedAsync(userManager, dbContext);
             await dbContext.SaveChangesAsync();
         }

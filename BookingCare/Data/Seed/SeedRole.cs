@@ -7,7 +7,7 @@ namespace BookingCare.Data.Seed
     {
         public static async Task SeedAsync(RoleManager<IdentityRole> roleManager)
         {
-            string[] roles = { "SupportStaff", "Doctor", "Patient" }; //Danh sách role
+            string[] roles = {"Admin", "SupportStaff", "Doctor", "Patient" }; //Danh sách role
             foreach (var role in roles)
             {
                 if(!await roleManager.RoleExistsAsync(role)) //Kiểm tra role đã tồn tại chưa

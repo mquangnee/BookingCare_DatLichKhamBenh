@@ -2,18 +2,15 @@
 
 namespace BookingCare.Models
 {
-    public class DoctorAvailableTime
+    public class DoctorSchedule
     {
         [Key]
         public int Id { get; set; }
         public DateTime Date { get; set; }
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTime { get; set; }
-        public bool IsBooked { get; set; }
+        public string Shift { get; set; }
+        public bool Status { get; set; }
         //Khóa ngoài với bảng Doctor
         public int DoctorId { get; set; }
         public Doctor Doctor { get; set; }
-        //Quan hệ 1-1 với bảng Appointment
-        public Appointment? Appointment { get; set; }
     }
 }
