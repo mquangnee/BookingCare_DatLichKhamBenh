@@ -8,8 +8,14 @@ namespace BookingCare.Models
         public int Id { get; set; }
         [Required]
         public DateOnly AppointmentDate { get; set; }
+        [Required]
+        [StringLength(20)]
         public string AppointmentTime { get; set; }
+        [Required]
+        [StringLength(200)]
         public string ReasonForVisit { get; set; }
+        [Required]
+        [StringLength(20)]
         public string Status { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; }

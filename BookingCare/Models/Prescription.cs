@@ -1,8 +1,13 @@
-﻿namespace BookingCare.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BookingCare.Models
 {
     public class Prescription
     {
+        [Key]
         public int PrescriptionId { get; set; }
+        [Required]
+        [StringLength(100)]
         public string Diagnosis { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         //Quan hệ 1-N với bảng Appointment

@@ -1,11 +1,20 @@
-﻿namespace BookingCare.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BookingCare.Models
 {
     public class Medicine
     {
+        [Key]
         public int MedicineId { get; set; }
+        [Required]
+        [StringLength(150)]
         public string Name { get; set; }
+        [Required]
+        [StringLength(20)]
         public string Unit { get; set; }
-        public String Function { get; set; }
+        [Required]
+        [StringLength(200)]
+        public string Function { get; set; }
         //Quan hệ N-N với bảng Prescription qua bảng Prescription_Detail
         public ICollection<Prescription_Detail> Prescription_Details { get; set; }
     }

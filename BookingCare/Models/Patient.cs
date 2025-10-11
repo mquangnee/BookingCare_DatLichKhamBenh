@@ -6,6 +6,7 @@ namespace BookingCare.Models
     {
         [Key]
         public int PatientId { get; set; }
+        [StringLength(200)]
         public string? MedicalHistory { get; set; }
         //Quan hệ 1-N với bảng Appointment
         public ICollection<Appointment> Appointments { get; set; }

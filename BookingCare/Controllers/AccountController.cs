@@ -154,7 +154,7 @@ namespace BookingCare.Controllers
             string email = HttpContext.Session.GetString("Email");
             string password = HttpContext.Session.GetString("Password");
             string cachedOtp = _otpService.GetOtp(email);
-            if(cachedOtp == null)
+            if (cachedOtp == null)
             {
                 ModelState.AddModelError(string.Empty, "Mã OTP đã hết hạn!");
                 return View(model);
@@ -170,7 +170,7 @@ namespace BookingCare.Controllers
                 Address = model.Address
             };
             var result = await _userManager.CreateAsync(user, password);
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
                 _otpService.RemoveOtp(email); //Xóa OTP sau khi đăng ký thành công
                 await _userManager.AddToRoleAsync(user, "Patient"); //Gán role Patient

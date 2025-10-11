@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookingCare.Models.ViewModel
 {
@@ -6,18 +7,20 @@ namespace BookingCare.Models.ViewModel
     {
         [Required(ErrorMessage = "{0} vui lòng không để trống!")]
         [StringLength(50, ErrorMessage = "{0} không được quá 50 ký tự!")]
+        [DisplayName("Họ tên")]
         public string FullName { get; set; }
 
         [Required(ErrorMessage = "{0} vui lòng không để trống!")]
+        [DisplayName("Giới tính")]
         public string Gender { get; set; }
 
         [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        public DateTime BirthOfDate { get; set; }
+        [DisplayName("Ngày sinh")]
+        public DateOnly BirthOfDate { get; set; }
 
         [Required(ErrorMessage = "{0} vui lòng không để trống!")]
         [StringLength(100, ErrorMessage = "{0} không được quá 100 ký tự!")]
+        [DisplayName("Địa chỉ")]
         public string Address { get; set; }
-
-        //public string Otp { get; set; }
     }
 }
