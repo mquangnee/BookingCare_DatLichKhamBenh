@@ -5,7 +5,7 @@ namespace BookingCare.Models
     public class Prescription
     {
         [Key]
-        public int PrescriptionId { get; set; }
+        public int Id { get; set; }
         [Required]
         [StringLength(100)]
         public string Diagnosis { get; set; }

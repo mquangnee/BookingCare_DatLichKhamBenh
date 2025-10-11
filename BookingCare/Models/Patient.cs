@@ -5,7 +5,7 @@ namespace BookingCare.Models
     public class Patient
     {
         [Key]
-        public int PatientId { get; set; }
+        public int Id { get; set; }
         [StringLength(200)]
         public string? MedicalHistory { get; set; }
         //Quan hệ 1-N với bảng Appointment

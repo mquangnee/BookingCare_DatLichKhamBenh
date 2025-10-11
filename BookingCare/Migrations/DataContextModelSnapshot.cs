@@ -71,11 +71,11 @@ namespace BookingCare.Migrations
 
             modelBuilder.Entity("BookingCare.Models.Doctor", b =>
                 {
-                    b.Property<int>("DoctorId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DoctorId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Degree")
                         .IsRequired()
@@ -95,7 +95,7 @@ namespace BookingCare.Migrations
                     b.Property<int>("YearsOfExp")
                         .HasColumnType("int");
 
-                    b.HasKey("DoctorId");
+                    b.HasKey("Id");
 
                     b.HasIndex("RoomId");
 
@@ -108,11 +108,11 @@ namespace BookingCare.Migrations
 
             modelBuilder.Entity("BookingCare.Models.Medicine", b =>
                 {
-                    b.Property<int>("MedicineId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MedicineId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Function")
                         .IsRequired()
@@ -129,18 +129,18 @@ namespace BookingCare.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.HasKey("MedicineId");
+                    b.HasKey("Id");
 
                     b.ToTable("Medicines");
                 });
 
             modelBuilder.Entity("BookingCare.Models.Patient", b =>
                 {
-                    b.Property<int>("PatientId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("MedicalHistory")
                         .HasMaxLength(200)
@@ -150,7 +150,7 @@ namespace BookingCare.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("PatientId");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
@@ -159,11 +159,11 @@ namespace BookingCare.Migrations
 
             modelBuilder.Entity("BookingCare.Models.Prescription", b =>
                 {
-                    b.Property<int>("PrescriptionId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrescriptionId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AppointmentId")
                         .HasColumnType("int");
@@ -176,7 +176,7 @@ namespace BookingCare.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("PrescriptionId");
+                    b.HasKey("Id");
 
                     b.HasIndex("AppointmentId");
 
@@ -185,11 +185,11 @@ namespace BookingCare.Migrations
 
             modelBuilder.Entity("BookingCare.Models.Prescription_Detail", b =>
                 {
-                    b.Property<int>("Prescription_DetailId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Prescription_DetailId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Dosage")
                         .IsRequired()
@@ -210,7 +210,7 @@ namespace BookingCare.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("Prescription_DetailId");
+                    b.HasKey("Id");
 
                     b.HasIndex("MedicineId");
 

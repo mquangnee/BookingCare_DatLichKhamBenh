@@ -5,7 +5,7 @@ namespace BookingCare.Models
     public class Doctor
     {
         [Key]
-        public int DoctorId { get; set; }
+        public int Id { get; set; }
         [Required]
         [StringLength(20)]
         public string Degree { get; set; }

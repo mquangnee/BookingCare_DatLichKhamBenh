@@ -5,7 +5,7 @@ namespace BookingCare.Models
     public class Medicine
     {
         [Key]
-        public int MedicineId { get; set; }
+        public int Id { get; set; }
         [Required]
         [StringLength(150)]
         public string Name { get; set; }
