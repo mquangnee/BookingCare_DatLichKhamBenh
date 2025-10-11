@@ -12,9 +12,5 @@ namespace BookingCare.Areas.Admin.Controllers
         {
             return View();
         }
-        public IActionResult StaffManager()
-        {
-            return View();
-        }
     }
 }

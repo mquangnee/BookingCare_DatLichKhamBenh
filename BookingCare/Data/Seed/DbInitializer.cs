@@ -14,12 +14,11 @@ namespace BookingCare.Data.Seed
             var dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
 
             // Gọi từng Seed
-            await SeedRoom.SeedAsync(dbContext);
             await SeedRole.SeedAsync(roleManager);
+            await SeedRoom.SeedAsync(dbContext);
             await SeedSpecialty.SeedAsync(dbContext);
             await SeedDoctor.SeedAsync(userManager, dbContext);
             await SeedAdmin.SeedAsync(userManager, dbContext);
-            await SeedSupportStaff.SeedAsync(userManager, dbContext);
             await dbContext.SaveChangesAsync();
         }
     }

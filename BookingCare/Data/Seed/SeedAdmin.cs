@@ -18,9 +18,10 @@ namespace BookingCare.Data.Seed
                     Email = email,
                     EmailConfirmed = true,
                     FullName = "Nguyễn Minh Quang",
-                    BirthOfDate = new DateTime(2003, 10, 10),
+                    BirthOfDate = new DateOnly(2003, 10, 10),
                     Gender = "Nam",
-                    Address = "Hà Nội"
+                    Address = "Hà Nội",
+                    PhoneNumber = "0904182004"
                 };
                 var result = await userManager.CreateAsync(admin, "Abcd@123"); //Mật khẩu: Abcd@123
                 if (result.Succeeded)

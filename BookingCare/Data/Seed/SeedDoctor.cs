@@ -19,9 +19,10 @@ namespace BookingCare.Data.Seed
                     Email = email,
                     EmailConfirmed = true,
                     FullName = "Ngô Khắc Tài",
-                    BirthOfDate = new DateTime(1970, 01, 03),
+                    BirthOfDate = new DateOnly(1970, 01, 03),
                     Gender = "Nam",
-                    Address = "Nghệ An"
+                    Address = "Nghệ An",
+                    PhoneNumber = "0123456789"
                 };
                 var result = await userManager.CreateAsync(doctor, "Abcd@123"); //Mật khẩu: Abcd@123
                 if (result.Succeeded)
@@ -34,7 +35,6 @@ namespace BookingCare.Data.Seed
                         UserId = doctor.Id,
                         Degree = "Tiến sĩ",
                         YearsOfExp = 20,
-                        IsActive = true,
                         SpecialtyId = specialty.Id,
                         RoomId = room.Id
                     };

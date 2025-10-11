@@ -11,9 +11,11 @@ namespace BookingCare.Models
         [Required]
         public string Gender { get; set; }
         [Required]
-        public DateTime BirthOfDate { get; set; }
+        public DateOnly BirthOfDate { get; set; }
         [Required]
         [StringLength(100)]
         public string Address { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; }
     }
 }

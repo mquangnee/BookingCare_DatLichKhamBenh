@@ -66,10 +66,6 @@ namespace BookingCare.Controllers
                 {
                     return RedirectToAction("Index", "Doctor", new { area = "Doctor" });
                 }
-                else if (roles.Contains("SupportStaff"))
-                {
-                    return RedirectToAction("Index", "Doctor", new { area = "SupportStaff" });
-                }
                 else
                 {
                     return RedirectToAction("Index", "Patient", new { area = "Patient" });
