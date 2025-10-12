@@ -34,6 +34,19 @@ namespace BookingCare.Repository
                 .WithMany(d => d.Appointments)
                 .HasForeignKey(a => a.DoctorId)
                 .OnDelete(DeleteBehavior.Restrict);
+            // Quan hệ 1–1 giữa User và Doctor
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne(u => u.Doctor)
+                .WithOne(d => d.User)
+                .HasForeignKey<Doctor>(d => d.UserId)
+                .IsRequired(true); // bắt buộc có User
+
+            // Quan hệ 1–1 giữa User và Patient
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne(u => u.Patient)
+                .WithOne(p => p.User)
+                .HasForeignKey<Patient>(p => p.UserId)
+                .IsRequired(true); // bắt buộc có User
         }
 
     }

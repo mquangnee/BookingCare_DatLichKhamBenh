@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookingCare.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDb : Migration
+    public partial class InitialDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,21 +31,21 @@ namespace BookingCare.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
-                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Gender = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    BirthOfDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
+                    BirthOfDate = table.Column<DateOnly>(type: "date", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -404,12 +404,14 @@ namespace BookingCare.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Doctors_UserId",
                 table: "Doctors",
-                column: "UserId");
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Patients_UserId",
                 table: "Patients",
-                column: "UserId");
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prescription_Details_MedicineId",

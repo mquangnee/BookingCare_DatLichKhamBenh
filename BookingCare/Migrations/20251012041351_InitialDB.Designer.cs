@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingCare.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20251011085320_InitialDb")]
-    partial class InitialDb
+    [Migration("20251012041351_InitialDB")]
+    partial class InitialDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -104,7 +104,8 @@ namespace BookingCare.Migrations
 
                     b.HasIndex("SpecialtyId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Doctors");
                 });
@@ -155,7 +156,8 @@ namespace BookingCare.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Patients");
                 });
@@ -537,8 +539,8 @@ namespace BookingCare.Migrations
                         .IsRequired();
 
                     b.HasOne("BookingCare.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("Doctor")
+                        .HasForeignKey("BookingCare.Models.Doctor", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -552,8 +554,8 @@ namespace BookingCare.Migrations
             modelBuilder.Entity("BookingCare.Models.Patient", b =>
                 {
                     b.HasOne("BookingCare.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("Patient")
+                        .HasForeignKey("BookingCare.Models.Patient", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -674,6 +676,13 @@ namespace BookingCare.Migrations
             modelBuilder.Entity("BookingCare.Models.Specialty", b =>
                 {
                     b.Navigation("Doctors");
+                });
+
+            modelBuilder.Entity("BookingCare.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
                 });
 #pragma warning restore 612, 618
         }
