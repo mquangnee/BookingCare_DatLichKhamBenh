@@ -30,8 +30,8 @@
                 <label asp-for="Gender" class="form-label"></label>
                 <select asp-for="Gender" class="form-control">
                     <option value="">Chọn giới tính</option>
-                    <option value="Male">Nam</option>
-                    <option value="Female">Nữ</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
                 </select>
                 <span asp-validation-for="Gender" class="text-danger"></span>
             </div>
@@ -46,6 +46,12 @@
                 <label asp-for="Address" class="form-label"></label>
                 <input asp-for="Address" class="form-control" placeholder="Địa chỉ" />
                 <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PhoneNumber" class="form-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" placeholder="Số điện thoại" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
 
             <button type="submit" class="btn btn-booking w-100">Hoàn tất</button>

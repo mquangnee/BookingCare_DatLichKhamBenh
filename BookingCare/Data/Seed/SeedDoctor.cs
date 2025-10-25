@@ -8,7 +8,7 @@ namespace BookingCare.Data.Seed
     //Khởi tạo tài khoản bác sĩ trong hệ thống
     public static class SeedDoctor
     {
-        public static async Task SeedAsync(UserManager<IdentityUser> userManager, DataContext dbContext)
+        public static async Task SeedAsync(UserManager<ApplicationUser> userManager, DataContext dbContext)
         {
             var email = "doctor1";
             if (await userManager.FindByEmailAsync(email) == null) //Kiểm tra email đã tồn tại chưa

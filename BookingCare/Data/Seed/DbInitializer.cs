@@ -1,4 +1,5 @@
-﻿using BookingCare.Repository;
+﻿using BookingCare.Models;
+using BookingCare.Repository;
 using Microsoft.AspNetCore.Identity;
 
 namespace BookingCare.Data.Seed
@@ -10,7 +11,8 @@ namespace BookingCare.Data.Seed
             using var scope = serviceProvider.CreateScope();
 
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
             var dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
 
             // Gọi từng Seed

@@ -5,95 +5,85 @@
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-        <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
-    </a>
 </div>
 
 <!-- Content Row -->
 <div class="row">
 
-    <!-- Earnings (Monthly) Card Example -->
+    <!-- Thống kê số bác sĩ đang hoạt động của phòng khám -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Earnings (Monthly)
+                            Số bác sĩ
                         </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                        <div class="h4 mb-0 font-weight-bold text-gray-800">@ViewBag.totalDoctors</div>
                     </div>
                     <div class="col-auto">
-                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        <i class="fa-solid fa-user-doctor fa-2x text-black-300"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Earnings (Monthly) Card Example -->
+    <!-- Thống kê số bệnh nhân của phòng khám -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-success shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Earnings (Annual)
+                            Số bệnh nhân
                         </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                        <div class="h4 mb-0 font-weight-bold text-gray-800">@ViewBag.totalPatients</div>
                     </div>
                     <div class="col-auto">
-                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        <i class="fa-solid fa-hospital-user fa-2x text-black-300"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Earnings (Monthly) Card Example -->
+    <!-- Thống kê số lịch hẹn của phòng khám hôm nay -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-info shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                            Tasks
+                            Số lịch khám hôm nay
                         </div>
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-                            </div>
-                            <div class="col">
-                                <div class="progress progress-sm mr-2">
-                                    <div class="progress-bar bg-info" role="progressbar"
-                                         style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                         aria-valuemax="100"></div>
-                                </div>
+                                <div class="h4 mb-0 mr-3 font-weight-bold text-gray-800" id="todayAppointmentCount">0</div>
                             </div>
                         </div>
                     </div>
                     <div class="col-auto">
-                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                        <i class="fa-solid fa-calendar-days fa-2x text-black-300"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Pending Requests Card Example -->
+    <!-- Thống kê số lịch hẹn đã hủy của phòng khám hôm nay -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-warning shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            Pending Requests
+                            Số lịch khám đã hủy
                         </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                        <div class="h4 mb-0 font-weight-bold text-gray-800" id="todayAppointmentCanceledCount">0</div>
                     </div>
                     <div class="col-auto">
-                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                        <i class="fa-solid fa-ban fa-2x text-black-300"></i>
                     </div>
                 </div>
             </div>
@@ -134,7 +124,7 @@
             </div>
         </div>
     </div>
-
+@* 
     <!-- Pie Chart -->
     <div class="col-xl-4 col-lg-5">
         <div class="card shadow mb-4">
@@ -340,5 +330,24 @@
         </div>
 
     </div>
-</div>
-<h1> hi</h1>
+</div> *@
+<script>
+    function updateTodayAppointments() {
+        $.get("/Dashboard/GetTodayAppointmentsCount", function (data) {
+            $("#todayAppointmentsCount").text(data);
+        });
+    }
+    function updateTodayAppointmentsCanceled() {
+        $.get("/Dashboard/GetTodayAppointmentsCanceledCount", function (data) {
+            $("#todayAppointmentCanceledCount").text(data);
+        });
+    }
+
+    // Gọi ngay khi tải trang
+    updateTodayAppointments();
+    updateTodayAppointmentsCanceled();
+
+    // Cập nhật lại mỗi 10 giây
+    setInterval(updateTodayAppointments, 10000);
+    setInterval(updateTodayAppointmentsCanceled, 10000);
+</script>

@@ -1,4 +1,5 @@
 ﻿using BookingCare.Data.Seed;
+using BookingCare.Models;
 using BookingCare.Repository;
 using BookingCare.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -24,7 +25,13 @@ namespace BookingCare
             });
 
             //Add identity
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false).AddRoles<IdentityRole>().AddEntityFrameworkStores<DataContext>();
+            //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false).AddRoles<IdentityRole>().AddEntityFrameworkStores<DataContext>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+            })
+            .AddEntityFrameworkStores<DataContext>()
+            .AddDefaultTokenProviders();
 
             //Yêu cầu về mật khẩu
             builder.Services.Configure<IdentityOptions>(options =>

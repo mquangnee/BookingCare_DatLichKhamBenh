@@ -1,0 +1,73 @@
+﻿@model IEnumerable<BookingCare.Models.ApplicationUser>
+@{
+    Layout = "_Layout";
+}
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Quản lý tài khoản bệnh nhân</h1>
+</div>
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Danh sách tài khoản bệnh nhân</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Họ và tên</th>
+                            <th>Email</th>
+                            <th>Số điện thoại</th>
+                            <th>Ngày tạo tài khoản</th>
+                            <th>Cập nhật lần cuối</th>
+                            <th>Trạng thái</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var patient in Model)
+                        {
+                            <tr>
+                                <td>@patient.Patient.Id</td>
+                                <td>@patient.FullName</td>
+                                <td>@patient.Email</td>
+                                <td>@patient.PhoneNumber</td>
+                                <td>@patient.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                <td>@if(patient.UpdatedAt != null){
+                                        patient.UpdatedAt?.ToString("dd/MM/yyyy HH:mm:ss");
+                                    } else {
+                                        <text>Chưa cập nhật</text>
+                                    }
+                                </td>
+                                <td>@if(patient.LockoutEnd != null){
+                                        <span class="text-danger">Bị khóa</span>
+                                    } else {
+                                        <span class="text-success">Hoạt động</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (patient.LockoutEnd != null && patient.LockoutEnd > DateTimeOffset.Now)
+                                    {
+                                        <form asp-action="Unlock" method="post" style="display:inline">
+                                            <input type="hidden" name="id" value="@patient.Id" />
+                                            <button type="submit" class="btn btn-success btn-sm">Mở khóa</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="Lock" method="post" style="display:inline">
+                                            <input type="hidden" name="id" value="@patient.Id" />
+                                            <button type="submit" class="btn btn-danger btn-sm">Khóa</button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

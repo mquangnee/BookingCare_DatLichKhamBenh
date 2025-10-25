@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookingCare.Repository
 {
-    public class DataContext : IdentityDbContext
+    public class DataContext : IdentityDbContext<ApplicationUser>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {

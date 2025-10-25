@@ -12,11 +12,11 @@ namespace BookingCare.Controllers
     public class AccountController : Controller
     {
         private readonly DataContext _dbContext;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly OtpService _otpService;
-        public AccountController(DataContext dbContext, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IEmailSender emailSender, OtpService otpService)
+        public AccountController(DataContext dbContext, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender, OtpService otpService)
         {
             _dbContext = dbContext;
             _userManager = userManager;
@@ -167,7 +167,8 @@ namespace BookingCare.Controllers
                 FullName = model.FullName,
                 BirthOfDate = model.BirthOfDate,
                 Gender = model.Gender,
-                Address = model.Address
+                Address = model.Address,
+                PhoneNumber = model.PhoneNumber
             };
             var result = await _userManager.CreateAsync(user, password);
             if (result.Succeeded)

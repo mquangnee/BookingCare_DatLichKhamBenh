@@ -7,7 +7,7 @@ namespace BookingCare.Data.Seed
 
     public static class SeedAdmin
     {
-        public static async Task SeedAsync(UserManager<IdentityUser> userManager, DataContext dbContext)
+        public static async Task SeedAsync(UserManager<ApplicationUser> userManager, DataContext dbContext)
         {
             var email = "nguyenminhquangg03012004@gmail.com";
             if (await userManager.FindByEmailAsync(email) == null) //Kiểm tra email đã tồn tại chưa

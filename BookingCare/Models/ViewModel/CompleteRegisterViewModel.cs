@@ -22,5 +22,9 @@ namespace BookingCare.Models.ViewModel
         [StringLength(100, ErrorMessage = "{0} không được quá 100 ký tự!")]
         [DisplayName("Địa chỉ")]
         public string Address { get; set; }
+        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
+        [Phone(ErrorMessage = "{0} không đúng định dạng!")]
+        [DisplayName("Số điện thoại")]
+        public string PhoneNumber { get; set; }
     }
 }
