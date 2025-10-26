@@ -25,7 +25,7 @@ namespace BookingCare.Areas.Admin.Controllers
             int totalPatients = (from u in _dbContext.Users
                                     join ur in _dbContext.UserRoles on u.Id equals ur.UserId
                                     join r in _dbContext.Roles on ur.RoleId equals r.Id
-                                    where r.Name == "Patient" && u.LockoutEnd == null
+                                    where r.Name == "Patient"
                                     select u).Count();
             ViewBag.TotalDoctors = totalDoctors;
             ViewBag.TotalPatients = totalPatients;
@@ -47,7 +47,5 @@ namespace BookingCare.Areas.Admin.Controllers
             int count = _dbContext.Appointments.Count(a => a.AppointmentDate == today && a.Status == "Đã hủy");
             return Json(count);
         }
-        //[HttpGet]
-        //public IActionResult 
     }
 }

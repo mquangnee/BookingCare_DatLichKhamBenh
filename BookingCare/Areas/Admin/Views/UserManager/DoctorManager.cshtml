@@ -4,12 +4,12 @@
 }
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Quản lý tài khoản bệnh nhân</h1>
+    <h1 class="h3 mb-0 text-gray-800">Quản lý tài khoản bác sĩ</h1>
 </div>
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Danh sách tài khoản bệnh nhân</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Danh sách tài khoản bác sĩ</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -27,23 +27,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var patient in Model)
+                        @foreach (var doctor in Model)
                         {
                             <tr>
-                                <td>@patient.Patient.Id</td>
-                                <td>@patient.FullName</td>
-                                <td>@patient.Email</td>
-                                <td>@patient.PhoneNumber</td>
-                                <td>@patient.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</td>
-                                <td>@if(patient.UpdatedAt != null){
-                                        patient.UpdatedAt?.ToString("dd/MM/yyyy HH:mm:ss");
-                                    } else {
+                                <td>@doctor.Doctor.Id</td>
+                                <td>@doctor.FullName</td>
+                                <td>@doctor.Email</td>
+                                <td>@doctor.PhoneNumber</td>
+                                <td>@doctor.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                <td>
+                                    @if (doctor.UpdatedAt != null)
+                                    {
+                                        doctor.UpdatedAt?.ToString("dd/MM/yyyy HH:mm:ss");
+                                    }
+                                    else
+                                    {
                                         <text>Chưa cập nhật</text>
                                     }
                                 </td>
-                                <td>@if(patient.LockoutEnd != null){
+                                <td>
+                                    @if (doctor.LockoutEnd != null)
+                                    {
                                         <span class="text-danger">Bị khóa</span>
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         <span class="text-success">Hoạt động</span>
                                     }
                                 </td>
@@ -53,21 +61,21 @@
                                             <i class="fa-solid fa-bars"></i>
                                         </button>
                                         <div class="dropdown-menu">
-                                            @if (patient.LockoutEnd != null && patient.LockoutEnd > DateTimeOffset.Now)
+                                            @if (doctor.LockoutEnd != null && doctor.LockoutEnd > DateTimeOffset.Now)
                                             {
                                                 <form asp-action="UnlockAccount" method="post" style="display:inline">
-                                                    <input type="hidden" name="id" value="@patient.Id" />
+                                                    <input type="hidden" name="id" value="@doctor.Id" />
                                                     <button type="submit" class="dropdown-item">Mở khóa</button>
                                                 </form>
                                             }
                                             else
                                             {
                                                 <form asp-action="LockAccount" method="post" style="display:inline">
-                                                    <input type="hidden" name="id" value="@patient.Id" />
+                                                    <input type="hidden" name="id" value="@doctor.Id" />
                                                     <button type="submit" class="dropdown-item">Khóa</button>
                                                 </form>
                                             }
-                                            <button class="dropdown-item view-details" data-id="@patient.Id">Xem chi tiết</button>
+                                            <button class="dropdown-item view-details" data-id="@doctor.Id">Xem chi tiết</button>
                                         </div>
                                     </div>
                                 </td>
@@ -79,11 +87,10 @@
         </div>
     </div>
 </div>
-<!-- Patient Detail Modal -->
-<div class="modal fade" id="patientModal" tabindex="-1" role="dialog" aria-hidden="true">
+<!-- Doctor Detail Modal -->
+<div class="modal fade" id="doctorModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-
         </div>
     </div>
 </div>
@@ -92,13 +99,13 @@
     <script>
         $(document).ready(function() {
             $('.view-details').click(function() {
-                var patientId = $(this).data('id');
+                var doctorId = $(this).data('id');
                 $.ajax({
-                    url: '/Admin/UserManager/PatientDetails/' + patientId,
+                    url: '/Admin/UserManager/DoctorDetails/' + doctorId,
                     type: 'GET',
                     success: function (result) {
-                        $('#patientModal .modal-content').html(result);
-                        $('#patientModal').modal('show');
+                        $('#doctorModal .modal-content').html(result);
+                        $('#doctorModal').modal('show');
                     },
                     error: function () {
                         alert('Không tải được thông tin!');

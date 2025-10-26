@@ -71,7 +71,11 @@ namespace BookingCare.Controllers
                     return RedirectToAction("Index", "Patient", new { area = "Patient" });
                 }
             }
-            return View();
+            else
+            {
+                TempData["ErrorMessage"] = "Tài khoản của bạn đã bị khóa";
+                return View(model);
+            }
         }
 
         //-----Đăng ký-----
