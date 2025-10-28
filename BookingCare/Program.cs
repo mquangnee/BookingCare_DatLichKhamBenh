@@ -36,12 +36,12 @@ namespace BookingCare
             //Yêu cầu về mật khẩu
             builder.Services.Configure<IdentityOptions>(options =>
             {
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequiredLength = 6;
-                options.Password.RequiredUniqueChars = 1;
+                options.Password.RequireDigit = true; //Yêu cầu chữ số
+                options.Password.RequireLowercase = true; //Yêu cầu chữ thường
+                options.Password.RequireNonAlphanumeric = true; //Yêu cầu ký tự đặc biệt
+                options.Password.RequireUppercase = true; //Yêu cầu chữ hoa
+                options.Password.RequiredLength = 6; //Độ dài tối thiểu
+                options.Password.RequiredUniqueChars = 1; //Số ký tự đặc biệt
             });
 
             //Cấu hình dịch vụ email
@@ -76,21 +76,26 @@ namespace BookingCare
             // Kích hoạt Session
             app.UseSession();
 
+            //---Cấu hình HTTPS và tệp tĩnh---
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            //---Cấu hình Routing---
             app.UseRouting();
-            
+
+            //---Cấu hình xác thực và phân quyền---
             app.UseAuthentication();
             app.UseAuthorization();
 
+            //---Cài đặt Route cho Project---
+            //Route cho Area Admin
             app.MapControllerRoute(
                 name: "Admin",
                 pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
-
+            //Route mặc định
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Login}/{id?}");
 
             app.Run();
         }

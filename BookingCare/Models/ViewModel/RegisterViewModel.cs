@@ -6,6 +6,7 @@ namespace BookingCare.Models.ViewModel
     public class RegisterViewModel
     {
         [Required(ErrorMessage = "{0} vui lòng không để trống!")]
+        [DataType(DataType.EmailAddress)]
         [EmailAddress(ErrorMessage = "Địa chỉ email không hợp lệ!")]
         public string Email { get; set; }
         [Required(ErrorMessage = "{0} vui lòng không để trống!")]

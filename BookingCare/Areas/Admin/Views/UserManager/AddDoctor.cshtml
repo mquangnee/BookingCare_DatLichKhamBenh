@@ -1,0 +1,103 @@
+﻿@model BookingCare.Models.ViewModel.DoctorViewModel
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Thêm tài khoản mới</h1>
+</div>
+<div class="border rounded p-4 bg-light shadow-sm">
+    <form asp-action="AddDoctor" method="post" enctype="multipart/form-data">
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label"></label>
+            <input asp-for="Password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="FullName" class="form-label"></label>
+            <input asp-for="FullName" class="form-control" />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Gender" class="form-label"></label>
+            <select asp-for="Gender" class="form-control">
+                <option value="">-- Chọn giới tính --</option>
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+            </select>
+            <span asp-validation-for="Gender" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="BirthOfDate" class="form-label"></label>
+            <input asp-for="BirthOfDate" type="date" class="form-control" />
+            <span asp-validation-for="BirthOfDate" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PhoneNumber" class="form-label"></label>
+            <input asp-for="PhoneNumber" class="form-control" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Address" class="form-label"></label>
+            <input asp-for="Address" class="form-control" placeholder="Địa chỉ" />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="SpecialtyId" class="form-label">Chuyên khoa</label>
+            <select asp-for="SpecialtyId" asp-items="ViewBag.Specialties" class="form-control">
+                <option value="">-- Chọn chuyên khoa --</option>
+            </select>
+            <span asp-validation-for="SpecialtyId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Degree" class="form-label"></label>
+            <select asp-for="Degree" class="form-control">
+                <option value="">-- Chọn bằng cấp --</option>
+                <option value="Bác sĩ đa khoa (BSĐK)">Bác sĩ đa khoa (BSĐK)</option>
+                <option value="Bác sĩ chuyên khoa (BSCK)">Bác sĩ chuyên khoa (BSCK)</option>
+                <option value="Bác sĩ nội trú (BSNT)">Bác sĩ nội trú (BSNT)</option>
+                <option value="Bác sĩ chuyên khoa I (CKI)">Bác sĩ chuyên khoa I (CKI)</option>
+                <option value="Bác sĩ chuyên khoa II (CKII)">Bác sĩ chuyên khoa II (CKII)</option>
+            </select>
+            <span asp-validation-for="Degree" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="YearsOfExp" class="form-label"></label>
+            <input asp-for="YearsOfExp" class="form-control" />
+            <span asp-validation-for="YearsOfExp" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="RoomId" class="form-label">Phòng</label>
+            <select asp-for="RoomId" asp-items="ViewBag.Rooms" class="form-control">
+                <option value="">-- Chọn phòng --</option>
+            </select>
+            <span asp-validation-for="RoomId" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Thêm bác sĩ</button>
+        <a asp-controller="UserManager" asp-action="DoctorManager" class="btn btn-secondary">Hủy</a>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
