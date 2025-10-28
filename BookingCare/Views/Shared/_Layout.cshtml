@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BookingCare.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/bookingcare.css" />
+    <link rel="stylesheet" href="~/css/home_page.css" asp-append-version="true"/>
 </head>
 <body>
     <header>
@@ -30,6 +31,12 @@
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Đặt lịch khám</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Tài khoản</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Chính sách</a>
@@ -60,7 +67,7 @@
             </div>
         </nav>
     </header>
-    <div class="container mt-4">
+    <div">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -68,7 +75,8 @@
 
     <footer class="booking-footer text-white mt-5">
         <div class="container text-center py-3">
-            &copy; 2025 - BookingCare - <a class="text-white fw-bold" asp-area="" asp-controller="Home" asp-action="Privacy">Chính sách</a>
+            <p class="mb-1 fw-bold">© 2025 BookingCare Việt Nam</p>
+            <small>Liên hệ: support@bookingcare.vn | Hotline: 1900 1234  <a class="text-white fw-bold" asp-area="" asp-controller="Home" asp-action="Privacy">Chính sách</a></small>
         </div>
     </footer>
 
