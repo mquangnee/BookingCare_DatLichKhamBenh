@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Data;
 
 namespace BookingCare.Areas.Admin.Controllers
@@ -97,7 +96,6 @@ namespace BookingCare.Areas.Admin.Controllers
                 Text = $"{r.Name} ({r.DoctorCount}/2 bác sĩ)",
                 Disabled = r.DoctorCount >= 2 // nếu đủ 2 bác sĩ thì không chọn được
             }).ToList();
-
             ViewBag.Rooms = roomItems;
             return View();
         }
@@ -148,14 +146,16 @@ namespace BookingCare.Areas.Admin.Controllers
                     await _dbContext.Doctors.AddAsync(doctorEntity); //Thêm bản ghi vào bảng Doctors
                 }
                 _dbContext.SaveChanges();
-                Task.Run(() => _emailSender.SendEmailAsync(model.Email, "Thông báo tài khoản BookingCare", $@"<p>Xin chào <strong>{model.FullName}</strong>,</p>
+                Task.Run(() => _emailSender.SendEmailAsync(model.Email, "Thông báo tài khoản BookingCare", 
+                    $@"<p>Xin chào <strong>{model.FullName}</strong>,</p>
                     <p>Tài khoản bác sĩ của bạn đã được tạo thành công. Thông tin đăng nhập:</p>
                     <ul>
                         <li>Tài khoản: <span style='background-color:yellow; font-weight:bold;'>{model.Email}</span></li>
                         <li>Mật khẩu: <span style='background-color:yellow; font-weight:bold;'>{model.Password}</span></li>
                     </ul>
-                    <p>Trân trọng,<br/>BookingCare Team</p>"
-                ));
+                    <p>Trân trọng,<br/>BookingCare Team</p>"));
+                // Thêm thông báo thành công
+                TempData["SuccessMessage"] = "Tạo bác sĩ thành công!";
                 return RedirectToAction("DoctorManager", "UserManager");
             }
             else
@@ -163,6 +163,94 @@ namespace BookingCare.Areas.Admin.Controllers
                 ModelState.AddModelError("Email", "Email đã tồn tại trong hệ thống!");
                 return View(model);
             }
+        }
+        //Cập nhật thông tin bác sĩ
+        [HttpGet]
+        public async Task<IActionResult> UpdateDoctor(string id)
+        {
+            var doctor = _dbContext.Users.Include(d => d.Doctor).FirstOrDefault(d => d.Id == id);
+            if (doctor == null)
+            {
+                return NotFound();
+            }
+            var model = new DoctorViewModel
+            {
+                Email = doctor.Email,
+                Password = null,
+                FullName = doctor.FullName,
+                Gender = doctor.Gender,
+                BirthOfDate = doctor.BirthOfDate,
+                Address = doctor.Address,
+                PhoneNumber = doctor.PhoneNumber,
+                Degree = doctor.Doctor.Degree,
+                YearsOfExp = doctor.Doctor.YearsOfExp,
+                SpecialtyId = doctor.Doctor.SpecialtyId,
+                RoomId = doctor.Doctor.RoomId
+            };
+            // Lấy danh sách chuyên khoa
+            ViewBag.Specialties = new SelectList(_dbContext.Specialties.ToList(), "Id", "Name", model.SpecialtyId);
+
+            // Lấy danh sách phòng kèm số lượng bác sĩ trong mỗi phòng
+            var rooms = _dbContext.Rooms.Select(r => new {r.Id, r.Name, DoctorCount = _dbContext.Doctors.Count(d => d.RoomId == r.Id)}).ToList();
+            ViewBag.Rooms = new SelectList(rooms, "Id", "Text", model.RoomId);
+            var roomListForDropdown = rooms.Select(r => new { r.Id, Text = $"{r.Name} ({r.DoctorCount}/2)" }).ToList();
+            ViewBag.Rooms = new SelectList(roomListForDropdown, "Id", "Text", model.RoomId);
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateDoctor(DoctorViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Lấy danh sách chuyên khoa
+                ViewBag.Specialties = new SelectList(_dbContext.Specialties.ToList(), "Id", "Name", model.SpecialtyId);
+
+                // Lấy danh sách phòng kèm số lượng bác sĩ trong mỗi phòng
+                var rooms = _dbContext.Rooms.Select(r => new { r.Id, r.Name, DoctorCount = _dbContext.Doctors.Count(d => d.RoomId == r.Id) }).ToList();
+                ViewBag.Rooms = new SelectList(rooms, "Id", "Text", model.RoomId);
+                var roomListForDropdown = rooms.Select(r => new { r.Id, Text = $"{r.Name} ({r.DoctorCount}/2)" }).ToList();
+                ViewBag.Rooms = new SelectList(roomListForDropdown, "Id", "Text", model.RoomId);
+                return View(model);
+            }
+            var doctor = await _dbContext.Users.Include(d => d.Doctor).FirstOrDefaultAsync(d => d.Email == model.Email);
+            if (doctor == null)
+            {
+                return NotFound();
+            }
+            if (doctor.Doctor.RoomId != model.RoomId)
+            {
+                // Kiểm tra phòng còn trống không
+                int doctorCountInRoom = _dbContext.Doctors.Count(d => d.RoomId == model.RoomId);
+                if (doctorCountInRoom == 2)
+                {
+                    ModelState.AddModelError("RoomId", "Phòng này đã đủ 2 bác sĩ, vui lòng chọn phòng khác.");
+                    // Lấy danh sách chuyên khoa
+                    ViewBag.Specialties = new SelectList(_dbContext.Specialties.ToList(), "Id", "Name", model.SpecialtyId);
+
+                    // Lấy danh sách phòng kèm số lượng bác sĩ trong mỗi phòng
+                    var rooms = _dbContext.Rooms.Select(r => new { r.Id, r.Name, DoctorCount = _dbContext.Doctors.Count(d => d.RoomId == r.Id) }).ToList();
+                    ViewBag.Rooms = new SelectList(rooms, "Id", "Text", model.RoomId);
+                    var roomListForDropdown = rooms.Select(r => new { r.Id, Text = $"{r.Name} ({r.DoctorCount}/2)" }).ToList();
+                    ViewBag.Rooms = new SelectList(roomListForDropdown, "Id", "Text", model.RoomId);
+                    return View(model);
+                }
+            }
+            doctor.Address = model.Address;
+            doctor.PhoneNumber = model.PhoneNumber;
+            doctor.Doctor.Degree = model.Degree;
+            doctor.Doctor.YearsOfExp = model.YearsOfExp;
+            doctor.Doctor.SpecialtyId = model.SpecialtyId;
+            doctor.Doctor.RoomId = model.RoomId;
+            doctor.UpdatedAt = DateTime.Now;
+            await _dbContext.SaveChangesAsync();
+            Task.Run(() => _emailSender.SendEmailAsync(model.Email, "Cập nhật tài khoản BookingCare", 
+                $@"<p>Xin chào <strong>{model.FullName}</strong>,</p>
+                <p>Thông tin của bạn đã cập nhật. Vui lòng truy cập hệ thống để xem thông tin mới.</p>
+                <p>Trân trọng,<br/>BookingCare Team</p>"));
+            // Thêm thông báo thành công
+            TempData["SuccessMessage"] = "Thông tin bác sĩ đã được cập nhật!";
+            return RedirectToAction("DoctorManager");
         }
 
         //Khóa tài khoản
@@ -174,8 +262,11 @@ namespace BookingCare.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
-            Task.Run(() => _emailSender.SendEmailAsync(user.Email, "Khóa tài khoản", "Tài khoản của bạn đã bị khóa bởi quản trị viên. Vui lòng liên hệ để biết thêm chi tiết."));
+            await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue); //Khóa tài khoản vô thời hạn
+            user.UpdatedAt = DateTime.Now;
+            await _userManager.UpdateAsync(user); //Cập nhật thời gian update
+            Task.Run(() => _emailSender.SendEmailAsync(user.Email, "Khóa tài khoản", 
+                "Tài khoản của bạn đã bị khóa bởi quản trị viên. Vui lòng liên hệ để biết thêm chi tiết."));
             var role = await _userManager.GetRolesAsync(user);
             if (role.Contains("Doctor"))
             {
@@ -195,8 +286,11 @@ namespace BookingCare.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            await _userManager.SetLockoutEndDateAsync(user, null);
-            Task.Run(() => _emailSender.SendEmailAsync(user.Email, "Mở khóa tài khoản", "Tài khoản của bạn đã được mở khóa bởi quản trị viên. Bạn có thể đăng nhập lại."));
+            await _userManager.SetLockoutEndDateAsync(user, null); //Mở khóa tài khoản
+            user.UpdatedAt = DateTime.Now;
+            await _userManager.UpdateAsync(user); //Cập nhật thời gian update
+            Task.Run(() => _emailSender.SendEmailAsync(user.Email, "Mở khóa tài khoản", 
+                "Tài khoản của bạn đã được mở khóa bởi quản trị viên. Bạn có thể đăng nhập lại."));
             var role = await _userManager.GetRolesAsync(user);
             if (role.Contains("Doctor"))
             {

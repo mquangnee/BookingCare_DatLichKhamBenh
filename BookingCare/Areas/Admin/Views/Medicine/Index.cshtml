@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BookingCare.Models.ApplicationUser>
+﻿@* @model IEnumerable<BookingCare.Models.Medicine>
 @{
     Layout = "_Layout";
 }
@@ -35,15 +35,24 @@
                                 <td>@patient.Email</td>
                                 <td>@patient.PhoneNumber</td>
                                 <td>@patient.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</td>
-                                <td>@if(patient.UpdatedAt != null){
-                                        @patient.UpdatedAt?.ToString("dd/MM/yyyy HH:mm:ss");
-                                    } else {
+                                <td>
+                                    @if (patient.UpdatedAt != null)
+                                    {
+                                        @patient.UpdatedAt?.ToString("dd/MM/yyyy HH:mm:ss")
+                                        ;
+                                    }
+                                    else
+                                    {
                                         <text>Chưa cập nhật</text>
                                     }
                                 </td>
-                                <td>@if(patient.LockoutEnd != null){
+                                <td>
+                                    @if (patient.LockoutEnd != null)
+                                    {
                                         <span class="text-danger">Bị khóa</span>
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         <span class="text-success">Hoạt động</span>
                                     }
                                 </td>
@@ -83,7 +92,6 @@
 <div class="modal fade" id="patientModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-
         </div>
     </div>
 </div>
@@ -107,4 +115,4 @@
             });
         });
     </script>
-}
+} *@

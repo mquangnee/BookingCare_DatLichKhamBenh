@@ -5,7 +5,6 @@ using BookingCare.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace BookingCare.Controllers
 {
@@ -73,7 +72,7 @@ namespace BookingCare.Controllers
             }
             else
             {
-                TempData["ErrorMessage"] = "Tài khoản của bạn đã bị khóa";
+                TempData["ErrorMessage"] = "Đăng nhập không thành công!";
                 return View(model);
             }
         }
@@ -88,11 +87,11 @@ namespace BookingCare.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterEmailPassword(RegisterViewModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            if(await _userManager.FindByEmailAsync(model.Email) != null)
+            if (await _userManager.FindByEmailAsync(model.Email) != null)
             {
                 ModelState.AddModelError(string.Empty, "Email đã được sử dụng!");
                 return View(model);
@@ -116,14 +115,14 @@ namespace BookingCare.Controllers
         [HttpPost]
         public IActionResult RegisterOTP(string otp)
         {
-            if(HttpContext.Session.GetString("Email") == null || HttpContext.Session.GetString("Password") == null)
+            if (HttpContext.Session.GetString("Email") == null || HttpContext.Session.GetString("Password") == null)
             {
                 return RedirectToAction("RegisterEmailPassword", "Account");
             }
             string email = HttpContext.Session.GetString("Email");
             string password = HttpContext.Session.GetString("Password");
             string cachedOtp = _otpService.GetOtp(email);
-            if(cachedOtp == null || cachedOtp != otp)
+            if (cachedOtp == null || cachedOtp != otp)
             {
                 ModelState.AddModelError(string.Empty, "Mã OTP không hợp lễ hoặc hết hạn!");
                 return View();
@@ -136,7 +135,7 @@ namespace BookingCare.Controllers
         [HttpGet]
         public IActionResult RegisterComplete()
         {
-            if(HttpContext.Session.GetString("Email") == null || HttpContext.Session.GetString("Password") == null)
+            if (HttpContext.Session.GetString("Email") == null || HttpContext.Session.GetString("Password") == null)
             {
                 return RedirectToAction("RegisterEmailPassword", "Account");
             }
@@ -195,6 +194,86 @@ namespace BookingCare.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
             return View(model);
+        }
+
+        //-----Quên mật khẩu-----
+        [HttpGet]
+        public IActionResult ResetPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPassViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            //Kiểm tra email tồn tại
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError("Email", "Email không tồn tại trong hệ thống!");
+                return View(model);
+            }
+            // Tạo và gửi mã OTP
+            string otp = new Random().Next(100000, 999999).ToString();
+            _otpService.SetOtp(model.Email, otp);
+            await _emailSender.SendEmailAsync(model.Email, "Mã OTP đặt lại mật khẩu",
+                $@"<p>Mã OTP của bạn là: <strong style='color:red; font-weight:bold;'>{otp}</strong>.</p><p>Mã có hiệu lực trong 5 phút.</p>");
+            //Lưu tạm email và mật khẩu mới vào Session để sử dụng ở bước tiếp theo
+            HttpContext.Session.SetString("ResetEmail", model.Email);
+            HttpContext.Session.SetString("NewPassword", model.NewPassword);
+            //Chuyển sang bước nhập mã OTP
+            return RedirectToAction("ResetPasswordOTP", "Account");
+        }
+        [HttpGet]
+        public IActionResult ResetPasswordOTP()
+        {
+            if (HttpContext.Session.GetString("ResetEmail") == null || HttpContext.Session.GetString("NewPassword") == null)
+            {
+                return RedirectToAction("ResetPassword", "Account");
+            }
+            ViewBag.Email = HttpContext.Session.GetString("ResetEmail");
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPasswordOTP(string otp)
+        {
+            if (HttpContext.Session.GetString("ResetEmail") == null || HttpContext.Session.GetString("NewPassword") == null)
+            {
+                return RedirectToAction("ForgotPassword", "Account");
+            }
+            string email = HttpContext.Session.GetString("ResetEmail");
+            string newPassword = HttpContext.Session.GetString("NewPassword");
+            string cachedOtp = _otpService.GetOtp(email);
+            //Kiểm tra OTP
+            if (cachedOtp == null || cachedOtp != otp)
+            {
+                ModelState.AddModelError(string.Empty, "Mã OTP không hợp lệ hoặc đã hết hạn!");
+                return View();
+            }
+            //Đặt lại mật khẩu mới
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "Người dùng không tồn tại!");
+                return View();
+            }
+            //Xóa mật khẩu cũ và thêm mật khẩu mới
+            await _userManager.RemovePasswordAsync(user);
+            var result = await _userManager.AddPasswordAsync(user, newPassword);
+            if (result.Succeeded)
+            {
+                _otpService.RemoveOtp(email); //Xóa OTP sau khi đặt lại mật khẩu thành công
+                //Xóa session tạm
+                HttpContext.Session.Remove("ResetEmail");
+                HttpContext.Session.Remove("NewPassword");
+                TempData["SuccessMessage"] = "Đặt lại mật khẩu thành công! Vui lòng đăng nhập.";
+                return RedirectToAction("Login", "Account");
+            }
+            return RedirectToAction("ResetPassword");
         }
     }
 }
