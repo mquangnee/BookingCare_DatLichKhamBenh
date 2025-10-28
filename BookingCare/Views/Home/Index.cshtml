@@ -2,7 +2,124 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container my-5">
+    <div class="body">
+        <div id="homeCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="~/images/091959-dr-marie.png" class="d-block w-100 slide-img" alt="Slide 1">
+                </div>
+                <div class="carousel-item">
+                    <img src="~/images/163614-da-lieu-sg.png" class="d-block w-100 slide-img" alt="Slide 2">
+                </div>
+                <div class="carousel-item">
+                    <img src="~/images/164514-da-lieu-thai-ha.png" class="d-block w-100 slide-img" alt="Slide 3">
+                </div>
+                <div class="carousel-item">
+                    <img src="~/images/165707-mediplus.png" class="d-block w-100 slide-img" alt="Slide 4">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div>
+    <section class="mb-5 bg-light py-5"  >
+        <div class="container">
+            <h2 class="text-center mb-4 fw-bold text-primary">Giới thiệu các Khoa</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <img src="~/images/101638-ho-hap-phoi.png" class="card-img-top" alt="Khoa Nội">
+                        <div class="card-body">
+                            <h5 class="card-title">Khoa hô hấp - Phổi</h5>
+                            <p class="card-text">
+                                Điều trị các bệnh lý nội khoa: tim mạch, hô hấp, tiêu hóa, nội tiết, thần kinh.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <img src="~/images/101713-tim-mach.png" class="card-img-top" alt="Khoa Ngoại">
+                        <div class="card-body">
+                            <h5 class="card-title">Khoa Tim Mạch</h5>
+                            <p class="card-text">
+                                Phẫu thuật ngoại khoa, chỉnh hình, tiêu hóa, tiết niệu và chấn thương.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <img src="~/images/101655-nhi-khoa.png" class="card-img-top" alt="Khoa Nhi">
+                        <div class="card-body">
+                            <h5 class="card-title">Khoa Nhi</h5>
+                            <p class="card-text">
+                                Chăm sóc và điều trị toàn diện cho trẻ em với đội ngũ bác sĩ chuyên nghiệp.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+  
+    <section class="container"> 
+        <h2 class="text-center mb-4 fw-bold text-primary">Bác sĩ nổi bật</h2>
+        <div class="row g-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="card border-0 shadow-sm text-center">
+                    <img src="~/images/153759-anh-bs-7.png"
+                         class="card-img-top rounded-circle mx-auto mt-3"
+                         style="width:150px; height:150px; object-fit: cover;"
+                         alt="BS. Trần Anh">
+                    <div class="card-body">
+                        <h5 class="card-title mb-1">BS. Trần Anh</h5>
+                        <p class="text-muted small">Chuyên khoa Tim mạch</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="card border-0 shadow-sm text-center">
+                    <img src="~/images/152122-anh-bs.png"
+                         class="card-img-top rounded-circle mx-auto mt-3"
+                         style="width:150px; height:150px; object-fit: cover;"
+                         alt="BS. Lê Văn Minh">
+                    <div class="card-body">
+                        <h5 class="card-title mb-1">BS. Lê Văn Minh</h5>
+                        <p class="text-muted small">Chuyên khoa Ngoại tổng hợp</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="card border-0 shadow-sm text-center">
+                    <img src="~/images/152821-anh-bs-3.png"
+                         class="card-img-top rounded-circle mx-auto mt-3"
+                         style="width:150px; height:150px; object-fit: cover;"
+                         alt="BS. Nguyễn Thị Lan">
+                    <div class="card-body">
+                        <h5 class="card-title mb-1">BS. Nguyễn Thị Lan</h5>
+                        <p class="text-muted small">Chuyên khoa Nhi</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="card border-0 shadow-sm text-center">
+                    <img src="~/images/104052-thac-si-bac-si-tran-thi-mai-thy.png"
+                         class="card-img-top rounded-circle mx-auto mt-3"
+                         style="width:150px; height:150px; object-fit: cover;"
+                         alt="BS. Phạm Thu Hà">
+                    <div class="card-body">
+                        <h5 class="card-title mb-1">BS. Phạm Thu Hà</h5>
+                        <p class="text-muted small">Chuyên khoa Da liễu</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
