@@ -10,7 +10,7 @@ namespace BookingCare.Data.Seed
     {
         public static async Task SeedAsync(UserManager<ApplicationUser> userManager, DataContext dbContext)
         {
-            var email = "doctor1";
+            var email = "n.guyenminhquangg03012004@gmail.com";
             if (await userManager.FindByEmailAsync(email) == null) //Kiểm tra email đã tồn tại chưa
             {
                 var doctor = new ApplicationUser
@@ -33,7 +33,7 @@ namespace BookingCare.Data.Seed
                     var doctorEntity = new Doctor //Tạo bản ghi trong bảng Doctors
                     {
                         UserId = doctor.Id,
-                        Degree = "Tiến sĩ",
+                        Degree = "Bác sĩ chuyên khoa (BSCK)",
                         YearsOfExp = 20,
                         SpecialtyId = specialty.Id,
                         RoomId = room.Id

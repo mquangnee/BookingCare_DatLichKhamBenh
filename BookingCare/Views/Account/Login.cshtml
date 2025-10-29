@@ -30,9 +30,12 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
-            <div class="form-check mb-3">
-                <input asp-for="RememberMe" class="form-check-input" />
-                <label asp-for="RememberMe" class="form-check-label">Nhớ đăng nhập</label>
+            <div class="form-check d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <input asp-for="RememberMe" class="form-check-input" />
+                    <label asp-for="RememberMe" class="form-check-label">Nhớ đăng nhập</label>
+                </div>
+                <a class="text-black" asp-controller="Account" asp-action="ResetPassword">Quên mật khẩu</a>
             </div>
 
             <button type="submit" class="btn btn-booking w-100">Đăng nhập</button>

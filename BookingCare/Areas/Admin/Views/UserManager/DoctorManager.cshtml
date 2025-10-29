@@ -6,6 +6,12 @@
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Quản lý tài khoản bác sĩ</h1>
 </div>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -41,7 +47,7 @@
                                 <td>
                                     @if (doctor.UpdatedAt != null)
                                     {
-                                        doctor.UpdatedAt?.ToString("dd/MM/yyyy HH:mm:ss");
+                                        @doctor.UpdatedAt?.ToString("dd/MM/yyyy HH:mm:ss");
                                     }
                                     else
                                     {
@@ -78,6 +84,10 @@
                                                     <button type="submit" class="dropdown-item">Khóa</button>
                                                 </form>
                                             }
+                                            <form asp-action="UpdateDoctor" method="get" style="display:inline">
+                                                <input type="hidden" name="id" value="@doctor.Id" />
+                                                <button type="submit" class="dropdown-item">Chỉnh sửa</button>
+                                            </form>
                                             <button class="dropdown-item view-details" data-id="@doctor.Id">Xem chi tiết</button>
                                         </div>
                                     </div>

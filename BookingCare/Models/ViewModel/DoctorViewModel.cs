@@ -11,9 +11,8 @@ namespace BookingCare.Models.ViewModel
         [EmailAddress(ErrorMessage = "Địa chỉ email không hợp lệ!")]
         [DisplayName("Tên đăng nhập")]
         public string Email { get; set; }
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
         [DisplayName("Mật khẩu")]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         //Thông tin cơ bản
         [Required(ErrorMessage = "{0} vui lòng không để trống!")]

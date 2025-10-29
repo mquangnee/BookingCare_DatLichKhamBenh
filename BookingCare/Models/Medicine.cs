@@ -15,6 +15,9 @@ namespace BookingCare.Models
         [Required]
         [StringLength(200)]
         public string Function { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string Status { get; set; } = "Đang sử dụng";
         //Quan hệ N-N với bảng Prescription qua bảng Prescription_Detail
         public ICollection<Prescription_Detail> Prescription_Details { get; set; }
     }
