@@ -19,7 +19,7 @@ namespace BookingCare.Data.Seed
                     Email = email,
                     EmailConfirmed = true,
                     FullName = "Ngô Khắc Tài",
-                    BirthOfDate = new DateOnly(1970, 01, 03),
+                    DateOfBirth = new DateOnly(1970, 01, 03),
                     Gender = "Nam",
                     Address = "Nghệ An",
                     PhoneNumber = "0123456789"
