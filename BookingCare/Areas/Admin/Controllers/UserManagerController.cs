@@ -124,7 +124,7 @@ namespace BookingCare.Areas.Admin.Controllers
                     Email = model.Email,
                     EmailConfirmed = true,
                     FullName = model.FullName,
-                    BirthOfDate = model.BirthOfDate,
+                    DateOfBirth = model.BirthOfDate,
                     Gender = model.Gender,
                     Address = model.Address,
                     PhoneNumber = model.PhoneNumber
@@ -179,7 +179,7 @@ namespace BookingCare.Areas.Admin.Controllers
                 Password = null,
                 FullName = doctor.FullName,
                 Gender = doctor.Gender,
-                BirthOfDate = doctor.BirthOfDate,
+                BirthOfDate = doctor.DateOfBirth,
                 Address = doctor.Address,
                 PhoneNumber = doctor.PhoneNumber,
                 Degree = doctor.Doctor.Degree,

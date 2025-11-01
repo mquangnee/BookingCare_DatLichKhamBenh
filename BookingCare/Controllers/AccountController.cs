@@ -80,121 +80,121 @@ namespace BookingCare.Controllers
         //-----Đăng ký-----
         // Bước 1: Nhập email và mật khẩu
         [HttpGet]
-        public IActionResult RegisterEmailPassword()
+        public IActionResult RegisterStep1()
         {
             return View();
         }
-        [HttpPost]
-        public async Task<IActionResult> RegisterEmailPassword(RegisterViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-            if (await _userManager.FindByEmailAsync(model.Email) != null)
-            {
-                ModelState.AddModelError(string.Empty, "Email đã được sử dụng!");
-                return View(model);
-            }
-            // Tạo và gửi mã OTP
-            string otp = new Random().Next(100000, 999999).ToString();
-            _otpService.SetOtp(model.Email, otp);
-            await _emailSender.SendEmailAsync(model.Email, "Mã OTP xác thực", $@"<p>Mã OTP của bạn là: <strong style='color:red; font-weight:bold;'>{otp}</strong>.</p><p>Mã có hiệu lực trong 5 phút.</p>");
-            //Lưu tạm thông tin đăng ký vào TempData để sử dụng ở bước tiếp theo
-            HttpContext.Session.SetString("Email", model.Email); //Lưu email và password vào session để dùng cho các bước tiếp theo
-            HttpContext.Session.SetString("Password", model.Password);
-            //Chuyển sang bước nhập mã OTP
-            return RedirectToAction("RegisterOTP", "Account");
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> RegisterStep1(RegisterViewModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View(model);
+        //    }
+        //    if (await _userManager.FindByEmailAsync(model.Email) != null)
+        //    {
+        //        ModelState.AddModelError(string.Empty, "Email đã được sử dụng!");
+        //        return View(model);
+        //    }
+        //    // Tạo và gửi mã OTP
+        //    string otp = new Random().Next(100000, 999999).ToString();
+        //    _otpService.SetOtp(model.Email, otp);
+        //    await _emailSender.SendEmailAsync(model.Email, "Mã OTP xác thực", $@"<p>Mã OTP của bạn là: <strong style='color:red; font-weight:bold;'>{otp}</strong>.</p><p>Mã có hiệu lực trong 5 phút.</p>");
+        //    //Lưu tạm thông tin đăng ký vào TempData để sử dụng ở bước tiếp theo
+        //    HttpContext.Session.SetString("Email", model.Email); //Lưu email và password vào session để dùng cho các bước tiếp theo
+        //    HttpContext.Session.SetString("Password", model.Password);
+        //    //Chuyển sang bước nhập mã OTP
+        //    return RedirectToAction("RegisterOTP", "Account");
+        //}
         // Bước 2: Nhập mã OTP
         [HttpGet]
-        public IActionResult RegisterOTP()
+        public IActionResult RegisterStep2()
         {
             return View();
         }
-        [HttpPost]
-        public IActionResult RegisterOTP(string otp)
-        {
-            if (HttpContext.Session.GetString("Email") == null || HttpContext.Session.GetString("Password") == null)
-            {
-                return RedirectToAction("RegisterEmailPassword", "Account");
-            }
-            string email = HttpContext.Session.GetString("Email");
-            string password = HttpContext.Session.GetString("Password");
-            string cachedOtp = _otpService.GetOtp(email);
-            if (cachedOtp == null || cachedOtp != otp)
-            {
-                ModelState.AddModelError(string.Empty, "Mã OTP không hợp lễ hoặc hết hạn!");
-                return View();
-            }
-            //OTP hợp lệ, chuyển sang bước đăng ký hoàn tất
-            return RedirectToAction("RegisterComplete", "Account");
-        }
+        //[HttpPost]
+        //public IActionResult RegisterStep2(string otp)
+        //{
+        //    if (HttpContext.Session.GetString("Email") == null || HttpContext.Session.GetString("Password") == null)
+        //    {
+        //        return RedirectToAction("RegisterEmailPassword", "Account");
+        //    }
+        //    string email = HttpContext.Session.GetString("Email");
+        //    string password = HttpContext.Session.GetString("Password");
+        //    string cachedOtp = _otpService.GetOtp(email);
+        //    if (cachedOtp == null || cachedOtp != otp)
+        //    {
+        //        ModelState.AddModelError(string.Empty, "Mã OTP không hợp lễ hoặc hết hạn!");
+        //        return View();
+        //    }
+        //    //OTP hợp lệ, chuyển sang bước đăng ký hoàn tất
+        //    return RedirectToAction("RegisterComplete", "Account");
+        //}
 
         //Bước 3: Hoàn tất đăng ký
         [HttpGet]
-        public IActionResult RegisterComplete()
+        public IActionResult RegisterStep3()
         {
-            if (HttpContext.Session.GetString("Email") == null || HttpContext.Session.GetString("Password") == null)
-            {
-                return RedirectToAction("RegisterEmailPassword", "Account");
-            }
-            ViewBag.Email = HttpContext.Session.GetString("Email");
+            //if (HttpContext.Session.GetString("Email") == null || HttpContext.Session.GetString("Password") == null)
+            //{
+            //    return RedirectToAction("RegisterEmailPassword", "Account");
+            //}
+            //ViewBag.Email = HttpContext.Session.GetString("Email");
             return View();
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegisterComplete(CompleteRegisterViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-            if (HttpContext.Session.GetString("Email") == null || HttpContext.Session.GetString("Password") == null)
-            {
-                return RedirectToAction("RegisterEmailPassword", "Account");
-            }
-            string email = HttpContext.Session.GetString("Email");
-            string password = HttpContext.Session.GetString("Password");
-            string cachedOtp = _otpService.GetOtp(email);
-            if (cachedOtp == null)
-            {
-                ModelState.AddModelError(string.Empty, "Mã OTP đã hết hạn!");
-                return View(model);
-            }
-            // Tạo user mới
-            var user = new ApplicationUser
-            {
-                UserName = email,
-                Email = email,
-                FullName = model.FullName,
-                BirthOfDate = model.BirthOfDate,
-                Gender = model.Gender,
-                Address = model.Address,
-                PhoneNumber = model.PhoneNumber
-            };
-            var result = await _userManager.CreateAsync(user, password);
-            if (result.Succeeded)
-            {
-                _otpService.RemoveOtp(email); //Xóa OTP sau khi đăng ký thành công
-                await _userManager.AddToRoleAsync(user, "Patient"); //Gán role Patient
-                var patientEntity = new Patient //Tạo bản ghi trong bảng Patient
-                {
-                    UserId = user.Id,
-                    MedicalHistory = "Chưa có tiền sử bệnh"
-                };
-                //Lưu bản ghi Patient vào CSDL
-                _dbContext.Patients.Add(patientEntity);
-                await _dbContext.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Đăng ký tài khoản thành công! Vui lòng đăng nhập.";
-                return RedirectToAction("Login", "Account");
-            }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-            return View(model);
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> RegisterStep3(CompleteRegisterViewModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View(model);
+        //    }
+        //    if (HttpContext.Session.GetString("Email") == null || HttpContext.Session.GetString("Password") == null)
+        //    {
+        //        return RedirectToAction("RegisterEmailPassword", "Account");
+        //    }
+        //    string email = HttpContext.Session.GetString("Email");
+        //    string password = HttpContext.Session.GetString("Password");
+        //    string cachedOtp = _otpService.GetOtp(email);
+        //    if (cachedOtp == null)
+        //    {
+        //        ModelState.AddModelError(string.Empty, "Mã OTP đã hết hạn!");
+        //        return View(model);
+        //    }
+        //    // Tạo user mới
+        //    var user = new ApplicationUser
+        //    {
+        //        UserName = email,
+        //        Email = email,
+        //        FullName = model.FullName,
+        //        DateOfBirth = model.BirthOfDate,
+        //        Gender = model.Gender,
+        //        Address = model.Address,
+        //        PhoneNumber = model.PhoneNumber
+        //    };
+        //    var result = await _userManager.CreateAsync(user, password);
+        //    if (result.Succeeded)
+        //    {
+        //        _otpService.RemoveOtp(email); //Xóa OTP sau khi đăng ký thành công
+        //        await _userManager.AddToRoleAsync(user, "Patient"); //Gán role Patient
+        //        var patientEntity = new Patient //Tạo bản ghi trong bảng Patient
+        //        {
+        //            UserId = user.Id,
+        //            MedicalHistory = "Chưa có tiền sử bệnh"
+        //        };
+        //        //Lưu bản ghi Patient vào CSDL
+        //        _dbContext.Patients.Add(patientEntity);
+        //        await _dbContext.SaveChangesAsync();
+        //        TempData["SuccessMessage"] = "Đăng ký tài khoản thành công! Vui lòng đăng nhập.";
+        //        return RedirectToAction("Login", "Account");
+        //    }
+        //    foreach (var error in result.Errors)
+        //    {
+        //        ModelState.AddModelError(string.Empty, error.Description);
+        //    }
+        //    return View(model);
+        //}
 
         //-----Quên mật khẩu-----
         [HttpGet]
