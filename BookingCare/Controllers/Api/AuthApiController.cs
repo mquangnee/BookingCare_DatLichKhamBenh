@@ -56,7 +56,8 @@ namespace BookingCare.Controllers.Api
         [HttpPost("register-step1")]
         public async Task<IActionResult> RegisterStep1([FromBody] RegisterStep1Dtos dto)
         {
-            if (await _userManager.FindByEmailAsync(dto.Email) != null)//Kiểm tra email đã tồn tại chưa
+            var result = await _userManager.FindByEmailAsync(dto.Email);
+            if (result != null)//Kiểm tra email đã tồn tại chưa
             {
                 return BadRequest(new { success = false, message = "Email đã được sử dụng" });
             }
@@ -68,7 +69,7 @@ namespace BookingCare.Controllers.Api
             _otpService.SetPassword(dto.Email, dto.Password);
 
             //Gửi email xác nhận OTP
-            _ = _emailSender.SendEmailAsync(dto.Email, "Xác nhận mã OTP - BookingCare",
+            _ = Task.Run(() => _emailSender.SendEmailAsync(dto.Email, "Xác nhận mã OTP - BookingCare",
                $@"<div style='font-family:Arial, sans-serif; color:#333; line-height:1.6;'>
                     <h2 style='color:#2a8dc5;'>BookingCare - Xác thực tài khoản</h2>
                     <p>Xin chào,</p>
@@ -82,7 +83,7 @@ namespace BookingCare.Controllers.Api
                     <p><strong>Đội ngũ BookingCare</strong></p>
                     <hr style='border:none; border-top:1px solid #ddd;'/>
                     <small style='color:#777;'>Đây là email tự động, vui lòng không trả lời lại email này.</small>
-                </div>");
+                </div>"));
             return Ok(new { success = true, message = "Đã gửi mã OTP đến email của bạn!" });
         }
 
@@ -99,6 +100,9 @@ namespace BookingCare.Controllers.Api
             {
                 return BadRequest(new { success = false, message = "Mã OTP không đúng. Vui lòng kiểm tra lại!" });
             }
+
+            //Đánh dấu đã xác thực OTP thành công
+            _otpService.SetOtpFlag(dto.Email); 
             return Ok(new { success = true, message = "Xác thực OTP thành công!" });
         }
 
@@ -144,7 +148,7 @@ namespace BookingCare.Controllers.Api
                 await _dbContext.SaveChangesAsync();
 
                 //Gửi email thông báo đăng ký thành công
-                await _emailSender.SendEmailAsync(dto.Email, "Chào mừng đến với BookingCare!",
+                _ = Task.Run(() => _emailSender.SendEmailAsync(dto.Email, "Chào mừng đến với BookingCare!",
                 $@"<div style='font-family:Arial, sans-serif; color:#333; line-height:1.6;'>
                     <h2 style='color:#2a8dc5;'>🎉 Chúc mừng bạn đã đăng ký tài khoản thành công!</h2>
                     <p>Xin chào <strong>{dto.FullName}</strong>,</p>
@@ -154,10 +158,37 @@ namespace BookingCare.Controllers.Api
                     <p>Chúc bạn có những trải nghiệm tốt nhất cùng <strong>BookingCare</strong>!</p>
                     <hr style='border:none; border-top:1px solid #ddd;'/>
                     <small style='color:#777;'>Đây là email tự động, vui lòng không trả lời lại email này.</small>
-                </div>");
+                </div>")); 
                 return Ok(new { success = true, message = "Đăng ký tài khoản thành công!" });
             }
             return BadRequest(new { success = false, message = "Đăng ký tài khoản thất bại. Vui lòng thử lại!" });
+        }
+
+        //====GỬI LẠI MÃ OTP====//
+        [HttpPost("resend-otp")]
+        public IActionResult ResendOtp([FromBody] RegisterStep2Dtos dto)
+        {
+            //Tạo và gửi mã OTP qua email
+            string otp = new Random().Next(100000, 999999).ToString();
+            _otpService.SetOtp(dto.Email, otp);
+
+            //Gửi email xác nhận OTP
+            _ = Task.Run(() => _emailSender.SendEmailAsync(dto.Email, "Gửi lại mã OTP - BookingCare",
+               $@"<div style='font-family:Arial, sans-serif; color:#333; line-height:1.6;'>
+                    <h2 style='color:#2a8dc5;'>BookingCare - Gửi lại mã OTP</h2>
+                    <p>Xin chào,</p>
+                    <p>Bạn đã yêu cầu gửi lại mã OTP cho tài khoản trên hệ thống <strong>BookingCare</strong>.</p>
+                    <p>Mã OTP của bạn là: 
+                        <strong style='color:#e74c3c; font-size:18px;'>{otp}</strong>
+                    </p>
+                    <p>Mã có hiệu lực trong <strong>5 phút</strong>. Vui lòng không chia sẻ mã này cho bất kỳ ai để đảm bảo an toàn tài khoản.</p>
+                    <br/>
+                    <p>Trân trọng,</p>
+                    <p><strong>Đội ngũ BookingCare</strong></p>
+                    <hr style='border:none; border-top:1px solid #ddd;'/>
+                    <small style='color:#777;'>Đây là email tự động, vui lòng không trả lời lại email này.</small>
+                </div>"));
+            return Ok();
         }
     }
 }

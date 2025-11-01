@@ -44,38 +44,38 @@ namespace BookingCare.Controllers
         {
             return View();
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-            if (result.Succeeded)
-            {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                var roles = await _userManager.GetRolesAsync(user);
-                if (roles.Contains("Admin"))
-                {
-                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
-                }
-                else if (roles.Contains("Doctor"))
-                {
-                    return RedirectToAction("Index", "Doctor", new { area = "Doctor" });
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Patient", new { area = "Patient" });
-                }
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Đăng nhập không thành công!";
-                return View(model);
-            }
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Login(LoginViewModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View(model);
+        //    }
+        //    var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+        //    if (result.Succeeded)
+        //    {
+        //        var user = await _userManager.FindByEmailAsync(model.Email);
+        //        var roles = await _userManager.GetRolesAsync(user);
+        //        if (roles.Contains("Admin"))
+        //        {
+        //            return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+        //        }
+        //        else if (roles.Contains("Doctor"))
+        //        {
+        //            return RedirectToAction("Index", "Doctor", new { area = "Doctor" });
+        //        }
+        //        else
+        //        {
+        //            return RedirectToAction("Index", "Patient", new { area = "Patient" });
+        //        }
+        //    }
+        //    else
+        //    {
+        //        TempData["ErrorMessage"] = "Đăng nhập không thành công!";
+        //        return View(model);
+        //    }
+        //}
 
         //-----Đăng ký-----
         // Bước 1: Nhập email và mật khẩu

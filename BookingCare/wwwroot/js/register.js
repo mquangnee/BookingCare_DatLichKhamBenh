@@ -46,15 +46,21 @@ function handleRegisterStep1() {
 
 //Bước 2: Xác thực mã OTP
 function handleRegisterStep2() {
-    const form = document.getElementById("registerStep2Form");
-    if (!form) return;
-    form.addEventListener("submit", async function (e) {
+    const form1 = document.getElementById("registerStep2Form");
+    if (!form1) return;
+
+    const email = localStorage.getItem("Email");
+    const msg = document.getElementById("msg");
+
+    //Hiển thị thông báo
+    msg.textContent = "Mã xác thực đã được gửi đến " + email;
+    msg.className = "alert alert-success text-center mb-4";
+
+    form1.addEventListener("submit", async function (e) {
         e.preventDefault();
 
         //Lấy giá trị email từ localStorage và OTP từ form
-        const email = localStorage.getItem("Email");
         const otp = document.getElementById("otp").value;
-        const msg = document.getElementById("msg");
 
         //Kiểm tra email tồn tại
         if (!email) {
@@ -63,27 +69,65 @@ function handleRegisterStep2() {
             return setTimeout(() => window.location.href = "/Account/RegisterStep1", 2000);
         }
 
-        //Gửi yêu cầu xác thực OTP đến server
-        const res = await fetch("/api/AuthApi/register-step2", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, otp })
-        });
+        try {
+            //Gửi yêu cầu xác thực OTP đến server
+            const res = await fetch("/api/AuthApi/register-step2", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, otp })
+            });
 
-        //Xử lý phản hồi từ server
-        const data = await res.json();
+            //Xử lý phản hồi từ server
+            const data = await res.json();
 
-        //Hiển thị thông báo
-        msg.textContext = data.message;
-        if (res.ok) {
-            msg.style.color = "green";
-        } else {
-            msg.tthis.style.color = "red";
+            //Hiển thị thông báo
+            msg.textContent = data.message;
+            if (res.ok) {//Nếu thành công
+                msg.className = "alert alert-success text-center";
+            } else { //Nếu thất bại
+                msg.className = "alert alert-danger text-center";
+            }
+
+            //Nếu thành công, chuyển sang bước 3
+            if (data.success) {
+                setTimeout(() => window.location.href = "/Account/RegisterStep3", 1000);
+            }
+        } catch (error) {
+            console.error("Lỗi:", error);
+            msg.textContent = "Lỗi kết nối với máy chủ! Vui lòng thử lại sau.";
+            msg.className = "alert alert-danger text-center";
+        }
+    });
+
+    const form2 = document.getElementById("resendOtpForm");
+    form2.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        //Kiểm tra email tồn tại
+        if (!email) {
+            msg.textContent = "Không tìm thấy email trong phiên làm việc. Vui lòng quay lại bước 1.";
+            msg.style.color = "red";
+            return setTimeout(() => window.location.href = "/Account/RegisterStep1", 2000);
         }
 
-        //Nếu thành công, chuyển sang bước 3
-        if (data.success) {
-            setTimeout(() => window.location.href = "/Account/RegisterStep3", 1000);
+        var otp = "000000";
+        try {
+            //Gửi yêu cầu gửi lại mã OTP đến server
+            const res = await fetch("/api/AuthApi/resend-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, otp })
+            });
+
+            //Hiển thị thông báo
+            if (res.ok) {
+                msg.textContent = "Mã xác thực đã được gửi lại đến " + email;
+                msg.className = "alert alert-success text-center mb-4";
+            }
+        } catch (error) {
+            console.error("Lỗi:", error);
+            msg.textContent = "Lỗi kết nối với máy chủ! Vui lòng thử lại sau.";
+            msg.className = "alert alert-danger text-center";
         }
     });
 }
@@ -96,6 +140,7 @@ function handleRegisterStep3() {
         e.preventDefault();
         const email = localStorage.getItem("Email");
         const msg = document.getElementById("msg");
+
         if (!email) {
             alert("Phiên đăng ký đã hết hạn, vui lòng thực hiện lại");
             return window.location.href = "/Account/RegisterStep1";
@@ -111,29 +156,35 @@ function handleRegisterStep3() {
             phoneNumber: document.getElementById("phoneNumber").value.trim()
         }
 
-        //Gửi yêu cầu hoàn tất đăng ký đến server
-        const res = await fetch("/api/AuthApi/register-step3", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body)
-        });
-                //Xử lý phản hồi từ server
-        const data = await res.json();
+        try {
+            //Gửi yêu cầu hoàn tất đăng ký đến server
+            const res = await fetch("/api/AuthApi/register-step3", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+            //Xử lý phản hồi từ server
+            const data = await res.json();
 
-        //Hiển thị thông báo
-        msg.textContent = data.message;
-        if (res.ok) {
-            msg.style.color = "green";
-        } else {
-            msg.style.color = "red";
-        }
+            //Hiển thị thông báo
+            msg.textContent = data.message;
+            if (res.ok) {//Nếu thành công
+                msg.className = "alert alert-success text-center";
+            } else { //Nếu thất bại
+                msg.className = "alert alert-danger text-center";
+            }
 
-        //Nếu thành công, chuyển đến trang đăng nhập
-        if (data.success) {
-            localStorage.removeItem("Email");
-            setTimeout(() => window.location.href = "/Account/Login", 1000);
+            //Nếu thành công, chuyển đến trang đăng nhập
+            if (data.success) {
+                localStorage.removeItem("Email");
+                setTimeout(() => window.location.href = "/Account/Login", 1000);
+            }
+        } catch (error) {
+            console.error("Lỗi:", error);
+            msg.textContent = "Lỗi kết nối với máy chủ! Vui lòng thử lại sau.";
+            msg.className = "alert alert-danger text-center";
         }
-    })
+    });
 }
 
 // ===== Gọi tất cả hàm =====
