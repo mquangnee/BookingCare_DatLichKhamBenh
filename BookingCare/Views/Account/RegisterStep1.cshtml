@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Register - Step 1";
+}
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="bc-box">
+        <h2 class="text-center bc-title mb-4">Bước 1: Tài khoản</h2>
+
+        <div id="msg" class="mt-3"></div>
+
+        <!-- Stepper -->
+        <div class="d-flex justify-content-between mb-4">
+            <div class="step-indicator step-active">1</div>
+            <div class="flex-grow-1 border-top mx-2"></div>
+            <div class="step-indicator step-inactive">2</div>
+            <div class="flex-grow-1 border-top mx-2"></div>
+            <div class="step-indicator step-inactive">3</div>
+        </div>
+
+        <form id="registerStep1Form">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input id="email" type="email" class="form-control" placeholder="Nhập email của bạn" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Mật khẩu</label>
+                <input id="password" type="password" class="form-control" placeholder="Nhập mật khẩu" required/>
+            </div>
+
+            <div class="mb-3">
+                <label for="confirmedPassword" class="form-label">Xác nhận mật khẩu</label>
+                <input id="confirmedPassword" type="password" class="form-control" placeholder="Nhập lại mật khẩu" required />
+            </div>
+
+            <button type="submit" class="btn btn-booking w-100">Tiếp tục</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/register.js"></script>
+}

@@ -1,4 +1,4 @@
-﻿@* @model IEnumerable<BookingCare.Models.Medicine>
+﻿@model IEnumerable<BookingCare.Models.Medicine>
 @{
     Layout = "_Layout";
 }
@@ -26,7 +26,7 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    @* <tbody>
                         @foreach (var patient in Model)
                         {
                             <tr>
@@ -82,7 +82,7 @@
                                 </td>
                             </tr>
                         }
-                    </tbody>
+                    </tbody> *@
                 </table>
             </div>
         </div>
@@ -115,4 +115,4 @@
             });
         });
     </script>
-} *@
+}
