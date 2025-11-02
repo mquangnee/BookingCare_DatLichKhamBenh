@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Net;
 using System.Net.Mail;
 
-namespace BookingCare.Services
+namespace BookingCare.Services.Email
 {
     public class EmailSender : IEmailSender
     {
