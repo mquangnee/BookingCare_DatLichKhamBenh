@@ -56,6 +56,7 @@ function handleRegisterStep2() {
     msg.textContent = "Mã xác thực đã được gửi đến " + email;
     msg.className = "alert alert-success text-center mb-4";
 
+    //****Xử lý gửi mã OTP****
     form1.addEventListener("submit", async function (e) {
         e.preventDefault();
 
@@ -99,6 +100,7 @@ function handleRegisterStep2() {
         }
     });
 
+    //****Xử lý gửi lại mã OTP****
     const form2 = document.getElementById("resendOtpForm");
     form2.addEventListener("submit", async function (e) {
         e.preventDefault();
@@ -113,7 +115,7 @@ function handleRegisterStep2() {
         var otp = "000000";
         try {
             //Gửi yêu cầu gửi lại mã OTP đến server
-            const res = await fetch("/api/AuthApi/resend-otp", {
+            const res = await fetch("/api/AuthApi/register-resend-otp", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, otp })
