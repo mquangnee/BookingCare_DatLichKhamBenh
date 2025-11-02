@@ -2,6 +2,7 @@
 using BookingCare.Models.DTOs;
 using BookingCare.Repository;
 using BookingCare.Services;
+using BookingCare.Services.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -16,13 +17,15 @@ namespace BookingCare.Controllers.Api
         private readonly DataContext _dbContext;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
+        private readonly IEmailTemplate _emailTemplate;
         private readonly OtpService _otpService;
-        public AuthApiController(UserManager<ApplicationUser> userManager, DataContext dbContext, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender, OtpService otpService)
+        public AuthApiController(UserManager<ApplicationUser> userManager, DataContext dbContext, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender, IEmailTemplate emailTemplate, OtpService otpService)
         {
             _userManager = userManager;
             _dbContext = dbContext;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _emailTemplate = emailTemplate;
             _otpService = otpService;
         }
 
@@ -45,28 +48,11 @@ namespace BookingCare.Controllers.Api
             //Lưu mật khẩu mới tạm thời vào bộ nhớ đệm
             _otpService.SetPassword(dto.Email, dto.NewPassword);
 
+            //Nội dung email
+            var body = _emailTemplate.getForgotPassOtpEmailBody(otp);
+
             //Gửi email xác nhận OTP
-            _ = Task.Run(() => _emailSender.SendEmailAsync(dto.Email, "Xác nhận đặt lại mật khẩu - BookingCare",
-                $@"<div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
-                    <div style='max-width: 500px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px;'>
-                        <h2 style='color: #45c3d2; text-align: center; margin-bottom: 20px;'>Đặt lại mật khẩu BookingCare</h2>
-                        <p>Xin chào,</p>
-                        <p>Bạn đã yêu cầu <strong>đặt lại mật khẩu</strong> cho tài khoản BookingCare của mình.</p>
-                        <p style='margin-top: 15px;'>
-                            Mã OTP của bạn là:
-                        </p>
-                        <p style='font-size: 22px; text-align: center; margin: 15px 0;'>
-                            <strong style='color: #e63946; letter-spacing: 2px;'>{otp}</strong>
-                        </p>
-                        <p style='text-align: center; color: #555;'>Mã có hiệu lực trong <strong>5 phút</strong>.</p>
-                        <hr style='margin: 20px 0; border: none; border-top: 1px solid #eee;' />
-                        <p style='font-size: 14px; color: #666; text-align: center;'>
-                            Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.<br/>
-                            Trân trọng,<br/>
-                            <strong style='color: #45c3d2;'>Đội ngũ BookingCare</strong>
-                        </p>
-                    </div>
-                </div>"));
+            _ = Task.Run(() => _emailSender.SendEmailAsync(dto.Email, "Xác nhận đặt lại mật khẩu - BookingCare", body));
             return Ok(new { success = true, message = "Đã gửi mã OTP đến email của bạn!" });
         }
 
@@ -109,23 +95,11 @@ namespace BookingCare.Controllers.Api
                 _otpService.RemoveOtp(dto.Email); //Xóa mã OTP khỏi bộ nhớ đệm
                 _otpService.RemovePassword(dto.Email); //Xóa mật khẩu tạm thời khỏi bộ nhớ đệm
 
+                //Nội dung email
+                var body = _emailTemplate.getSuccessForgotPassEmailBody();
+
                 //Gửi email thông báo đổi mật khẩu thành công
-                _ = Task.Run(() => _emailSender.SendEmailAsync(dto.Email, "Thông báo đổi mật khẩu - BookingCare",
-                    $@"<div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
-                        <div style='max-width: 500px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px;'>
-                            <h2 style='color: #45c3d2; text-align: center; margin-bottom: 20px;'>Đổi mật khẩu thành công</h2>
-                            <p>Xin chào,</p>
-                            <p>Bạn đã <strong>đổi mật khẩu</strong> tài khoản BookingCare thành công.</p>
-                            <p style='color: #555;'>
-                                Bạn có thể đăng nhập lại bằng mật khẩu mới để tiếp tục sử dụng các dịch vụ của BookingCare.
-                            </p>
-                            <hr style='margin: 25px 0; border: none; border-top: 1px solid #eee;' />
-                            <p style='font-size: 14px; color: #666; text-align: center;'>
-                                Trân trọng,<br/>
-                                <strong style='color: #45c3d2;'>Đội ngũ BookingCare</strong>
-                            </p>
-                        </div>
-                    </div>"));
+                _ = Task.Run(() => _emailSender.SendEmailAsync(dto.Email, "Thông báo đổi mật khẩu - BookingCare", body));
                 return Ok(new { success = true, message = "Đổi mật khẩu thành công!" });
             }
             return BadRequest(new { success = false, message = "Đổi mật khẩu không thành công!" });
@@ -170,28 +144,11 @@ namespace BookingCare.Controllers.Api
             //Lưu mật khẩu tạm thời vào bộ nhớ đệm
             _otpService.SetPassword(dto.Email, dto.Password);
 
+            //Nội dung email
+            var body = _emailTemplate.getRegisterOtpEmailBody(otp);
+
             //Gửi email xác nhận OTP
-            _ = Task.Run(() => _emailSender.SendEmailAsync(dto.Email, "Xác nhận mã OTP - BookingCare",
-                $@"<div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
-                    <div style='max-width: 500px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px;'>
-                        <h2 style='color: #45c3d2; text-align: center; margin-bottom: 20px;'>Xác thức tài khoản BookingCare</h2>
-                        <p>Xin chào,</p>
-                        <p>Bạn đang thực hiện xác thực tài khoản trên hệ thống <strong>BookingCare</strong>.</p>
-                        <p style='margin-top: 15px;'>
-                            Mã OTP của bạn là:
-                        </p>
-                        <p style='font-size: 22px; text-align: center; margin: 15px 0;'>
-                            <strong style='color: #e63946; letter-spacing: 2px;'>{otp}</strong>
-                        </p>
-                        <p style='text-align: center; color: #555;'>Mã có hiệu lực trong <strong>5 phút</strong>.</p>
-                        <hr style='margin: 20px 0; border: none; border-top: 1px solid #eee;' />
-                        <p style='font-size: 14px; color: #666; text-align: center;'>
-                            Nếu bạn không yêu cầu xác thực tài khoản, vui lòng bỏ qua email này.<br/>
-                            Trân trọng,<br/>
-                            <strong style='color: #45c3d2;'>Đội ngũ BookingCare</strong>
-                        </p>
-                    </div>
-                </div>"));
+            _ = Task.Run(() => _emailSender.SendEmailAsync(dto.Email, "Xác nhận mã OTP - BookingCare", body));
             return Ok(new { success = true, message = "Đã gửi mã OTP đến email của bạn!" });
         }
 
@@ -255,20 +212,11 @@ namespace BookingCare.Controllers.Api
                 _dbContext.Patients.Add(patientEntity);
                 await _dbContext.SaveChangesAsync();
 
+                //Nội dung email
+                var body = _emailTemplate.getSuccessRegisterEmailBody(dto.FullName);
+
                 //Gửi email thông báo đăng ký thành công
-                _ = Task.Run(() => _emailSender.SendEmailAsync(dto.Email, "Đăng ký tài khoản BookingCare",
-                    $@"<div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
-                    <div style='max-width: 500px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px;'>
-                        <h2 style='color: #45c3d2; text-align: center; margin-bottom: 20px;'>Chào mừng đến với BookingCare</h2>
-                        <p>Xin chào <strong>{dto.FullName}</strong>,</p>
-                        <p>Bạn đã đăng ký tài khoản trên hệ thống <strong>BookingCare</strong> thành công.</p>
-                        <p>Chúc bạn có những trải nghiệm tốt nhất cùng <strong>BookingCare</strong>!</p>
-                        <hr style='margin: 20px 0; border: none; border-top: 1px solid #eee;' />
-                        <p style='font-size: 14px; color: #666; text-align: center;'>
-                            Trân trọng,<br/>
-                            <strong style='color: #45c3d2;'>Đội ngũ BookingCare</strong>
-                        </p>
-                    </div>")); 
+                _ = Task.Run(() => _emailSender.SendEmailAsync(dto.Email, "Đăng ký tài khoản BookingCare", body)); 
                 return Ok(new { success = true, message = "Đăng ký tài khoản thành công!" });
             }
             return BadRequest(new { success = false, message = "Đăng ký tài khoản thất bại. Vui lòng thử lại!" });
@@ -283,28 +231,11 @@ namespace BookingCare.Controllers.Api
             string otp = new Random().Next(100000, 999999).ToString();
             _otpService.SetOtp(dto.Email, otp);
 
+            //Nội dung email
+            var body = _emailTemplate.getResendRegisterOtpEmailBody(otp);
+
             //Gửi email xác nhận OTP
-            _ = Task.Run(() => _emailSender.SendEmailAsync(dto.Email, "Gửi lại mã OTP - BookingCare",
-                $@"<div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
-                    <div style='max-width: 500px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px;'>
-                        <h2 style='color: #45c3d2; text-align: center; margin-bottom: 20px;'>Xác thực tài khoản BookingCare</h2>
-                        <p>Xin chào,</p>
-                        <p>Bạn đang thực hiện xác thực tài khoản trên hệ thống <strong>BookingCare</strong>.</p>
-                        <p style='margin-top: 15px;'>
-                            Mã OTP của bạn là:
-                        </p>
-                        <p style='font-size: 22px; text-align: center; margin: 15px 0;'>
-                            <strong style='color: #e63946; letter-spacing: 2px;'>{otp}</strong>
-                        </p>
-                        <p style='text-align: center; color: #555;'>Mã có hiệu lực trong <strong>5 phút</strong>.</p>
-                        <hr style='margin: 20px 0; border: none; border-top: 1px solid #eee;' />
-                        <p style='font-size: 14px; color: #666; text-align: center;'>
-                            Nếu bạn không yêu cầu xác thực tài khoản, vui lòng bỏ qua email này.<br/>
-                            Trân trọng,<br/>
-                            <strong style='color: #45c3d2;'>Đội ngũ BookingCare</strong>
-                        </p>
-                    </div>
-                </div>"));
+            _ = Task.Run(() => _emailSender.SendEmailAsync(dto.Email, "Gửi lại mã OTP - BookingCare", body));
             return Ok();
         }
 
@@ -315,28 +246,11 @@ namespace BookingCare.Controllers.Api
             string otp = new Random().Next(100000, 999999).ToString();
             _otpService.SetOtp(dto.Email, otp);
 
+            //Nội dung email
+            var body = _emailTemplate.getResendForgotPassOtpEmailBody(otp);
+
             //Gửi email xác nhận OTP
-            _ = Task.Run(() => _emailSender.SendEmailAsync(dto.Email, "Gửi lại mã OTP - BookingCare",
-                $@"<div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
-                    <div style='max-width: 500px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px;'>
-                        <h2 style='color: #45c3d2; text-align: center; margin-bottom: 20px;'>Đặt lại mật khẩu BookingCare</h2>
-                        <p>Xin chào,</p>
-                        <p>Bạn đã yêu cầu <strong>đặt lại mật khẩu</strong> cho tài khoản BookingCare của mình.</p>
-                        <p style='margin-top: 15px;'>
-                            Mã OTP của bạn là:
-                        </p>
-                        <p style='font-size: 22px; text-align: center; margin: 15px 0;'>
-                            <strong style='color: #e63946; letter-spacing: 2px;'>{otp}</strong>
-                        </p>
-                        <p style='text-align: center; color: #555;'>Mã có hiệu lực trong <strong>5 phút</strong>.</p>
-                        <hr style='margin: 20px 0; border: none; border-top: 1px solid #eee;' />
-                        <p style='font-size: 14px; color: #666; text-align: center;'>
-                            Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.<br/>
-                            Trân trọng,<br/>
-                            <strong style='color: #45c3d2;'>Đội ngũ BookingCare</strong>
-                        </p>
-                    </div>
-                </div>"));
+            _ = Task.Run(() => _emailSender.SendEmailAsync(dto.Email, "Gửi lại mã OTP - BookingCare", body));
             return Ok();
         }
     }
