@@ -45,6 +45,9 @@ namespace BookingCare
                 options.Password.RequiredUniqueChars = 1; //Số ký tự đặc biệt
             });
 
+            //Đăng ký config
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
             //Cấu hình dịch vụ email
             builder.Services.AddMemoryCache();
             builder.Services.AddTransient<IEmailSender, EmailSender>();

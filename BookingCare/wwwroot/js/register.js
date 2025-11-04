@@ -28,6 +28,14 @@ function handleRegisterStep1() {
                 msg.className = "alert alert-success text-center";
             } else { //Nếu thất bại
                 msg.className = "alert alert-danger text-center";
+                if (data.errors) {
+                    // Kiểm tra nếu có lỗi ở ConfirmedPassword
+                    if (data.errors.ConfirmedPassword) {
+                        const errorMessage = data.errors.ConfirmedPassword[0];
+                        msg.textContent = errorMessage;
+                        return;
+                    }
+                }
             }
 
             //Nếu thành công, chuyển sang bước 2
@@ -38,8 +46,7 @@ function handleRegisterStep1() {
             }
         } catch (error) {
             console.error("Lỗi:", error);
-            msg.textContent = "Lỗi kết nối với máy chủ! Vui lòng thử lại sau.";
-            msg.className = "alert alert-danger text-center";
+            alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
         }
     });
 }
@@ -95,8 +102,7 @@ function handleRegisterStep2() {
             }
         } catch (error) {
             console.error("Lỗi:", error);
-            msg.textContent = "Lỗi kết nối với máy chủ! Vui lòng thử lại sau.";
-            msg.className = "alert alert-danger text-center";
+            alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
         }
     });
 
@@ -128,8 +134,7 @@ function handleRegisterStep2() {
             }
         } catch (error) {
             console.error("Lỗi:", error);
-            msg.textContent = "Lỗi kết nối với máy chủ! Vui lòng thử lại sau.";
-            msg.className = "alert alert-danger text-center";
+            alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
         }
     });
 }
@@ -183,8 +188,7 @@ function handleRegisterStep3() {
             }
         } catch (error) {
             console.error("Lỗi:", error);
-            msg.textContent = "Lỗi kết nối với máy chủ! Vui lòng thử lại sau.";
-            msg.className = "alert alert-danger text-center";
+            alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
         }
     });
 }

@@ -28,17 +28,15 @@ function handleForgotPasswordStep1() {
             if (res.ok) {//Nếu thành công
                 msg.className = "alert alert-success text-center";
             } else { //Nếu thất bại
+                msg.className = "alert alert-danger text-center";
                 if (data.errors) {
                     // Kiểm tra nếu có lỗi ở ConfirmedNewPassword
                     if (data.errors.ConfirmedNewPassword) {
                         const errorMessage = data.errors.ConfirmedNewPassword[0];
                         msg.textContent = errorMessage;
+                        return;
                     }
-                } else {
-                    document.getElementById("msg").textContent = data.message || "Đã xảy ra lỗi!";
                 }
-                msg.className = "alert alert-danger text-center";
-                return;
             }
 
             //Nếu thành công, chuyển sang bước 2
@@ -49,8 +47,7 @@ function handleForgotPasswordStep1() {
             }
         } catch (error) {
             console.error("Lỗi:", error);
-            msg.textContent = "Lỗi kết nối với máy chủ! Vui lòng thử lại sau.";
-            msg.className = "alert alert-danger text-center";
+            alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
         }
     });
 }
@@ -100,8 +97,7 @@ function handleForgotPasswordStep2() {
             }
         } catch (error) {
             console.error("Lỗi:", error);
-            msg.textContent = "Lỗi kết nối với máy chủ! Vui lòng thử lại sau.";
-            msg.className = "alert alert-danger text-center";
+            alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
         }
     });
 
@@ -128,8 +124,7 @@ function handleForgotPasswordStep2() {
             }
         } catch (error) {
             console.error("Lỗi:", error);
-            msg.textContent = "Lỗi kết nối với máy chủ! Vui lòng thử lại sau.";
-            msg.className = "alert alert-danger text-center";
+            alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
         }
     });
 }
