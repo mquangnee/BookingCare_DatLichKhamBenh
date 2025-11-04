@@ -19,6 +19,7 @@ namespace BookingCare.Controllers.Api
         private readonly IEmailSender _emailSender;
         private readonly IEmailTemplate _emailTemplate;
         private readonly OtpService _otpService;
+
         public AuthApiController(UserManager<ApplicationUser> userManager, DataContext dbContext, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender, IEmailTemplate emailTemplate, OtpService otpService)
         {
             _userManager = userManager;

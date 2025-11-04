@@ -45,7 +45,6 @@ loginForm.addEventListener("submit", async function (e) {
         }
     } catch (error) {
         console.error("Lỗi:", error);
-        msg.textContent = "Lỗi kết nối với máy chủ! Vui lòng thử lại sau.";
-        msg.className = "alert alert-danger text-center";
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
     }
 });
