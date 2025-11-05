@@ -7,13 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Areas\Doctor\**" />
     <Compile Remove="Areas\Patient\**" />
-    <Content Remove="Areas\Doctor\**" />
     <Content Remove="Areas\Patient\**" />
-    <EmbeddedResource Remove="Areas\Doctor\**" />
     <EmbeddedResource Remove="Areas\Patient\**" />
-    <None Remove="Areas\Doctor\**" />
     <None Remove="Areas\Patient\**" />
   </ItemGroup>
 
