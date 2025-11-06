@@ -24,53 +24,21 @@ namespace BookingCare.Areas.Admin.Controllers
             _userManager = userManager;
             _emailSender = emailSender;
         }
+        
         //---QUẢN LÝ TÀI KHOẢN BỆNH NHÂN---
         //Hiển thị danh sách bệnh nhân
-        public async Task<IActionResult> PatientManager()
+        public IActionResult PatientManager()
         {
-            var patients = _dbContext.Users
-                            .Include(u => u.Patient)
-                            .Where(u => u.Patient != null)
-                            .ToList();//Lấy danh sách người dùng có vai trò là bệnh nhân
-            return View(patients);
-        }
-        //Lấy chi tiết bệnh nhân
-        public IActionResult PatientDetails(string id)
-        {
-            var patient = _dbContext.Users.Include(u => u.Patient).FirstOrDefault(u => u.Id == id);
-            if (patient == null)
-            {
-                return NotFound();
-            }
-            return PartialView("_PatientDetail", patient);
+            return View();
         }
 
         //---QUẢN LÝ TÀI KHOẢN BÁC SĨ---
         //Hiển thị danh sách bác sĩ
-        public async Task<IActionResult> DoctorManager()
+        public IActionResult DoctorManager()
         {
-            var doctors = _dbContext.Users
-                            .Include(u => u.Doctor)
-                            .Where(u => u.Doctor != null)
-                            .ToList();//Lấy danh sách người dùng có vai trò là bác sĩ
-            return View(doctors);
+            return View();
         }
-        
-        //Lấy chi tiết bác sĩ bao gồm chuyên khoa và phòng khám
-        public IActionResult DoctorDetails(string id)
-        {
-            var doctor = _dbContext.Users
-                        .Include(u => u.Doctor)
-                            .ThenInclude(d => d.Specialty)
-                        .Include(u => u.Doctor)
-                            .ThenInclude(d => d.Room)
-                        .FirstOrDefault(u => u.Id == id);
-            if (doctor == null)
-            {
-                return NotFound();
-            }
-            return PartialView("_DoctorDetail", doctor);
-        }
+
         //Thêm tài khoản bác sĩ
         [HttpGet]
         public IActionResult AddDoctor()
