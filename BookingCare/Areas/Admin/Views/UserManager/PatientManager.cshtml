@@ -1,11 +1,11 @@
-﻿@model IEnumerable<BookingCare.Models.ApplicationUser>
-@{
+﻿@{
     Layout = "_Layout";
 }
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Quản lý tài khoản bệnh nhân</h1>
 </div>
+
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -26,85 +26,27 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach (var patient in Model)
-                        {
-                            <tr>
-                                <td>@patient.Patient.Id</td>
-                                <td>@patient.FullName</td>
-                                <td>@patient.Email</td>
-                                <td>@patient.PhoneNumber</td>
-                                <td>@patient.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</td>
-                                <td>@if(patient.UpdatedAt != null){
-                                        @patient.UpdatedAt?.ToString("dd/MM/yyyy HH:mm:ss");
-                                    } else {
-                                        <text>Chưa cập nhật</text>
-                                    }
-                                </td>
-                                <td>@if(patient.LockoutEnd != null){
-                                        <span class="text-danger">Bị khóa</span>
-                                    } else {
-                                        <span class="text-success">Hoạt động</span>
-                                    }
-                                </td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown">
-                                            <i class="fa-solid fa-bars"></i>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            @if (patient.LockoutEnd != null && patient.LockoutEnd > DateTimeOffset.Now)
-                                            {
-                                                <form asp-action="UnlockAccount" method="post" style="display:inline">
-                                                    <input type="hidden" name="id" value="@patient.Id" />
-                                                    <button type="submit" class="dropdown-item">Mở khóa</button>
-                                                </form>
-                                            }
-                                            else
-                                            {
-                                                <form asp-action="LockAccount" method="post" style="display:inline">
-                                                    <input type="hidden" name="id" value="@patient.Id" />
-                                                    <button type="submit" class="dropdown-item">Khóa</button>
-                                                </form>
-                                            }
-                                            <button class="dropdown-item view-details" data-id="@patient.Id">Xem chi tiết</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
+                    <tbody id="patientTableBody"></tbody>
                 </table>
+
+                <!-- Phân trang -->
+                <div class="d-flex justify-content-center align-items-center mt-3">
+                    <button id="prevPage" class="btn btn-outline-primary btn-sm mr-2">← Trước</button>
+                    <span id="pageInfo" class="fw-bold text-primary mx-2"></span>
+                    <button id="nextPage" class="btn btn-outline-primary btn-sm ml-2">Sau →</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 <!-- Patient Detail Modal -->
 <div class="modal fade" id="patientModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-
-        </div>
+        <div id="modalPatient" class="modal-content"></div>
     </div>
 </div>
 
 @section Scripts {
-    <script>
-        $(document).ready(function() {
-            $('.view-details').click(function() {
-                var patientId = $(this).data('id');
-                $.ajax({
-                    url: '/Admin/UserManager/PatientDetails/' + patientId,
-                    type: 'GET',
-                    success: function (result) {
-                        $('#patientModal .modal-content').html(result);
-                        $('#patientModal').modal('show');
-                    },
-                    error: function () {
-                        alert('Không tải được thông tin!');
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="~/js/patient-management.js"></script>
 }

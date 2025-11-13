@@ -2,6 +2,7 @@
 using BookingCare.Models;
 using BookingCare.Repository;
 using BookingCare.Services;
+using BookingCare.Services.Email;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -44,9 +45,13 @@ namespace BookingCare
                 options.Password.RequiredUniqueChars = 1; //Số ký tự đặc biệt
             });
 
+            //Đăng ký config
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
             //Cấu hình dịch vụ email
             builder.Services.AddMemoryCache();
             builder.Services.AddTransient<IEmailSender, EmailSender>();
+            builder.Services.AddScoped<IEmailTemplate, EmailTemplate>();
             builder.Services.AddTransient<OtpService>();
 
             // Thêm dịch vụ Session

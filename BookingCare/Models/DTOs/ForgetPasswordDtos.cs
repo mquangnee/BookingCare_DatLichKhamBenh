@@ -1,22 +1,28 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace BookingCare.Models.ViewModel
+namespace BookingCare.Models.DTOs
 {
-    public class ResetPassViewModel
+    public class ForgetPasswordStep1Dtos
     {
         [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        [DataType(DataType.EmailAddress)]
         [EmailAddress(ErrorMessage = "Địa chỉ email không hợp lệ!")]
         public string Email { get; set; }
+
         [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        [DataType(DataType.Password)]
-        [DisplayName("Mật khẩu mới")]
         public string NewPassword { get; set; }
+
         [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        [DataType(DataType.Password)]
         [Compare("NewPassword", ErrorMessage = "Mật khẩu xác nhận không khớp!")]
-        [DisplayName("Xác nhận mật khẩu mới")]
         public string ConfirmedNewPassword { get; set; }
+    }
+
+    public class ForgetPasswordStep2Dtos
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
+        public string Otp { get; set; }
     }
 }

@@ -1,130 +1,166 @@
-﻿@model IEnumerable<BookingCare.Models.ApplicationUser>
-@{
+﻿@{
     Layout = "_Layout";
 }
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Quản lý tài khoản bác sĩ</h1>
 </div>
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
-    </div>
-}
+
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Danh sách tài khoản bác sĩ</h6>
-            <a asp-area="Admin" asp-controller="UserManager" asp-action="AddDoctor" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus"></i> Thêm tài khoản
-            </a>
+            <!-- Nút mở modal -->
+            <button class="btn btn-primary shadow-sm" data-toggle="modal" data-target="#addDoctorModal">
+                <i class="fas fa-user-plus me-1"></i> Thêm bác sĩ
+            </button>
         </div>
+
+        <!-- Danh sách bác sĩ -->
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered text-center align-middle">
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>Họ và tên</th>
                             <th>Email</th>
                             <th>Số điện thoại</th>
-                            <th>Ngày tạo tài khoản</th>
-                            <th>Cập nhật lần cuối</th>
+                            <th>Ngày tạo</th>
+                            <th>Cập nhật</th>
                             <th>Trạng thái</th>
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach (var doctor in Model)
-                        {
-                            <tr>
-                                <td>@doctor.Doctor.Id</td>
-                                <td>@doctor.FullName</td>
-                                <td>@doctor.Email</td>
-                                <td>@doctor.PhoneNumber</td>
-                                <td>@doctor.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</td>
-                                <td>
-                                    @if (doctor.UpdatedAt != null)
-                                    {
-                                        @doctor.UpdatedAt?.ToString("dd/MM/yyyy HH:mm:ss");
-                                    }
-                                    else
-                                    {
-                                        <text>Chưa cập nhật</text>
-                                    }
-                                </td>
-                                <td>
-                                    @if (doctor.LockoutEnd != null)
-                                    {
-                                        <span class="text-danger">Bị khóa</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-success">Hoạt động</span>
-                                    }
-                                </td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown">
-                                            <i class="fa-solid fa-bars"></i>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            @if (doctor.LockoutEnd != null && doctor.LockoutEnd > DateTimeOffset.Now)
-                                            {
-                                                <form asp-action="UnlockAccount" method="post" style="display:inline">
-                                                    <input type="hidden" name="id" value="@doctor.Id" />
-                                                    <button type="submit" class="dropdown-item">Mở khóa</button>
-                                                </form>
-                                            }
-                                            else
-                                            {
-                                                <form asp-action="LockAccount" method="post" style="display:inline">
-                                                    <input type="hidden" name="id" value="@doctor.Id" />
-                                                    <button type="submit" class="dropdown-item">Khóa</button>
-                                                </form>
-                                            }
-                                            <form asp-action="UpdateDoctor" method="get" style="display:inline">
-                                                <input type="hidden" name="id" value="@doctor.Id" />
-                                                <button type="submit" class="dropdown-item">Chỉnh sửa</button>
-                                            </form>
-                                            <button class="dropdown-item view-details" data-id="@doctor.Id">Xem chi tiết</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
+                    <tbody id="doctorTableBody"></tbody>
                 </table>
+
+                <!-- Phân trang -->
+                <div class="d-flex justify-content-center align-items-center mt-3">
+                    <button id="prevPage" class="btn btn-outline-primary btn-sm mr-2">← Trước</button>
+                    <span id="pageInfo" class="fw-bold text-primary mx-2"></span>
+                    <button id="nextPage" class="btn btn-outline-primary btn-sm ml-2">Sau →</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 <!-- Doctor Detail Modal -->
 <div class="modal fade" id="doctorModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div id="modalDoctor" class="modal-content"></div>
+    </div>
+</div>
+
+<!-- Add Doctor Modal -->
+<div class="modal fade" id="addDoctorModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+
+            <!-- Modal header -->
+            <div class="modal-header border-0 bg-primary text-white rounded-top-4">
+                <h5 class="modal-title fw-semibold">
+                    <i class="fas fa-user-md me-2"></i> Thêm bác sĩ mới
+                </h5>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body p-4">
+                <form id="formAddDoctor">
+                    <div class="row g-3">
+
+                        <!-- Email -->
+                        <div class="col-md-6">
+                            <label for="email" class="form-label fw-semibold">Email</label>
+                            <input id="email" type="email" class="form-control" > 
+                        </div>
+
+                        <!-- Họ tên -->
+                        <div class="col-md-6">
+                            <label for="fullName" class="form-label fw-semibold">Họ tên</label>
+                            <input id="fullName" type="text" class="form-control" >
+                        </div>
+
+                        <!-- Giới tính -->
+                        <div class="col-md-6">
+                            <label for="gender" class="form-label fw-semibold">Giới tính</label>
+                            <select id="gender" class="form-control">
+                                <option value="">-- Chọn giới tính --</option>
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                            </select>
+                        </div>
+
+                        <!-- Ngày sinh -->
+                        <div class="col-md-6">
+                            <label for="dateOfBirth" class="form-label fw-semibold">Ngày sinh</label>
+                            <input id="dateOfBirth" type="date" class="form-control" />
+                        </div>
+
+                        <!-- Địa chỉ -->
+                        <div class="col-md-6">
+                            <label for="address" class="form-label fw-semibold">Địa chỉ</label>
+                            <input id="address" class="form-control" />
+                        </div>
+
+                        <!-- Số điện thoại -->
+                        <div class="col-md-6">
+                            <label for="phoneNumber" class="form-label fw-semibold">Số điện thoại</label>
+                            <input id="phoneNumber" type="text" class="form-control" >
+                        </div>
+
+                        <!-- Chuyên khoa -->
+                        <div class="col-md-6">
+                            <label for="specialty" class="form-label fw-semibold">Chuyên khoa</label>
+                            <select id="specialty" class="form-control" >
+                                <option value="">-- Chọn chuyên khoa --</option>
+                            </select>
+                        </div>
+
+                        <!-- Bằng cấp -->
+                        <div class="col-md-6">
+                            <label for="degree" class="form-label fw-semibold">Bằng cấp</label>
+                            <select id="degree" class="form-control">
+                                <option value="">-- Chọn bằng cấp --</option>
+                                <option value="Bác sĩ đa khoa (BSĐK)">Bác sĩ đa khoa (BSĐK)</option>
+                                <option value="Bác sĩ chuyên khoa (BSCK)">Bác sĩ chuyên khoa (BSCK)</option>
+                                <option value="Bác sĩ nội trú (BSNT)">Bác sĩ nội trú (BSNT)</option>
+                                <option value="Bác sĩ chuyên khoa I (CKI)">Bác sĩ chuyên khoa I (CKI)</option>
+                                <option value="Bác sĩ chuyên khoa II (CKII)">Bác sĩ chuyên khoa II (CKII)</option>
+                            </select>
+                        </div>
+
+                        <!-- Số năm kinh nghiệm -->
+                        <div class="col-md-6">
+                            <label for="yearsOfExp" class="form-label fw-semibold">Số năm kinh nghiệm</label>
+                            <input id="yearsOfExp" type="number" min="1" step="1" class="form-control" />
+                        </div>
+
+                        <!-- Phòng -->
+                        <div class="col-md-6">
+                            <label for="room" class="form-label fw-semibold">Phòng khám</label>
+                            <select id="room" class="form-control" >
+                                <option value="">-- Chọn phòng khám --</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer border-0 d-flex justify-content-between">
+                <button class="btn btn-light border shadow-sm" data-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Đóng
+                </button>
+                <button class="btn" id="btnAddDoctor" style="background-color:#45c3d2; color:white;">
+                    <i class="fas fa-save me-1"></i> Lưu thông tin
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <script>
-        $(document).ready(function() {
-            $('.view-details').click(function() {
-                var doctorId = $(this).data('id');
-                $.ajax({
-                    url: '/Admin/UserManager/DoctorDetails/' + doctorId,
-                    type: 'GET',
-                    success: function (result) {
-                        $('#doctorModal .modal-content').html(result);
-                        $('#doctorModal').modal('show');
-                    },
-                    error: function () {
-                        alert('Không tải được thông tin!');
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="~/js/doctor-management.js"></script>
 }
