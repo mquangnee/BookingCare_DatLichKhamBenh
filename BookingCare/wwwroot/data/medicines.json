@@ -1,0 +1,74 @@
+{
+  "medicines": [
+    {
+      "Id": 1,
+      "Name": "Paracetamol 500mg",
+      "Unit": "Viên",
+      "Function": "Hạ sốt, giảm đau",
+      "Status": "Available"
+    },
+    {
+      "Id": 2,
+      "Name": "Amoxicillin 500mg",
+      "Unit": "Viên",
+      "Function": "Kháng sinh",
+      "Status": "Available"
+    },
+    {
+      "Id": 3,
+      "Name": "Omeprazol 20mg",
+      "Unit": "Viên",
+      "Function": "Giảm tiết acid dạ dày",
+      "Status": "Available"
+    },
+    {
+      "Id": 4,
+      "Name": "Vitamin C 500mg",
+      "Unit": "Viên",
+      "Function": "Tăng sức đề kháng",
+      "Status": "Available"
+    },
+    {
+      "Id": 5,
+      "Name": "Loperamid 2mg",
+      "Unit": "Viên",
+      "Function": "Chống tiêu chảy",
+      "Status": "Available"
+    },
+    {
+      "Id": 6,
+      "Name": "Cefuroxime 250mg",
+      "Unit": "Viên",
+      "Function": "Kháng sinh phổ rộng",
+      "Status": "Available"
+    },
+    {
+      "Id": 7,
+      "Name": "Cetirizine 10mg",
+      "Unit": "Viên",
+      "Function": "Chống dị ứng, giảm ngứa",
+      "Status": "Available"
+    },
+    {
+      "Id": 8,
+      "Name": "Aspirin 81mg",
+      "Unit": "Viên",
+      "Function": "Giảm đau, chống viêm nhẹ",
+      "Status": "Available"
+    },
+    {
+      "Id": 9,
+      "Name": "Ibuprofen 200mg",
+      "Unit": "Viên",
+      "Function": "Giảm đau, hạ sốt",
+      "Status": "Available"
+    },
+    {
+      "Id": 10,
+      "Name": "Metformin 500mg",
+      "Unit": "Viên",
+      "Function": "Hạ đường huyết (đái tháo đường type 2)",
+      "Status": "Available"
+    }
+  ]
+}

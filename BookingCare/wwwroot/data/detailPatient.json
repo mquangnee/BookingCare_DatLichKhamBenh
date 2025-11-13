@@ -1,0 +1,12 @@
+﻿{
+  "detailPatient": {
+    "FullName": "Ngô Khắc Tài",
+    "BirthOfDate": "10/09/2003",
+    "Gender": "Nam",
+    "AppointmentDate": "03/11/2025",
+    "AppointmentTime": "08:30 - 09:00",
+    "PhoneNumber": "0905123456",
+    "Address": "123 Nguyễn Trãi, Quận 1, TP. Hồ Chí Minh",
+    "ReasonForVisit": "Đau bụng âm ỉ trong 3 ngày, nghi viêm dạ dày"
+  }
+}

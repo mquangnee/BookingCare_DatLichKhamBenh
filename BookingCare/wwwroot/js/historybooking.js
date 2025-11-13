@@ -1,8 +1,10 @@
 ﻿let appointmentsData = [];
+
 async function loadAppointments() {
     try {
         const res = await fetch('/data/dataAppointment.json');
         const data = await res.json();
+
         appointmentsData = data.appointments.sort((a, b) => {
             const dateA = new Date(`${a.AppointmentDate} ${a.AppoinmentTime}`);
             const dateB = new Date(`${b.AppointmentDate} ${b.AppoinmentTime}`);
@@ -15,6 +17,7 @@ async function loadAppointments() {
         console.error(err);
     }
 }
+
 function displayAppointments(status) {
     const tbody = document.querySelector('#appointmentsTable tbody');
     tbody.innerHTML = '';
@@ -33,6 +36,7 @@ function displayAppointments(status) {
     filtered.forEach(a => {
         const tr = document.createElement('tr');
         let actionCell = '';
+
         if (a.Status === 'Pending') {
             actionCell = `<button class="btn btn-sm btn-danger cancel-btn" data-id="${a.id}">Hủy</button>`;
         }
@@ -50,8 +54,10 @@ function displayAppointments(status) {
 
         tbody.appendChild(tr);
     });
+
+    // Gắn sự kiện hủy lịch
     document.querySelectorAll('.cancel-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', e => {
             const id = e.target.getAttribute('data-id');
             cancelAppointment(id);
         });
@@ -68,9 +74,7 @@ function cancelAppointment(id) {
 
         fetch('/Appointments/Cancel', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: id })
         })
             .then(async res => {
@@ -90,9 +94,10 @@ function cancelAppointment(id) {
             });
     }
 }
-document.getElementById('statusFilter').addEventListener('change', (e) => {
+
+document.getElementById('statusFilter').addEventListener('change', e => {
     displayAppointments(e.target.value);
 });
 
 loadAppointments();
-
+    
