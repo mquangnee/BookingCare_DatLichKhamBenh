@@ -1,6 +1,5 @@
 ﻿using BookingCare.Models;
 using BookingCare.Repository;
-using System.Reflection.Metadata;
 
 namespace BookingCare.Data.Seed
 {

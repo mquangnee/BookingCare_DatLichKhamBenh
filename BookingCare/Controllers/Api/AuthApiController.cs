@@ -210,7 +210,7 @@ namespace BookingCare.Controllers.Api
                     UserId = user.Id,
                     MedicalHistory = "Chưa có tiền sử bệnh"
                 };
-                _dbContext.Patients.Add(patientEntity);
+                await _dbContext.Patients.AddAsync(patientEntity);
                 await _dbContext.SaveChangesAsync();
 
                 //Nội dung email
