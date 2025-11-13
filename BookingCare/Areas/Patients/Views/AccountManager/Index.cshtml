@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "Cập nhật tài khoản bệnh nhân";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/patient_account_manager.css" asp-append-version="true" />
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center text-primary">Cập nhật thông tin cá nhân</h2>
+
+    <form id="updateinfor" class="border rounded-4 shadow-sm bg-light p-4">
+        <div class="mb-3">
+            <label for="hoTen" class="form-label fw-bold">Họ tên</label>
+            <input type="text" id="hoTen" class="form-control" placeholder="Nhập họ và tên" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Giới tính</label>
+            <div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gioiTinh" id="nam" value="Nam">
+                    <label class="form-check-label" for="nam">Nam</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gioiTinh" id="nu" value="Nữ">
+                    <label class="form-check-label" for="nu">Nữ</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="ngaySinh" class="form-label fw-bold">Ngày sinh</label>
+            <input type="date" id="ngaySinh" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="diaChi" class="form-label fw-bold">Địa chỉ</label>
+            <input type="text" id="diaChi" class="form-control" placeholder="Nhập địa chỉ của bạn" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="soDienThoai" class="form-label fw-bold">Số điện thoại</label>
+            <input type="tel" id="soDienThoai" class="form-control" placeholder="Nhập số điện thoại" pattern="[0-9]{10}" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label fw-bold">Email</label>
+            <input type="email" id="email" class="form-control" placeholder="Nhập địa chỉ email" required />
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary px-4">Lưu thay đổi</button>
+            <button type="reset" class="btn btn-secondary px-4 ms-2" id="buttonReset">Làm mới</button>
+        </div>
+    </form>
+
+</div>
+<div class="container">
+    <p class="text-center mt-3">
+        Muốn đổi mật khẩu?
+        <a href="/Patients/AccountManager/ChangePassword"
+           class="text-primary text-decoration-underline">
+            Nhấn vào đây
+        </a>
+
+    </p>
+</div>
+
+<script src="~/js/patientAccountManager.js"></script>

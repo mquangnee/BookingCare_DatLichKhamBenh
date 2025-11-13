@@ -1,0 +1,43 @@
+{
+  "appointments": [
+    {
+      "id": 1,
+      "AppointmentDate": "30/10/2025",
+      "AppoinmentTime": "08:30",
+      "ReasonForVisit": "Đau bụng",
+      "Status": "Pending",
+      "CreateAt": "29/10/2025",
+      "UpdateAt": "30/10/2025",
+      "PatientId": "1",
+      "DoctorId": "1",
+      "DoctorName": "Bác sĩ A",
+      "RoomNumber": "101"
+    },
+    {
+      "id": 2,
+      "AppointmentDate": "31/10/2025",
+      "AppoinmentTime": "09:00",
+      "ReasonForVisit": "Khám tổng quát",
+      "Status": "Confirmed",
+      "CreateAt": "29/10/2025",
+      "UpdateAt": "30/10/2025",
+      "PatientId": "1",
+      "DoctorId": "2",
+      "DoctorName": "Bác sĩ B",
+      "RoomNumber": "102"
+    },
+    {
+      "id": 3,
+      "AppointmentDate": "31/10/2025",
+      "AppoinmentTime": "09:00",
+      "ReasonForVisit": "Khám tổng quát",
+      "Status": "Canceled",
+      "CreateAt": "29/10/2025",
+      "UpdateAt": "30/10/2025",
+      "PatientId": "1",
+      "DoctorId": "2",
+      "DoctorName": "Bác sĩ B",
+      "RoomNumber": "102"
+    }
+  ]
+}

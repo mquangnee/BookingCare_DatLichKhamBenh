@@ -1,0 +1,10 @@
+﻿{
+  "patient": {
+    "FullName": "Ngô Khắc Tài",
+    "Gender": "Nam",
+    "BirthOfDate": "2003-09-10",
+    "Address": "Anh Sơn - Nghệ An",
+    "Email": "taitiktok@gmail.com",
+    "PhoneNumber": "0987567214"
+  }
+}
