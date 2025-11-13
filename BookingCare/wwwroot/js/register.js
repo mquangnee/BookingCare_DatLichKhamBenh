@@ -170,6 +170,7 @@ function handleRegisterStep3() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(body)
             });
+
             //Xử lý phản hồi từ server
             const data = await res.json();
 

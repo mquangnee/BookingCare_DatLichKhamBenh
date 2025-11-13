@@ -9,7 +9,7 @@ const pageInfo = document.getElementById("pageInfo");
 const modalPatient = document.querySelector("#patientModal #modalPatient");
 
 //Gọi API và render dữ liệu
-async function loadPatients(page = 1) {
+async function loadDoctors(page = 1) {
     try {
         const res = await fetch(`/Admin/api/UserManagementApi/patients?page=${page}&pageSize=${pageSize}`);
         const result = await res.json();
@@ -85,7 +85,7 @@ function updatePagination(page) {
 prevBtn.addEventListener("click", () => {
     if (currentPage > 1) {
         currentPage--;//Giảm 1 trang
-        loadPatients(currentPage);
+        loadDoctors(currentPage);
     }
 });
 
@@ -93,7 +93,7 @@ prevBtn.addEventListener("click", () => {
 nextBtn.addEventListener("click", () => {
     if (currentPage < totalPages) {
         currentPage++;//Tăng 1 trang
-        loadPatients(currentPage);
+        loadDoctors(currentPage);
     }
 });
 
@@ -149,28 +149,15 @@ function renderInfo(data) {
         return;
     }
 
-    //Dữ liệu từ BE
-    const patientData = data.result;
-
-    //Thông tin chi tiết
-    const patientId = patientData.patients.id;
-    const fullName = patientData.fullName;
-    const email = patientData.email;
-    const phoneNumber = patientData.phoneNumber;
-    const dateOfBirth = new Date(patientData.dateOfBirth).toLocaleString("vi-VN");
-    const gender = patientData.gender;
-    const address = patientData.address;
-    const medicalHistory = patientData.patients.medicalHistory;
-
     html += `
-        <p><strong>Mã bác sĩ: </strong>${patientId}</p>
-        <p><strong>Họ tên: </strong>${fullName}</p>
-        <p><strong>Email: </strong>${email}</p>
-        <p><strong>Số điện thoại: </strong>${phoneNumber}</p>
-        <p><strong>Ngày sinh: </strong>${dateOfBirth}</p>
-        <p><strong>Giới tính: </strong>${gender}</p>
-        <p><strong>Địa chỉ: </strong>${address}</p>
-        <p><strong>Tiền sử bệnh: </strong>${medicalHistory}</p>
+        <p><strong>Mã bác sĩ: </strong>${data.patientId}</p>
+        <p><strong>Họ tên: </strong>${data.fullName}</p>
+        <p><strong>Email: </strong>${data.email}</p>
+        <p><strong>Số điện thoại: </strong>${data.phoneNumber}</p>
+        <p><strong>Ngày sinh: </strong>${data.dateOfBirth}</p>
+        <p><strong>Giới tính: </strong>${data.gender}</p>
+        <p><strong>Địa chỉ: </strong>${data.address}</p>
+        <p><strong>Tiền sử bệnh: </strong>${data.medicalHistory}</p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
@@ -180,5 +167,59 @@ function renderInfo(data) {
     $('#patientModal').modal('show');
 }
 
+//Khóa tài khoản
+document.addEventListener("click", async function (e) {
+    const btn = e.target.closest(".lock-account"); //Tìm đúng nút "Khóa"
+    if (!btn) return;
+
+    const patientId = btn.dataset.id; //Lấy giá trị data-id
+    if (!patientId) {
+        alert("Không thể lấy Id bệnh nhân!");
+        return;
+    }
+
+    try {
+        //Gửi yêu cầu lấy thông tin chi tiết về server 
+        const res = await fetch(`/Admin/api/UserManagementApi/lock/${patientId}`, { method: "PUT" });
+
+        //Thông tin chi tiết
+        const data = await res.json();
+
+        //Hiển thị thông báo
+        alert(data.message);
+        loadDoctors();
+    } catch (error) {
+        console.error("Lỗi:", error);
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
+    }
+});
+
+//Mở khóa tài khoản
+document.addEventListener("click", async function (e) {
+    const btn = e.target.closest(".unlock-account"); //Tìm đúng nút "Mở khóa"
+    if (!btn) return;
+
+    const patientId = btn.dataset.id; //Lấy giá trị data-id
+    if (!patientId) {
+        alert("Không thể lấy Id bệnh nhân!");
+        return;
+    }
+
+    try {
+        //Gửi yêu cầu lấy thông tin chi tiết về server 
+        const res = await fetch(`/Admin/api/UserManagementApi/unlock/${patientId}`, { method: "PUT" });
+
+        //Thông tin chi tiết
+        const data = await res.json();
+
+        //Hiển thị thông báo
+        alert(data.message);
+        loadDoctors();
+    } catch (error) {
+        console.error("Lỗi:", error);
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
+    }
+});
+
 //Lần đầu load
-loadPatients(currentPage);
+loadDoctors(currentPage);
