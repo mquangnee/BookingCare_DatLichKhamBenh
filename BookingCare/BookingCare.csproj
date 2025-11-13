@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Doctor\**" />
+    <Compile Remove="Areas\Patient\**" />
+    <Content Remove="Areas\Doctor\**" />
+    <Content Remove="Areas\Patient\**" />
+    <EmbeddedResource Remove="Areas\Doctor\**" />
+    <EmbeddedResource Remove="Areas\Patient\**" />
+    <None Remove="Areas\Doctor\**" />
+    <None Remove="Areas\Patient\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.20" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.20" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.20" />
@@ -19,10 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Doctor\Controllers\" />
-    <Folder Include="Areas\Doctor\Views\" />
-    <Folder Include="Areas\Patient\Controllers\" />
-    <Folder Include="Areas\Patient\Views\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
