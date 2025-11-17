@@ -35,6 +35,10 @@ namespace BookingCare.Controllers.Api
         [HttpPost("forgotPass-step1")]
         public async Task<IActionResult> ForgotPasswordStep1([FromBody] ForgetPasswordStep1Dtos dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { success = false, message = "Vui lòng điền đầy đủ email, mật khẩu mới và xác nhận mật khẩu mới!" });
+            }
             //Kiểm tra email tồn tại
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user == null)
@@ -61,6 +65,10 @@ namespace BookingCare.Controllers.Api
         [HttpPost("forgotPass-step2")]
         public async Task<IActionResult> ForgotPasswordStep2([FromBody] ForgetPasswordStep2Dtos dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { success = false, message = "Vui lòng điền mã xác thực OTP!" });
+            }
             string? cachedOtp = _otpService.GetOtp(dto.Email);
             //Kiểm tra OTP
             if (cachedOtp == null)
@@ -110,6 +118,10 @@ namespace BookingCare.Controllers.Api
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDtos dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { success = false, message = "Vui lòng điền đẩy đủ email và mật khẩu!" });
+            }
             //Xác thực thông tin đăng nhập
             var result = await _signInManager.PasswordSignInAsync(dto.Email, dto.Password, dto.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
@@ -133,6 +145,10 @@ namespace BookingCare.Controllers.Api
         [HttpPost("register-step1")]
         public async Task<IActionResult> RegisterStep1([FromBody] RegisterStep1Dtos dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { success = false, message = "Vui lòng điền đẩy đủ email, mật khẩu và xác nhận mật khẩu!" });
+            }
             var result = await _userManager.FindByEmailAsync(dto.Email);
             if (result != null)//Kiểm tra email đã tồn tại chưa
             {
@@ -157,6 +173,10 @@ namespace BookingCare.Controllers.Api
         [HttpPost("register-step2")]
         public IActionResult RegisterStep2([FromBody] RegisterStep2Dtos dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { success = false, message = "Vui lòng điền mã xác thực OTP!" });
+            }
             var cachedOtp = _otpService.GetOtp(dto.Email);//Lấy mã OTP từ bộ nhớ đệm
             if (cachedOtp == null)
             {
@@ -176,14 +196,23 @@ namespace BookingCare.Controllers.Api
         [HttpPost("register-step3")]
         public async Task<IActionResult> RegisterStep3([FromBody] RegisterStep3Dtos dto)
         {
-            if (!_otpService.IsVerifiedOtp(dto.Email))//Kiểm tra đã xác thực OTP chưa
+            //Kiểm tra đã xác thực OTP chưa
+            if (!_otpService.IsVerifiedOtp(dto.Email))
             {
                 return BadRequest(new { success = false, message = "Vui lòng xác thực OTP trước khi hoàn tất đăng ký!" });
             }
-            var password = _otpService.GetPassword(dto.Email);//Lấy mật khẩu tạm thời từ bộ nhớ đệm
-            if (string.IsNullOrEmpty(password)) //Kiểm tra mật khẩu có tồn tại không
+
+            //Lấy mật khẩu tạm thời từ bộ nhớ đệm
+            var password = _otpService.GetPassword(dto.Email);
+            //Kiểm tra mật khẩu có tồn tại không
+            if (string.IsNullOrEmpty(password)) 
             {
                 return BadRequest(new { success = false, message = "Mật khẩu đã hết hạn. Vui lòng thử lại!" });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { success = false, message = "Vui lòng điền đầy đủ thông tin cá nhân!" });
             }
 
             //Tạo đối tượng ApplicationUser mới

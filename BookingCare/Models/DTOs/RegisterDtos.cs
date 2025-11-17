@@ -5,14 +5,14 @@ namespace BookingCare.Models.DTOs
     // DTOs cho bước 1 đăng ký
     public class RegisterStep1Dtos
     {
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        [EmailAddress(ErrorMessage = "Địa chỉ email không hợp lệ!")]
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
+        [Required]
         public string Password { get; set; }
 
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
+        [Required]
         [Compare("Password", ErrorMessage = "Mật khẩu xác nhận không khớp!")]
         public string ConfirmedPassword { get; set; }
     }
@@ -23,7 +23,7 @@ namespace BookingCare.Models.DTOs
         [EmailAddress]
         public string Email { get; set; }
             
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
+        [Required]
         public string Otp { get; set; }
     }
     // DTOs cho bước 3 đăng ký
@@ -33,22 +33,22 @@ namespace BookingCare.Models.DTOs
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        [StringLength(50, ErrorMessage = "{0} không được quá 50 ký tự!")]
+        [Required]
+        [StringLength(50)]
         public string FullName { get; set; }
 
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
+        [Required]
         public string Gender { get; set; }
 
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
+        [Required]
         public DateOnly DateOfBirth { get; set; }
 
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        [StringLength(100, ErrorMessage = "{0} không được quá 100 ký tự!")]
+        [Required]
+        [StringLength(100)]
         public string Address { get; set; }
 
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        [Phone(ErrorMessage = "{0} không đúng định dạng!")]
+        [Required]
+        [Phone]
         public string PhoneNumber { get; set; }
     }
 }

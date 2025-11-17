@@ -1,5 +1,6 @@
 ﻿//Đăng nhập
 const loginForm = document.getElementById("loginForm");
+
 loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 

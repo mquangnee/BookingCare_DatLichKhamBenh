@@ -6,6 +6,7 @@ using BookingCare.Services.Email;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingCare
@@ -61,6 +62,12 @@ namespace BookingCare
                 options.IdleTimeout = TimeSpan.FromMinutes(30); // Thời gian tồn tại của session
                 options.Cookie.HttpOnly = true; // Không cho client script truy cập cookie
                 options.Cookie.IsEssential = true; // Bắt buộc có cookie ngay cả khi user từ chối cookie
+            });
+
+            //Tắt auto validation
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
             });
 
             var app = builder.Build();
