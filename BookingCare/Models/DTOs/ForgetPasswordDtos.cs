@@ -4,14 +4,14 @@ namespace BookingCare.Models.DTOs
 {
     public class ForgetPasswordStep1Dtos
     {
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        [EmailAddress(ErrorMessage = "Địa chỉ email không hợp lệ!")]
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
+        [Required]
         public string NewPassword { get; set; }
 
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
+        [Required]
         [Compare("NewPassword", ErrorMessage = "Mật khẩu xác nhận không khớp!")]
         public string ConfirmedNewPassword { get; set; }
     }
@@ -22,7 +22,7 @@ namespace BookingCare.Models.DTOs
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
+        [Required]
         public string Otp { get; set; }
     }
 }

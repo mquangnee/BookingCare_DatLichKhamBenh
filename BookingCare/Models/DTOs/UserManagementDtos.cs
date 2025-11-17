@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BookingCare.Models.DTOs
 {
@@ -48,43 +47,70 @@ namespace BookingCare.Models.DTOs
     public class AddDoctor
     {
         //Thông tin đăng nhập
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        [EmailAddress(ErrorMessage = "Địa chỉ email không hợp lệ!")]
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
 
         //Thông tin cơ bản
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        [StringLength(100, ErrorMessage = "{0} không quá 100 ký tự!")]
+        [Required]
+        [StringLength(100)]
         public string FullName { get; set; }
 
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        [StringLength(15, ErrorMessage = "{0} không quá 15 ký tự!")]
+        [Required]
+        [StringLength(15)]
         public string Gender { get; set; }
 
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
+        [Required]
         public DateOnly DateOfBirth { get; set; }
 
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        [StringLength(200, ErrorMessage = "{0} không quá 200 ký tự!")]
+        [Required]
+        [StringLength(200)]
         public string Address { get; set; }
 
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        [Phone(ErrorMessage = "Số điện thoại không hợp lệ!")]
+        [Required]
+        [Phone]
         public string PhoneNumber { get; set; }
 
         //Thông tin chuyên môn
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        [StringLength(50, ErrorMessage = "{0} không quá 50 ký tự!")]
+        [Required]
+        [StringLength(50)]
         public string Degree { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Số năm kinh nghiệm phải lớn hơn 0")]
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
+        [Range(1, int.MaxValue)]
+        [Required]
         public int YearsOfExp { get; set; }
 
-        [Required(ErrorMessage = "Chuyên khoa vui lòng không để trống!")]
+        [Required]
         public int SpecialtyId { get; set; }
 
-        [Required(ErrorMessage = "Phòng vui lòng không để trống!")]
+        [Required]
+        public int RoomId { get; set; }
+    }
+
+    //Dto cập nhật thông tin bác sĩ
+    public class UpdateDoctor
+    {
+        [Required]
+        [StringLength(200)]
+        public string Address { get; set; }
+
+        [Required]
+        [Phone]
+        public string PhoneNumber { get; set; }
+
+        //Thông tin chuyên môn
+        [Required]
+        [StringLength(50)]
+        public string Degree { get; set; }
+
+        [Range(1, int.MaxValue)]
+        [Required]
+        public int YearsOfExp { get; set; }
+
+        [Required]
+        public int SpecialtyId { get; set; }
+
+        [Required]
         public int RoomId { get; set; }
     }
 

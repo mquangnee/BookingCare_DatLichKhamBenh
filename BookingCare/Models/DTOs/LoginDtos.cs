@@ -4,11 +4,11 @@ namespace BookingCare.Models.DTOs
 {
     public class LoginDtos
     {
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
-        [EmailAddress(ErrorMessage = "Địa chỉ email không hợp lệ!")]
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "{0} vui lòng không để trống!")]
+        [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
         public bool RememberMe { get; set; }

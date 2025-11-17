@@ -19,5 +19,8 @@
         
         //****Thêm tài khoản bác sĩ****
         string GetDoctorAccountCreatedEmailBody(string fullname, string email);
+
+        //****Chỉnh sửa thông tin bác sĩ****
+        string GetDoctorInfoUpdatedEmailBody(string fullname, string email);
     }
 }
