@@ -161,6 +161,87 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             return BadRequest(new { success = false, message = "Tạo tài khoản Bác sĩ không thành công!" });
         }
 
+        //Cập nhật thông tin bác sĩ
+        //1. Lấy thông tin chi tiết bác sĩ
+        [HttpGet("updateInfoDoctor")]
+        public IActionResult UpdateDoctorDetails(string id)
+        {
+            var doctor = _dbContext.Users
+                .Include(u => u.Doctor)
+                    .ThenInclude(d => d.Specialty)
+                .Include(u => u.Doctor)
+                    .ThenInclude(d => d.Room)
+                .FirstOrDefault(u => u.Id == id);
+
+            if (doctor == null)
+            {
+                return NotFound(new { message = "Không tìm thấy bác sĩ!" });
+            }
+
+            // Gói dữ liệu cần thiết
+            var result = new DoctorInfoDtos
+            {
+                UserId = doctor.Id,
+                FullName = doctor.FullName,
+                Email = doctor.Email,
+                PhoneNumber = doctor.PhoneNumber,
+                DateOfBirth = doctor.DateOfBirth,
+                Gender = doctor.Gender,
+                Address = doctor.Address,
+                DoctorId = doctor.Doctor.Id,
+                Degree = doctor.Doctor.Degree,
+                YearsOfExp = doctor.Doctor.YearsOfExp,
+                SpecialtyName = doctor.Doctor.Specialty.Name,
+                RoomName = doctor.Doctor.Room.Name
+            };
+
+            var specialtyId = doctor.Doctor.SpecialtyId;
+            var roomId = doctor.Doctor.RoomId;
+
+            return Ok(new { result, specialtyId, roomId });
+        }
+
+        //2. Cập nhật thông tin bác sĩ
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateDoctor(string id, [FromBody] UpdateDoctor update_doctor)
+        {
+            //Kiểm tra dữ liệu gửi về hợp lệ không
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { success = false, message = "Vui lòng điền đầy đủ thông tin bác sĩ!" });
+            }
+
+            var doctor = await _userManager.Users.Include(u => u.Doctor).FirstOrDefaultAsync(u => u.Id == id);
+            if (doctor == null)
+            {
+                return NotFound();
+            }
+
+            //Cập nhật thông tin
+            if (doctor.Doctor.RoomId != update_doctor.RoomId)
+            {
+                //Kiểm tra phòng còn trống không
+                int doctorCountInRoom = _dbContext.Doctors.Count(d => d.RoomId == update_doctor.RoomId);
+                if (doctorCountInRoom == 2)
+                {
+                    return BadRequest(new { success = false, message = "Phòng đã đầy, vui lòng chọn phòng khác!" });
+                }
+                doctor.Doctor.RoomId = update_doctor.RoomId;
+            }
+            doctor.Address = update_doctor.Address;
+            doctor.PhoneNumber = update_doctor.PhoneNumber;
+            doctor.Doctor.Degree = update_doctor.Degree;
+            doctor.Doctor.YearsOfExp = update_doctor.YearsOfExp;
+            doctor.Doctor.SpecialtyId = update_doctor.SpecialtyId;
+            doctor.UpdatedAt = DateTime.UtcNow;
+            await _dbContext.SaveChangesAsync();
+            //Nội dung email
+            var body = _emailTemplate.GetDoctorInfoUpdatedEmailBody(doctor.FullName, doctor.Email);
+
+            //Gửi email
+            _ = Task.Run(() => _emailSender.SendEmailAsync(doctor.Email, "Cập nhật thông tin - BookingCare", body));
+            return Ok(new { success = true, message = "Cập nhật thông tin Bác sĩ thành công!" });
+        }
 
         //====QUẢN LÝ TÀI KHOẢN BỆNH NHÂN====//
         [HttpGet("patients")]

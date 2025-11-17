@@ -207,5 +207,28 @@ namespace BookingCare.Services.Email
                 </div>";
         }
 
+        //****Chỉnh sửa thông tin bác sĩ****
+        public string GetDoctorInfoUpdatedEmailBody(string fullName, string email)
+        {
+            return $@"<div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
+                    <div style='max-width: 550px; margin: auto; background: #fff; border-radius: 10px;
+                                box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px;'>
+                        <h2 style='color: #45c3d2; text-align: center; margin-bottom: 20px;'>
+                            Thông tin bác sĩ đã được cập nhật
+                        </h2>
+                        <p>Xin chào <strong>{fullName}</strong>,</p>
+                        <p>Thông tin tài khoản của bạn trên hệ thống <strong>BookingCare</strong> đã được cập nhật bởi bộ phận quản trị.</p>
+                        <p>
+                            Nếu bạn nhận thấy có điểm nào chưa chính xác hoặc cần được điều chỉnh thêm, 
+                            vui lòng liên hệ với bộ phận hỗ trợ của chúng tôi để được trợ giúp.
+                        </p>
+                        <hr style='margin: 25px 0; border: none; border-top: 1px solid #eee;' />
+                        <p style='font-size: 14px; color: #666; text-align: center;'>
+                            Trân trọng,<br/>
+                            <strong style='color: #45c3d2;'>Đội ngũ BookingCare</strong>
+                        </p>
+                    </div>
+                </div>";
+        }
     }
 }
