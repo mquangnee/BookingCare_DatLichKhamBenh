@@ -1,30 +1,39 @@
 ﻿let currentPage = 1; //Trang hiện tại
 const pageSize = 10; //Mỗi trang 10 dòng
 let totalPages = 1; //Tổng số trang (sẽ tính lại sau khi gọi API)
+let doctorKeyword = "";  // từ khóa dùng cho search + phân trang
 
 const tableBody = document.getElementById("doctorTableBody");
 const prevBtn = document.getElementById("prevPage");
 const nextBtn = document.getElementById("nextPage");
 const pageInfo = document.getElementById("pageInfo");
-const modalPatient = document.querySelector("#doctorModal #modalDoctor");
+const modalDoctor = document.querySelector("#doctorModal #modalDoctor");
 
+//====DANH SÁCH BÁC SĨ====//
 //Gọi API và render dữ liệu
-async function loadDoctors(page = 1) {
+async function loadDoctors(page = 1, keyword = doctorKeyword) {
     try {
-        const res = await fetch(`/Admin/api/UserManagementApi/doctors?page=${page}&pageSize=${pageSize}`);
+        doctorPage = page;
+        doctorKeyword = keyword;
+
+        const res = await fetch(`/Admin/api/UserApi/doctors?page=${page}&pageSize=${pageSize}&search=${doctorKeyword}`);
         const result = await res.json();
 
         // Cập nhật lại tổng số trang
         totalPages = Math.ceil(result.totalDoctors / pageSize);
         renderTable(result.data);
-        updatePagination(page);
+        updatePagination();
 
     } catch (err) {
         console.error("Lỗi tải dữ liệu:", err);
     }
 }
 
-//====DANH SÁCH BÁC SĨ====//
+//Tìm kiếm bác sĩ
+function searchDoctors(keyword) {
+    loadDoctors(1, keyword);
+}
+
 //Render bảng
 function renderTable(data) {
     if (!data || data.length == 0) {
@@ -73,34 +82,28 @@ function renderTable(data) {
     }).join("");
 }
 
-//====PHÂN TRANG BÁC SĨ====
+//Lần đầu load
+loadDoctors(currentPage);
+
+//====PHÂN TRANG BÁC SĨ====//
 //Cập nhật hiển thị phân trang
-function updatePagination(page) {
-    currentPage = page;//Ghi lại số trang hiện tại
+function updatePagination() {
     pageInfo.textContent = `Trang ${currentPage} / ${totalPages}`;
 
-    //Ẩn hoặc disable nút khi cần
     prevBtn.disabled = currentPage <= 1;
     nextBtn.disabled = currentPage >= totalPages;
 }
 
-//Khi bấm “Trước”
 prevBtn.addEventListener("click", () => {
-    if (currentPage > 1) {
-        currentPage--;//Giảm 1 trang
-        loadDoctors(currentPage);
-    }
+    if (currentPage > 1) loadDoctors(currentPage - 1);
 });
 
-//Khi bấm “Sau”
 nextBtn.addEventListener("click", () => {
-    if (currentPage < totalPages) {
-        currentPage++;//Tăng 1 trang
-        loadDoctors(currentPage);
-    }
+    if (currentPage < totalPages) loadDoctors(currentPage + 1);
 });
 
-//Xem thông tin chi tiết
+
+//====XEM THÔNG TIN CHI TIẾT BÁC SĨ====//
 document.addEventListener("click", async function (e) {
     const btn = e.target.closest(".view-details"); //Tìm đúng nút "Xem chi tiết"
     if (!btn) return;
@@ -113,7 +116,7 @@ document.addEventListener("click", async function (e) {
 
     try {
         //Gửi yêu cầu lấy thông tin chi tiết về server 
-        const res = await fetch(`/Admin/api/UserManagementApi/infoDoctor?id=${doctorId}`);
+        const res = await fetch(`/Admin/api/UserApi/infoDoctor?id=${doctorId}`);
 
         //Thông tin chi tiết
         const data = await res.json();
@@ -147,7 +150,7 @@ function renderInfo(data) {
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
         </div>`;
-        modalPatient.innerHTML = html;
+        modalDoctor.innerHTML = html;
         $('#doctorModal').modal('show');
         return;
     } 
@@ -169,12 +172,9 @@ function renderInfo(data) {
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
     </div>`;
 
-    modalPatient.innerHTML = html;
+    modalDoctor.innerHTML = html;
     $('#doctorModal').modal('show');
 }
-
-//Lần đầu load
-loadDoctors(currentPage);
 
 //====THÊM BÁC SĨ====//
 const btnAddDoctor = document.getElementById("btnAddDoctor");
@@ -195,7 +195,7 @@ btnAddDoctor.addEventListener("click", async function () {
 
     try {
         //Gửi yêu cầu thêm tài khoản bác sĩ đến server
-        const res = await fetch(`/Admin/api/UserManagementApi/create`, {
+        const res = await fetch(`/Admin/api/UserApi/create`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body)
@@ -224,7 +224,7 @@ $('#addDoctorModal').on('shown.bs.modal', async function (e) {
 });
 
 //====CHỈNH SỬA THÔNG TIN BÁC SĨ====//
-//1. Hiển thị modal chỉnh sửa thông tin bác sĩ và thông tin
+//1. Hiển thị modal chỉnh sửa thông tin bác sĩ
 document.addEventListener("click", async function (e) {
     const btn = e.target.closest(".edit-doctor"); //Tìm đúng nút "Chỉnh sửa"
     if (!btn) return;
@@ -239,7 +239,7 @@ document.addEventListener("click", async function (e) {
 
     try {
         //Gửi yêu cầu lấy thông tin chi tiết về server 
-        const res = await fetch(`/Admin/api/UserManagementApi/updateInfoDoctor?id=${doctorId}`);
+        const res = await fetch(`/Admin/api/UserApi/updateInfoDoctor?id=${doctorId}`);
 
         //Thông tin chi tiết
         const data = await res.json();
@@ -288,7 +288,7 @@ document.addEventListener("click", async function (e) {
 
 //2. Cập nhật thông tin
 document.addEventListener("click", async function (e) {
-    const btn = e.target.closest("#btnUpdateDoctor"); //Tìm đúng nút "Khóa"
+    const btn = e.target.closest("#btnUpdateDoctor"); //Tìm đúng nút "Lưu thông tin"
     if (!btn) return;
 
     const userId = document.getElementById("update_userId").value; //Lấy giá trị userId
@@ -308,13 +308,8 @@ document.addEventListener("click", async function (e) {
             roomId: document.getElementById("update_room").value
         };
 
-        if (!body.address || !body.phoneNumber || !body.specialtyId || !body.degree || !body.yearsOfExp || !body.roomId) {
-            alert("Vui lòng điền đầy đủ thông tin!");
-            return; // Không gọi API nữa
-        }
-
         //Gửi yêu cầu lấy thông tin chi tiết về server 
-        const res = await fetch(`/Admin/api/UserManagementApi/update/${userId}`, { 
+        const res = await fetch(`/Admin/api/UserApi/update/${userId}`, { 
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body)
@@ -337,7 +332,7 @@ document.addEventListener("click", async function (e) {
     }
 });
 
-//Khóa tài khoản
+//====KHÓA/MỞ KHÓA TÀI KHOẢN BÁC SĨ====//
 document.addEventListener("click", async function (e) {
     const btn = e.target.closest(".lock-account"); //Tìm đúng nút "Khóa"
     if (!btn) return;
@@ -350,7 +345,7 @@ document.addEventListener("click", async function (e) {
 
     try {
         //Gửi yêu cầu lấy thông tin chi tiết về server 
-        const res = await fetch(`/Admin/api/UserManagementApi/lock/${doctorId}`, { method: "PUT" });
+        const res = await fetch(`/Admin/api/UserApi/lock/${doctorId}`, { method: "PUT" });
 
         //Thông tin chi tiết
         const data = await res.json();
@@ -363,8 +358,6 @@ document.addEventListener("click", async function (e) {
         alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
     }
 });
-
-//Mở khóa tài khoản
 document.addEventListener("click", async function (e) {
     const btn = e.target.closest(".unlock-account"); //Tìm đúng nút "Mở khóa"
     if (!btn) return;
@@ -377,7 +370,7 @@ document.addEventListener("click", async function (e) {
 
     try {
         //Gửi yêu cầu lấy thông tin chi tiết về server 
-        const res = await fetch(`/Admin/api/UserManagementApi/unlock/${doctorId}`, { method: "PUT" });
+        const res = await fetch(`/Admin/api/UserApi/unlock/${doctorId}`, { method: "PUT" });
 
         //Thông tin chi tiết
         const data = await res.json();
@@ -391,7 +384,7 @@ document.addEventListener("click", async function (e) {
     }
 });
 
-//Hàm loadDropdowns
+//====HÀM LOAD DROPDOWNS====//
 async function loadDropdownsCreate() {
     try {
         const specialtySelect = document.getElementById("create_specialty");

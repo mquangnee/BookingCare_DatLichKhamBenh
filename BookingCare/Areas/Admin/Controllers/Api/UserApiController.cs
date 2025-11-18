@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BookingCare.Areas.Admin.Controllers.Api
 {
@@ -14,14 +16,14 @@ namespace BookingCare.Areas.Admin.Controllers.Api
     [Route("Admin/api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
-    public class UserManagementApiController : ControllerBase
+    public class UserApiController : ControllerBase
     {
         private readonly DataContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly IEmailTemplate _emailTemplate;
 
-        public UserManagementApiController(DataContext dbContext, UserManager<ApplicationUser> userManager, IEmailSender emailSender, IEmailTemplate emailTemplate)
+        public UserApiController(DataContext dbContext, UserManager<ApplicationUser> userManager, IEmailSender emailSender, IEmailTemplate emailTemplate)
         {
             _dbContext = dbContext;
             _userManager = userManager;
@@ -32,12 +34,18 @@ namespace BookingCare.Areas.Admin.Controllers.Api
         //====QUẢN LÝ TÀI KHOẢN BÁC SĨ====//
         //Lấy danh sách bác sĩ để phân trang
         [HttpGet("doctors")]
-        public async Task<IActionResult> GetDoctors(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> GetDoctors(string? search = "", int page = 1, int pageSize = 10)
         {
             //Lấy danh sách người dùng có vai trò là bác sĩ
             var doctors = _dbContext.Users
                             .Include(u => u.Doctor)
                             .Where(u => u.Doctor != null);
+
+            //Tìm bác sĩ theo tên
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                doctors = doctors.Where(u => u.FullName.Contains(search));
+            }
 
             //Tổng số bác sĩ
             var totalDoctors = await doctors.CountAsync();
@@ -233,7 +241,7 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             doctor.Doctor.Degree = update_doctor.Degree;
             doctor.Doctor.YearsOfExp = update_doctor.YearsOfExp;
             doctor.Doctor.SpecialtyId = update_doctor.SpecialtyId;
-            doctor.UpdatedAt = DateTime.UtcNow;
+            doctor.UpdatedAt = DateTime.Now;
             await _dbContext.SaveChangesAsync();
             //Nội dung email
             var body = _emailTemplate.GetDoctorInfoUpdatedEmailBody(doctor.FullName, doctor.Email);
@@ -245,12 +253,22 @@ namespace BookingCare.Areas.Admin.Controllers.Api
 
         //====QUẢN LÝ TÀI KHOẢN BỆNH NHÂN====//
         [HttpGet("patients")]
-        public async Task<IActionResult> GetPatients (int page = 1, int pageSize = 10)
+        public async Task<IActionResult> GetPatients (string? search = "", int page = 1, int pageSize = 10)
         {
             //Lấy danh sách người dùng có vai trò là bác sĩ
             var patients = _dbContext.Users
                             .Include(u => u.Patient)
                             .Where(u => u.Patient != null);
+
+            // Áp dụng search
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                patients = patients.Where(u =>
+                            u.FullName.Contains(search) ||
+                            u.Email.Contains(search) ||
+                            (u.PhoneNumber != null && u.PhoneNumber.Contains(search))
+                );
+            }
 
             //Tổng số bác sĩ
             var totalPatients = await patients.CountAsync();
