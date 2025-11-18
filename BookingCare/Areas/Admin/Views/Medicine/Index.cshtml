@@ -1,118 +1,178 @@
-﻿@model IEnumerable<BookingCare.Models.Medicine>
-@{
+﻿@{
     Layout = "_Layout";
 }
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Quản lý tài khoản bệnh nhân</h1>
+    <h1 class="h3 mb-0 text-gray-800">Quản lý thuốc</h1>
 </div>
+
 <div class="container-fluid">
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Danh sách tài khoản bệnh nhân</h6>
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Danh sách thuốc</h6>
+            <!-- Nút mở modal -->
+            <button class="btn btn-primary shadow-sm" data-toggle="modal" data-target="#addMedicineModal">
+                <i class="fas fa-user-plus me-1"></i> Thêm thuốc
+            </button>
         </div>
+
+        <!-- Danh sách bác sĩ -->
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <div id="pageType" data-page="medicine"></div>
+                <table class="table table-bordered text-center align-middle">
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Họ và tên</th>
-                            <th>Email</th>
-                            <th>Số điện thoại</th>
-                            <th>Ngày tạo tài khoản</th>
-                            <th>Cập nhật lần cuối</th>
+                            <th>Tên thuốc</th>
+                            <th>Đơn vị tính</th>
+                            <th>Chức năng</th>
+                            <th>Ngày tạo</th>
+                            <th>Cập nhật</th>
                             <th>Trạng thái</th>
                             <th></th>
                         </tr>
                     </thead>
-                    @* <tbody>
-                        @foreach (var patient in Model)
-                        {
-                            <tr>
-                                <td>@patient.Patient.Id</td>
-                                <td>@patient.FullName</td>
-                                <td>@patient.Email</td>
-                                <td>@patient.PhoneNumber</td>
-                                <td>@patient.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</td>
-                                <td>
-                                    @if (patient.UpdatedAt != null)
-                                    {
-                                        @patient.UpdatedAt?.ToString("dd/MM/yyyy HH:mm:ss")
-                                        ;
-                                    }
-                                    else
-                                    {
-                                        <text>Chưa cập nhật</text>
-                                    }
-                                </td>
-                                <td>
-                                    @if (patient.LockoutEnd != null)
-                                    {
-                                        <span class="text-danger">Bị khóa</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-success">Hoạt động</span>
-                                    }
-                                </td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown">
-                                            <i class="fa-solid fa-bars"></i>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            @if (patient.LockoutEnd != null && patient.LockoutEnd > DateTimeOffset.Now)
-                                            {
-                                                <form asp-action="UnlockAccount" method="post" style="display:inline">
-                                                    <input type="hidden" name="id" value="@patient.Id" />
-                                                    <button type="submit" class="dropdown-item">Mở khóa</button>
-                                                </form>
-                                            }
-                                            else
-                                            {
-                                                <form asp-action="LockAccount" method="post" style="display:inline">
-                                                    <input type="hidden" name="id" value="@patient.Id" />
-                                                    <button type="submit" class="dropdown-item">Khóa</button>
-                                                </form>
-                                            }
-                                            <button class="dropdown-item view-details" data-id="@patient.Id">Xem chi tiết</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody> *@
+                    <tbody id="medicineTableBody"></tbody>
                 </table>
+
+                <!-- Phân trang -->
+                <div class="d-flex justify-content-center align-items-center mt-3">
+                    <button id="prevPage" class="btn btn-outline-primary btn-sm mr-2">← Trước</button>
+                    <span id="pageInfo" class="fw-bold text-primary mx-2"></span>
+                    <button id="nextPage" class="btn btn-outline-primary btn-sm ml-2">Sau →</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<!-- Patient Detail Modal -->
-<div class="modal fade" id="patientModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
+
+<!-- Add Medicine Modal -->
+<div class="modal fade" id="addMedicineModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+
+            <!-- Modal header -->
+            <div class="modal-header border-0 bg-primary text-white rounded-top-4">
+                <h5 class="modal-title fw-semibold">
+                    <i class="fa-solid fa-capsules"></i> Thêm thuốc mới
+                </h5>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body p-4">
+                <form id="formAddMedicine">
+                    <div class="row g-3">
+
+                        <!-- Tên thuốc -->
+                        <div class="col-md-6">
+                            <label for="create_name" class="form-label fw-semibold">Tên thuốc</label>
+                            <input id="create_name" type="text" class="form-control">
+                        </div>
+
+                        <!-- Đơn vị tính -->
+                        <div class="col-md-6">
+                            <label for="create_unit" class="form-label fw-semibold">Đơn vị tính</label>
+                            <select id="create_unit" class="form-control">
+                                <option value="">-- Chọn đơn vị --</option>
+                                <option value="Viên">Viên</option>
+                                <option value="Hộp">Hộp</option>
+                                <option value="Chai">Chai</option>
+                                <option value="Lọ">Lọ</option>
+                                <option value="Ống">Ống</option>
+                                <option value="Gói">Gói</option>
+                                <option value="Tuýp">Tuýp</option>
+                            </select>
+                        </div>
+
+                        <!-- Chức năng -->
+                        <div class="col-md-12">
+                            <label for="create_function" class="form-label fw-semibold">Chức năng</label>
+                            <textarea id="create_function" class="form-control" rows="4" style="resize: none;"></textarea>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer border-0 d-flex justify-content-between">
+                <button class="btn btn-light border shadow-sm" data-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Đóng
+                </button>
+                <button class="btn" id="btnAddMedicine" style="background-color:#45c3d2; color:white;">
+                    <i class="fas fa-save me-1"></i> Lưu thông tin
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Medicine Modal -->
+<div class="modal fade" id="updateMedicineModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+
+            <!-- Modal header -->
+            <div class="modal-header border-0 bg-primary text-white rounded-top-4">
+                <h5 class="modal-title fw-semibold">
+                    <i class="fa-solid fa-capsules"></i> Cập nhật thông tin thuốc
+                </h5>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body p-4">
+                <form id="formUpdateMedicine">
+                    <div class="row g-3">
+
+                        <!-- User ID -->
+                        <input type="hidden" id="update_medicineId">
+
+                        <!-- Tên thuốc -->
+                        <div class="col-md-6">
+                            <label for="update_name" class="form-label fw-semibold">Tên thuốc</label>
+                            <input id="update_name" type="text" class="form-control">
+                        </div>
+
+                        <!-- Đơn vị tính -->
+                        <div class="col-md-6">
+                            <label for="update_unit" class="form-label fw-semibold">Đơn vị tính</label>
+                            <select id="update_unit" class="form-control">
+                                <option value="">-- Chọn đơn vị --</option>
+                                <option value="Viên">Viên</option>
+                                <option value="Hộp">Hộp</option>
+                                <option value="Chai">Chai</option>
+                                <option value="Lọ">Lọ</option>
+                                <option value="Ống">Ống</option>
+                                <option value="Gói">Gói</option>
+                                <option value="Tuýp">Tuýp</option>
+                            </select>
+                        </div>
+
+                        <!-- Chức năng -->
+                        <div class="col-md-12">
+                            <label for="update_function" class="form-label fw-semibold">Chức năng</label>
+                            <textarea id="update_function" class="form-control" rows="4" style="resize: none;"></textarea>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer border-0 d-flex justify-content-between">
+                <button class="btn btn-light border shadow-sm" data-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Đóng
+                </button>
+                <button class="btn" id="btnUpdateMedicine" style="background-color:#45c3d2; color:white;">
+                    <i class="fas fa-save me-1"></i> Lưu thông tin
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <script>
-        $(document).ready(function() {
-            $('.view-details').click(function() {
-                var patientId = $(this).data('id');
-                $.ajax({
-                    url: '/Admin/UserManager/PatientDetails/' + patientId,
-                    type: 'GET',
-                    success: function (result) {
-                        $('#patientModal .modal-content').html(result);
-                        $('#patientModal').modal('show');
-                    },
-                    error: function () {
-                        alert('Không tải được thông tin!');
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="~/js/medicine_management.js"></script>
+    <script src="~/js/search_layout.js"></script>
 }
