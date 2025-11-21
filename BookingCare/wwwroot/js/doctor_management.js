@@ -333,24 +333,42 @@ document.addEventListener("click", async function (e) {
 });
 
 //====KHÓA/MỞ KHÓA TÀI KHOẢN BÁC SĨ====//
+const lockId = document.getElementById("lockDoctorId");
+const unlockId = document.getElementById("unlockDoctorId");
+const btnLock = document.getElementById("confirmLockBtn");
+const btnUnlock = document.getElementById("confirmUnlockBtn");
+
+/* Khóa bác sĩ */
+//1. Hiển thị modal xác nhận khóa
 document.addEventListener("click", async function (e) {
     const btn = e.target.closest(".lock-account"); //Tìm đúng nút "Khóa"
     if (!btn) return;
 
-    const doctorId = btn.dataset.id; //Lấy giá trị data-id
+    //Lưu Id bác sĩ
+    const doctorId = btn.dataset.id;
+    lockId.value = doctorId;
+
+    //Hiển thị modal
+    $('#confirmLockModal').modal('show');
+});
+//2. Khóa bác sĩ
+btnLock.addEventListener("click", async function (e) {
+    //Lấy Id bác sĩ
+    const doctorId = lockId.value;
     if (!doctorId) {
         alert("Không thể lấy Id bác sĩ!");
         return;
     }
 
     try {
-        //Gửi yêu cầu lấy thông tin chi tiết về server 
+        //Gửi yêu cầu khóa tài khoản bác sĩ về server
         const res = await fetch(`/Admin/api/UserApi/lock/${doctorId}`, { method: "PUT" });
 
         //Thông tin chi tiết
         const data = await res.json();
 
         //Hiển thị thông báo
+        $('#confirmLockModal').modal('hide');
         alert(data.message);
         loadDoctors();
     } catch (error) {
@@ -358,24 +376,38 @@ document.addEventListener("click", async function (e) {
         alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
     }
 });
+
+/* Mở khóa bác sĩ */
+//1. Hiển thị modal xác nhận mở khóa
 document.addEventListener("click", async function (e) {
     const btn = e.target.closest(".unlock-account"); //Tìm đúng nút "Mở khóa"
     if (!btn) return;
 
-    const doctorId = btn.dataset.id; //Lấy giá trị data-id
+    //Lưu Id bác sĩ
+    const doctorId = btn.dataset.id;
+    unlockId.value = doctorId;
+
+    //Hiển thị modal
+    $('#confirmUnlockModal').modal('show');
+});
+//2. Mở khóa bác sĩ
+btnUnlock.addEventListener("click", async function (e) {
+    //Lấy Id bác sĩ
+    const doctorId = unlockId.value;
     if (!doctorId) {
         alert("Không thể lấy Id bác sĩ!");
         return;
     }
 
     try {
-        //Gửi yêu cầu lấy thông tin chi tiết về server 
+        //Gửi yêu cầu mở khóa tài khoản bác sĩ về server
         const res = await fetch(`/Admin/api/UserApi/unlock/${doctorId}`, { method: "PUT" });
 
         //Thông tin chi tiết
         const data = await res.json();
 
         //Hiển thị thông báo
+        $('#confirmUnlockModal').modal('hide');
         alert(data.message);
         loadDoctors();
     } catch (error) {

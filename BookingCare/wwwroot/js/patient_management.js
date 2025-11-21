@@ -170,24 +170,42 @@ function renderInfo(data) {
 }
 
 //====KHÓA/MỞ KHÓA TÀI KHOẢN BỆNH NHÂN====//
+const lockId = document.getElementById("lockPatientId");
+const unlockId = document.getElementById("unlockPatientId");
+const btnLock = document.getElementById("confirmLockBtn");
+const btnUnlock = document.getElementById("confirmUnlockBtn");
+
+/* Khóa bệnh nhân */
+//1. Hiển thị modal xác nhận khóa
 document.addEventListener("click", async function (e) {
     const btn = e.target.closest(".lock-account"); //Tìm đúng nút "Khóa"
     if (!btn) return;
 
-    const patientId = btn.dataset.id; //Lấy giá trị data-id
+    //Lưu Id bệnh nhân
+    const patientId = btn.dataset.id;
+    lockId.value = patientId;
+
+    //Hiển thị modal
+    $('#confirmLockModal').modal('show');
+});
+//2. Khóa bệnh nhân
+btnLock.addEventListener("click", async function (e) {
+    //Lấy Id bệnh nhân
+    const patientId = lockId.value;
     if (!patientId) {
         alert("Không thể lấy Id bệnh nhân!");
         return;
     }
 
     try {
-        //Gửi yêu cầu lấy thông tin chi tiết về server 
+        //Gửi yêu cầu khóa tài khoản bệnh nhân về server 
         const res = await fetch(`/Admin/api/UserApi/lock/${patientId}`, { method: "PUT" });
 
         //Thông tin chi tiết
         const data = await res.json();
 
         //Hiển thị thông báo
+        $('#confirmLockModal').modal('hide');
         alert(data.message);
         loadPatients();
     } catch (error) {
@@ -196,24 +214,37 @@ document.addEventListener("click", async function (e) {
     }
 });
 
+/* Mở khóa bệnh nhân */
+//1. Hiển thị modal xác nhận mở khóa
 document.addEventListener("click", async function (e) {
     const btn = e.target.closest(".unlock-account"); //Tìm đúng nút "Mở khóa"
     if (!btn) return;
 
-    const patientId = btn.dataset.id; //Lấy giá trị data-id
+    //Lưu Id bệnh nhân
+    const patientId = btn.dataset.id;
+    unlockId.value = patientId;
+
+    //Hiển thị modal
+    $('#confirmUnlockModal').modal('show');
+});
+//2. Mở khóa bệnh nhân
+btnUnlock.addEventListener("click", async function (e) {
+    //Lấy Id bệnh nhân
+    const patientId = unlockId.value;
     if (!patientId) {
         alert("Không thể lấy Id bệnh nhân!");
         return;
     }
 
     try {
-        //Gửi yêu cầu lấy thông tin chi tiết về server 
+        //Gửi yêu cầu mở khóa tài khoản bệnh nhân về server 
         const res = await fetch(`/Admin/api/UserApi/unlock/${patientId}`, { method: "PUT" });
 
         //Thông tin chi tiết
         const data = await res.json();
 
         //Hiển thị thông báo
+        $('#confirmUnlockModal').modal('hide');
         alert(data.message);
         loadPatients();
     } catch (error) {

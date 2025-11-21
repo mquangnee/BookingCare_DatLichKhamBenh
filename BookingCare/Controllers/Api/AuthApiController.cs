@@ -122,17 +122,20 @@ namespace BookingCare.Controllers.Api
             {
                 return BadRequest(new { success = false, message = "Vui lòng điền đẩy đủ email và mật khẩu!" });
             }
+            //Lấy thông tin người dùng
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if (user == null)
+            {
+                return BadRequest(new { success = false, message = "Đăng nhập không thành công! Vui lòng kiểm tra lại email và mật khẩu!" });
+            }
+            if (user.LockoutEnd != null)
+            {
+                return BadRequest(new { success = false, message = "Tài khoản của bạn đã bị khóa!" });
+            }
             //Xác thực thông tin đăng nhập
             var result = await _signInManager.PasswordSignInAsync(dto.Email, dto.Password, dto.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                //Lấy thông tin người dùng
-                var user = await _userManager.FindByEmailAsync(dto.Email);
-                if (user == null)
-                {
-                    return BadRequest(new { success = false, message = "Đăng nhập không thành công! Vui lòng kiểm tra lại email và mật khẩu." });
-                }
-
                 //Lấy vai trò của người dùng
                 var roles = await _userManager.GetRolesAsync(user);
                 return Ok(new { roles, success = true, message = "Đăng nhập thành công!"});

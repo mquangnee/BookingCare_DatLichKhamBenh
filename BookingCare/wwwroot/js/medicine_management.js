@@ -53,8 +53,8 @@ function renderTable(data) {
             </button>
             <div class="dropdown-menu">
                 ${d.status === "Đang sử dụng"
-                        ? `<button class="dropdown-item stop-medicine" data-id="${d.id}">Dừng sử dụng</button>`
-                        : `<button class="dropdown-item activate-medicine" data-id="${d.id}">Kích hoạt lại</button>`}
+                ? `<button class="dropdown-item stop-medicine" data-id="${d.id}">Dừng sử dụng</button>`
+                : `<button class="dropdown-item activate-medicine" data-id="${d.id}">Kích hoạt lại</button>`}
                 <button class="dropdown-item edit-medicine" data-id="${d.id}" data-toggle="modal" data-target="#updateMedicineModal">
                     Chỉnh sửa
                 </button>
@@ -104,7 +104,7 @@ function searchMedicines(keyword) {
 }
 
 //====THÊM THUỐC====//
-const btnAddDoctor = document.getElementById("btnAddMedicine");
+const btnAddMedicine = document.getElementById("btnAddMedicine");
 btnAddMedicine.addEventListener("click", async function () {
     //Lấy dữ liệu từ modal
     const body = {
@@ -114,7 +114,7 @@ btnAddMedicine.addEventListener("click", async function () {
     };
 
     try {
-        //Gửi yêu cầu thêm tài khoản bác sĩ đến server
+        //Gửi yêu cầu thêm thuốc đến server
         const res = await fetch(`/Admin/api/MedicineApi/create`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -159,7 +159,7 @@ document.addEventListener("click", async function (e) {
 
         //Kiểm tra dữ liệu
         if (!res.ok) {
-            alert("Không thể lấy thông tin bác sĩ!");
+            alert("Không thể lấy thông tin thuốc!");
             return;
         }
 
@@ -229,24 +229,42 @@ document.addEventListener("click", async function (e) {
 });
 
 //====KHÓA/MỞ KHÓA THUỐC====//
+const lockId = document.getElementById("lockMedicineId");
+const unlockId = document.getElementById("unlockMedicineId");
+const btnLock = document.getElementById("confirmLockBtn");
+const btnUnlock = document.getElementById("confirmUnlockBtn");
+
+/* Khóa thuốc */
+//1. Hiển thị modal xác nhận khóa
 document.addEventListener("click", async function (e) {
-    const btn = e.target.closest(".stop-medicine"); //Tìm đúng nút "Dừng sử dụng"
+    const btn = e.target.closest(".stop-medicine"); //Tìm đúng nút "Khóa"
     if (!btn) return;
 
-    const medicineId = btn.dataset.id; //Lấy giá trị data-id
+    //Lưu Id thuốc
+    const medicineId = btn.dataset.id;
+    lockId.value = medicineId;
+
+    //Hiển thị modal
+    $('#confirmLockModal').modal('show');
+});
+//2. Khóa thuốc
+btnLock.addEventListener("click", async function (e) {
+    //Lấy Id thuốc
+    const medicineId = lockId.value;
     if (!medicineId) {
         alert("Không thể lấy Id thuốc!");
         return;
     }
 
     try {
-        //Gửi yêu cầu lấy thông tin chi tiết về server 
+        //Gửi yêu cầu khóa thuốc về server 
         const res = await fetch(`/Admin/api/MedicineApi/lock/${medicineId}`, { method: "PUT" });
 
         //Thông tin chi tiết
         const data = await res.json();
 
         //Hiển thị thông báo
+        $('#confirmLockModal').modal('hide');
         alert(data.message);
         loadMedicines();
     } catch (error) {
@@ -255,25 +273,37 @@ document.addEventListener("click", async function (e) {
     }
 });
 
-//Mở khóa tài khoản
+/* Mở khóa thuốc */
+//1. Hiển thị modal xác nhận mở khóa
 document.addEventListener("click", async function (e) {
-    const btn = e.target.closest(".activate-medicine"); //Tìm đúng nút "Kích hoạt lại"
+    const btn = e.target.closest(".activate-medicine"); //Tìm đúng nút "Mở khóa"
     if (!btn) return;
 
-    const medicineId = btn.dataset.id; //Lấy giá trị data-id
+    //Lưu Id thuốc
+    const medicineId = btn.dataset.id;
+    unlockId.value = medicineId;
+
+    //Hiển thị modal
+    $('#confirmUnlockModal').modal('show');
+});
+//2. Mở khóa thuốc
+btnUnlock.addEventListener("click", async function (e) {
+    //Lấy Id thuốc
+    const medicineId = unlockId.value;
     if (!medicineId) {
-        alert("Không thể lấy Id thuốc");
+        alert("Không thể lấy Id thuốc!");
         return;
     }
 
     try {
-        //Gửi yêu cầu lấy thông tin chi tiết về server 
+        //Gửi yêu cầu mở khóa thuốc về server 
         const res = await fetch(`/Admin/api/MedicineApi/unlock/${medicineId}`, { method: "PUT" });
 
         //Thông tin chi tiết
         const data = await res.json();
 
         //Hiển thị thông báo
+        $('#confirmUnlockModal').modal('hide');
         alert(data.message);
         loadMedicines();
     } catch (error) {

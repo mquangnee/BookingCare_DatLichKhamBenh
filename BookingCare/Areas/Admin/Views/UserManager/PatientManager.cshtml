@@ -48,6 +48,68 @@
     </div>
 </div>
 
+<!-- Patient Confirm Lock Modal -->
+<div class="modal fade" id="confirmLockModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-3">
+
+            <!-- Header -->
+            <div class="modal-header border-0 bg-primary text-white rounded-top-4">
+                <h5 class="modal-title fw-semibold">
+                    <i class="fa-solid fa-lock"></i> Khóa tài khoản
+                </h5>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body text-center">
+                <input type="hidden" id="lockPatientId" />
+                <p class="mb-3">Bạn có chắc chắn muốn khóa tài khoản này không?</p>
+
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-secondary px-4" data-dismiss="modal">
+                        <i class="fa-solid fa-xmark"></i> Hủy
+                    </button>
+                    <button id="confirmLockBtn" class="btn btn-danger px-4">
+                        <i class="fa-solid fa-check"></i> Khóa
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Patient Confirm Unlock Modal -->
+<div class="modal fade" id="confirmUnlockModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-3">
+
+            <!-- Header -->
+            <div class="modal-header border-0 bg-primary text-white rounded-top-4">
+                <h5 class="modal-title fw-semibold">
+                    <i class="fa-solid fa-unlock"></i> Mở khóa tài khoản
+                </h5>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body text-center">
+                <input type="hidden" id="unlockPatientId" />
+                <p class="mb-3">Bạn có chắc chắn muốn mở khóa tài khoản này không?</p>
+
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-secondary px-4" data-dismiss="modal">
+                        <i class="fa-solid fa-xmark"></i> Hủy
+                    </button>
+                    <button id="confirmUnlockBtn" class="btn btn-danger px-4">
+                        <i class="fa-solid fa-check"></i> Mở khóa
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script src="~/js/patient_management.js"></script>
     <script src="~/js/search_layout.js"></script>
