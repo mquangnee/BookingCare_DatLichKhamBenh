@@ -42,9 +42,37 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-white" asp-area="Patients" asp-controller="HistoryBooking" asp-action="Index">Lịch đặt</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white" asp-area="Patients" asp-controller="AccountManager" asp-action="Index">Tài khoản</a>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-white"
+                                    href="#"
+                                    id="accountMenu"
+                                    role="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                        Tài khoản
+                                    </a>
+
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountMenu">
+                                        <li>
+                                            <a class="dropdown-item"
+                                            asp-area="Patients"
+                                            asp-controller="AccountManager"
+                                            asp-action="Index">
+                                                Chỉnh sửa thông tin
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a class="dropdown-item"
+                                            asp-area="Patients"
+                                            asp-controller="AccountManager"
+                                            asp-action="ChangePassword">
+                                                Đổi mật khẩu
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
+
                             }
 
                             else if (User.IsInRole("Doctor"))
@@ -52,8 +80,8 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-white" asp-area="Doctors" asp-controller="Doctors" asp-action="Index">Lịch khám</a>
                                 </li>
-      
                             }
+
                         }
                     </ul>
                     <!-- Hiển thị đăng nhập / đăng xuất -->

@@ -98,6 +98,7 @@ namespace BookingCare.Controllers
             }
             // Tạo và gửi mã OTP
             string otp = new Random().Next(100000, 999999).ToString();
+            Console.WriteLine("Mã OTP : " + otp);
             _otpService.SetOtp(model.Email, otp);
             await _emailSender.SendEmailAsync(model.Email, "Mã OTP xác thực", $@"<p>Mã OTP của bạn là: <strong style='color:red; font-weight:bold;'>{otp}</strong>.</p><p>Mã có hiệu lực trong 5 phút.</p>");
             //Lưu tạm thông tin đăng ký vào TempData để sử dụng ở bước tiếp theo

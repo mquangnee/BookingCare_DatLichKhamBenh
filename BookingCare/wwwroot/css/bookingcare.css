@@ -95,3 +95,13 @@
     width: auto; /* giữ tỷ lệ ảnh */
     border-radius: 12px; /* bo góc */
 }
+/* Dropdown menu mở khi hover */
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0; /* căn sát nút */
+}
+
+/* Tạo hiệu ứng mượt */
+.dropdown-menu {
+    transition: 0.2s ease-in-out;
+}
