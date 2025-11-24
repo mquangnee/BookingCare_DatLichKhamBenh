@@ -64,6 +64,7 @@
                             <li class="nav-item">
                                 <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="d-inline"
                                       onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất không?');">
+                                    @Html.AntiForgeryToken()
                                     <button type="submit" class="btn btn-link nav-link text-white">Đăng xuất</button>
                                 </form>
                             </li>
@@ -99,5 +100,6 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Styles", required: false)
 </body>
 </html>

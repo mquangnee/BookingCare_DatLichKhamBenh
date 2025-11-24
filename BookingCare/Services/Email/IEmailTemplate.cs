@@ -22,5 +22,8 @@
 
         //****Chỉnh sửa thông tin bác sĩ****
         string GetDoctorInfoUpdatedEmailBody(string fullname, string email);
+
+        //****Đặt lịch khám bệnh thành công****
+        string getBookingSuccessEmailBody(string fullName, string doctorName, string specialtyName, DateOnly appointmentDate, string appointmentTime, string room, int bookingCode);
     }
 }

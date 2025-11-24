@@ -18,6 +18,7 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             _dbContext = dbContext;
         }
 
+        //Lấy danh sách phòng khám
         [HttpGet("getAll")]
         public async Task<IActionResult> GetRooms()
         {
