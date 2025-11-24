@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingCare.Areas.Admin.Controllers.Api
+namespace BookingCare.Areas.Patient.Controllers.Api
 {
-    [Area("Admin")]
-    [Route("Admin/api/[controller]")]
+    [Area("Patient")]
+    [Route("Patient/api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Patient")]
     public class SpecialtyApiController : ControllerBase
     {
         private readonly DataContext _dbContext;

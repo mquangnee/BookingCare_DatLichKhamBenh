@@ -230,5 +230,41 @@ namespace BookingCare.Services.Email
                     </div>
                 </div>";
         }
+
+        //****Đặt lịch khám thành công****
+        public string getBookingSuccessEmailBody(string fullName, string doctorName, string specialtyName, DateOnly appointmentDate, string appointmentTime, string room, int bookingCode)
+        {
+            return $@"<div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
+                    <div style='max-width: 550px; margin: auto; background: #fff; border-radius: 10px; 
+                                box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px;'>
+                        <h2 style='color: #45c3d2; text-align: center; margin-bottom: 20px;'>
+                            Xác nhận đặt lịch khám thành công
+                        </h2>
+                        <p>Xin chào <strong>{fullName}</strong>,</p>
+                        <p>Bạn đã <strong>đặt lịch khám bệnh thành công</strong> trên hệ thống <strong>BookingCare</strong>. 
+                           Thông tin chi tiết lịch khám của bạn như sau:</p>
+                        <div style='background-color: #f1f9ff; border-left: 4px solid #45c3d2; padding: 15px; margin: 20px 0;'>
+                            <p style='margin: 4px 0;'><strong>Mã lịch khám:</strong> {bookingCode}</p>
+                            <p style='margin: 4px 0;'><strong>Bác sĩ:</strong> {doctorName}</p>
+                            <p style='margin: 4px 0;'><strong>Chuyên khoa:</strong> {specialtyName}</p>
+                            <p style='margin: 4px 0;'><strong>Thời gian:</strong> {appointmentTime}, ngày {appointmentDate.ToString("dd/MM/yyyy")}</p>
+                            <p style='margin: 4px 0;'><strong>Địa điểm:</strong> {room}</p>
+                        </div>
+                        <p style='margin-top: 10px;'>
+                            Bạn vui lòng đến trước giờ khám <strong>10–15 phút</strong> để làm thủ tục tiếp đón và chuẩn bị khám.
+                        </p>
+                        <p style='margin-top: 10px;'>
+                            Trong trường hợp bạn không thể đến đúng hẹn, vui lòng liên hệ với chúng tôi hoặc hủy lịch trên hệ thống 
+                            trước giờ khám để được hỗ trợ tốt nhất.
+                        </p>
+                        <hr style='margin: 20px 0; border: none; border-top: 1px solid #eee;' />
+                        <p style='font-size: 14px; color: #666; text-align: center;'>
+                            Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ của <strong style='color: #45c3d2;'>BookingCare</strong>.<br/>
+                            Chúc bạn luôn mạnh khỏe!
+                        </p>
+                    </div>
+                </div>";
+        }
+
     }
 }

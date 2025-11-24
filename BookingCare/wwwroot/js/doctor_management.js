@@ -129,7 +129,7 @@ document.addEventListener("click", async function (e) {
         renderInfo(data);
     } catch (error) {
         console.error("Lỗi:", error);
-        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.");
     }
 });
 
@@ -214,12 +214,12 @@ btnAddDoctor.addEventListener("click", async function () {
         }
     } catch (error) {
         console.error("Lỗi:", error);
-        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.");
     }
 });
 
 //Khi modal "Thêm bác sĩ" mở
-$('#addDoctorModal').on('shown.bs.modal', async function (e) {
+$('#addDoctorModal').on('shown.bs.modal', async function () {
     await loadDropdownsCreate();
 });
 
@@ -282,7 +282,7 @@ document.addEventListener("click", async function (e) {
 
     } catch (error) {
         console.error("Lỗi:", error);
-        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.");
     }
 });
 
@@ -328,7 +328,7 @@ document.addEventListener("click", async function (e) {
         }
     } catch (error) {
         console.error("Lỗi:", error);
-        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.");
     }
 });
 
@@ -373,7 +373,7 @@ btnLock.addEventListener("click", async function (e) {
         loadDoctors();
     } catch (error) {
         console.error("Lỗi:", error);
-        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.");
     }
 });
 
@@ -412,7 +412,7 @@ btnUnlock.addEventListener("click", async function (e) {
         loadDoctors();
     } catch (error) {
         console.error("Lỗi:", error);
-        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.");
     }
 });
 

@@ -101,9 +101,15 @@ namespace BookingCare
 
             //---Cài đặt Route cho Project---
             //Route cho Area Admin
-            app.MapControllerRoute(
+            app.MapAreaControllerRoute(
                 name: "Admin",
-                pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
+                areaName: "Admin",
+                pattern: "Admin/{controller=Dashboard}/{action=Index}/{id?}");
+            //Route cho Area Patient
+            app.MapAreaControllerRoute(
+                name: "Patient",
+                areaName: "Patient",
+                pattern: "Patient/{controller=Home}/{action=Index}/{id?}");
             //Route mặc định
             app.MapControllerRoute(
                 name: "default",

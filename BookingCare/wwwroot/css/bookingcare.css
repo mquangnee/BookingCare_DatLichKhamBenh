@@ -50,10 +50,10 @@
     border: none;
 }
 
-    .btn-booking:hover {
-        background-color: var(--booking-dark);
-        color: #fff;
-    }
+.btn-booking:hover {
+    background-color: var(--booking-dark);
+    color: #fff;
+}
 
 /* Link màu xanh BookingCare */
 .text-booking {
@@ -61,10 +61,10 @@
     font-weight: 500;
 }
 
-    .text-booking:hover {
-        color: var(--booking-dark);
-        text-decoration: underline;
-    }
+.text-booking:hover {
+    color: var(--booking-dark);
+    text-decoration: underline;
+}
 
 /* ====== Stepper ====== */
 .step-indicator {

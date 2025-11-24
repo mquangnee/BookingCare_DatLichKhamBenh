@@ -1,0 +1,86 @@
+﻿@{
+    ViewData["Title"] = "Đặt lịch khám bệnh";
+    Layout = "_Layout";
+}
+
+<div class="booking-bg">
+    <div class="booking-card">
+        <div class="text-center mb-4">
+            <h2 class="booking-title">Đặt lịch khám bệnh</h2>
+            <p class="text-muted" style="font-size:0.95rem;">
+                Chọn chuyên khoa, bác sĩ và thời gian để hoàn tất đặt lịch
+            </p>
+        </div>
+
+        <form id="bookingForm">
+            <!-- Chuyên khoa -->
+            <div class="mb-3">
+                <label for="specialty" class="booking-label">
+                    <i class="fa-solid fa-stethoscope"></i> Chuyên khoa
+                </label>
+                <select id="specialty" class="form-select booking-control">
+                    <option value="">-- Chọn chuyên khoa --</option>
+                </select>
+            </div>
+
+            <!-- Bác sĩ -->
+            <div class="mb-3">
+                <label for="doctor" class="booking-label">
+                    <i class="fa-solid fa-user-md"></i> Bác sĩ
+                </label>
+                <select id="doctor" class="form-select booking-control" disabled>
+                    <option value="">-- Chọn bác sĩ --</option>
+                </select>
+            </div>
+
+            <!-- Ngày khám -->
+            <div class="mb-3">
+                <label for="bookingDate" class="booking-label">
+                    <i class="fa-solid fa-calendar-alt"></i> Ngày khám
+                </label>
+                <input id="bookingDate" type="date" class="form-control booking-control" min="@DateOnly.FromDateTime(DateTime.Now).ToString("yyyy-MM-dd")" disabled />
+            </div>
+
+            <!-- Buổi khám -->
+            <div class="mb-3">
+                <label class="booking-label">
+                    <i class="fa-solid fa-clock"></i> Buổi khám
+                </label>
+                <div class="d-flex gap-4 pt-1">
+                    <label><input type="radio" name="bookingShift" value="Sáng" class="me-1" disabled> Buổi sáng</label>
+                    <label><input type="radio" name="bookingShift" value="Chiều" class="me-1" disabled> Buổi chiều</label>
+                </div>
+            </div>
+
+            <!-- Khung giờ -->
+            <div id="timeSlotContainer" class="mb-3" style="display:none;">
+                <label for="timeSlot" class="booking-label">
+                    <i class="fa-solid fa-hourglass-half"></i> Khung giờ khám
+                </label>
+                <select id="timeSlot" class="form-select booking-control" disabled>
+                    <option value="">-- Chọn khung giờ --</option>
+                </select>
+            </div>
+
+            <!-- Lý do -->
+            <div class="mb-3">
+                <label for="medicalReason" class="booking-label">
+                    <i class="fa-solid fa-edit"></i> Lý do khám bệnh
+                </label>
+                <textarea id="medicalReason" class="form-control booking-control" rows="5" style="resize:none;" placeholder="Nhập lý do..." ></textarea>
+            </div>
+
+            <!-- Nút -->
+            <button type="submit" class="booking-btn mt-3">
+                Đặt lịch ngay
+            </button>
+        </form>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/js/patient_booking.js"></script>
+}
+@section styles {
+    <link rel="stylesheet" href="~/css/patient_booking.css" />
+}
