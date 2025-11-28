@@ -41,7 +41,7 @@
                                     <a class="nav-link text-white" asp-area="Patient" asp-controller="PatientBooking" asp-action="Index">Đặt lịch khám</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-area="Patient" asp-controller="HistoryBooking" asp-action="Index">Lịch đặt</a>
+                                    <a class="nav-link text-white" asp-area="Patient" asp-controller="BookingHistory" asp-action="Index">Lịch đặt</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-white" asp-area="Patient" asp-controller="AccountManager" asp-action="Index">Tài khoản</a>
@@ -96,9 +96,17 @@
             </div>
         </footer>
     </div>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <<!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery Easing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+    <!-- SignalR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
     @await RenderSectionAsync("Styles", required: false)
 </body>

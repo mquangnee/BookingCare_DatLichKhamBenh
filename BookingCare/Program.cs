@@ -2,7 +2,9 @@
 using BookingCare.Models;
 using BookingCare.Repository;
 using BookingCare.Services;
+using BookingCare.Services.Background;
 using BookingCare.Services.Email;
+using BookingCare.Services.Hubs;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -64,6 +66,10 @@ namespace BookingCare
                 options.Cookie.IsEssential = true; // Bắt buộc có cookie ngay cả khi user từ chối cookie
             });
 
+            //Thêm dịch vụ SignalR, Hosted Service
+            builder.Services.AddSignalR();
+            builder.Services.AddHostedService<AppointmentStatusService>();
+
             //Tắt auto validation
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -98,6 +104,9 @@ namespace BookingCare
             //---Cấu hình xác thực và phân quyền---
             app.UseAuthentication();
             app.UseAuthorization();
+
+            //---Cấu hình SignalR---
+            app.MapHub<AppointmentHub>("/appointmentHub");
 
             //---Cài đặt Route cho Project---
             //Route cho Area Admin

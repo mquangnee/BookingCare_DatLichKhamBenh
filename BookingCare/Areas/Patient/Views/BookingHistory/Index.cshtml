@@ -1,0 +1,118 @@
+﻿@{
+    ViewData["Title"] = "Lịch sử đặt lịch khám bệnh";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <!-- HEADER -->
+    <div class="d-flex align-items-center mb-4">
+        <div class="title-icon me-3">
+            <i class="fa-solid fa-calendar-days"></i>
+        </div>
+        <h2 class="page-title">Lịch sử đặt lịch khám</h2>
+    </div>
+
+    <!-- FILTER -->
+    <div class="filter-section mb-4">
+        <div class="row g-3 align-items-center">
+
+            <div class="col-md-3 col-sm-6">
+                <label class="fw-semibold">Lọc theo trạng thái:</label>
+                <select id="statusFilter" class="form-select">
+                    <option value="Tất cả">Tất cả</option>
+                    <option value="Đã đặt">Đã đặt</option>
+                    <option value="Đã khám">Đã khám</option>
+                    <option value="Đã hủy">Đã hủy</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 col-sm-6">
+                <label class="fw-semibold">Tìm kiếm theo bác sĩ hoặc lý do:</label>
+                <input id="searchInput" type="text" class="form-control" placeholder="Nhập từ khóa tìm kiếm...">
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="booking-table-wrapper">
+        <table class="table table-hover align-middle" id="appointmentsTable">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Ngày</th>
+                    <th>Ca</th>
+                    <th>Bác sĩ</th>
+                    <th>Phòng</th>
+                    <th>Lý do</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="apptTableBody"></tbody>
+        </table>
+    </div>
+    <!-- Phân trang -->
+    <div class="d-flex justify-content-center align-items-center mt-3">
+        <button id="prevPage" class="btn btn-outline-primary btn-sm mr-2">← Trước</button>
+        <span id="pageInfo" class="fw-bold text-primary mx-2"></span>
+        <button id="nextPage" class="btn btn-outline-primary btn-sm ml-2">Sau →</button>
+    </div>
+
+    <!-- EMPTY -->
+    <div id="emptyMessage" class="alert alert-info text-center d-none">
+        <i class="fa-solid fa-circle-info"></i> Bạn chưa có lịch hẹn nào.
+    </div>
+
+</div>
+
+<!-- Patient Confirm Cancel Appointment -->
+<div class="modal fade" id="confirmCancelModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+
+            <!-- Header -->
+            <div class="modal-header border-0 rounded-top-4" style="background-color: #45c3d2;">
+                <h5 class="modal-title text-white fw-bold">
+                    <i class="fa-solid fa-circle-exclamation mr-2"></i>
+                    Xác nhận hủy lịch khám
+                </h5>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body text-center px-4">
+                <input type="hidden" id="cancelApptId" />
+
+                <p class="mb-4" style="font-size: 16px;">
+                    Bạn có chắc chắn muốn hủy lịch khám này không?<br />
+                    Hành động này không thể hoàn tác.
+                </p>
+
+                <!-- Icon -->
+                <div class="mb-4">
+                    <i class="fa-solid fa-calendar-xmark" style="font-size: 48px; color: #ff4d4f;"></i>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-outline-secondary px-4 py-2 rounded-pill" data-dismiss="modal">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Quay lại
+                    </button>
+
+                    <button id="confirmCancelBtn" class="btn px-4 py-2 rounded-pill text-white"
+                            style="background-color: #ff4d4f;">
+                        <i class="fa-solid fa-check mr-1"></i> Xác nhận hủy
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/js/patient_bookingHistory.js" asp-append-version="true"></script>
+}
+@section styles {
+    <link rel="stylesheet" href="~/css/historybooking.css" asp-append-version="true" />
+}

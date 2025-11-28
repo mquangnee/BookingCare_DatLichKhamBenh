@@ -50,7 +50,7 @@ namespace BookingCare.Areas.Admin.Controllers.Api
 
             //Lấy danh sách hiển thị ở trang muốn xem
             var data = await doctors
-                            .OrderBy(d => d.Doctor.Id)
+                            .OrderByDescending(d => d.Doctor.Id)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Select(u => new UserDtos
@@ -63,8 +63,7 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                                 CreatedAt = u.CreatedAt,
                                 UpdatedAt = u.UpdatedAt,
                                 IsLocked = u.LockoutEnd
-                            })
-                            .ToListAsync();
+                            }).ToListAsync();
 
             return Ok(new { totalDoctors, data });
         }
@@ -273,7 +272,7 @@ namespace BookingCare.Areas.Admin.Controllers.Api
 
             //Lấy danh sách hiển thị ở trang muốn xem
             var data = await patients
-                            .OrderBy(d => d.Patient.Id)
+                            .OrderByDescending(d => d.Patient.Id)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Select(u => new UserDtos

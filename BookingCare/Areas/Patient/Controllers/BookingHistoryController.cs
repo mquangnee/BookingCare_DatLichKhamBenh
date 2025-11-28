@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BookingCare.Areas.Patients.Controllers
 {
     [Area("Patient")]
-    public class HistoryBookingController : Controller
+    [Authorize(Roles = "Patient")]
+    public class BookingHistoryController : Controller
     {
         public IActionResult Index()
         {
