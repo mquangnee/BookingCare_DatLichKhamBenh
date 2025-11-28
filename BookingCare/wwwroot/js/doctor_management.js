@@ -1,7 +1,7 @@
 ﻿let currentPage = 1; //Trang hiện tại
 const pageSize = 10; //Mỗi trang 10 dòng
 let totalPages = 1; //Tổng số trang (sẽ tính lại sau khi gọi API)
-let doctorKeyword = "";  // từ khóa dùng cho search + phân trang
+let doctorKeyword = "";  //Từ khóa dùng cho search + phân trang
 
 const tableBody = document.getElementById("doctorTableBody");
 const prevBtn = document.getElementById("prevPage");
@@ -13,9 +13,10 @@ const modalDoctor = document.querySelector("#doctorModal #modalDoctor");
 //Gọi API và render dữ liệu
 async function loadDoctors(page = 1, keyword = doctorKeyword) {
     try {
-        doctorPage = page;
+        currentPage = page;
         doctorKeyword = keyword;
 
+        //Gửi yêu cầu lấy dữ liệu về server
         const res = await fetch(`/Admin/api/UserApi/doctors?page=${page}&pageSize=${pageSize}&search=${doctorKeyword}`);
         const result = await res.json();
 
