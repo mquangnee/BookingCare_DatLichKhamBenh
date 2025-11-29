@@ -1,0 +1,59 @@
+﻿.booking-bg {
+    padding: 50px 0;
+}
+
+/* Form card chính */
+.booking-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 30px 35px;
+    border: 1px solid #e1eef3;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    max-width: 760px;
+    margin: auto;
+    animation: fadeIn 0.35s ease-in-out;
+}
+
+/* Tiêu đề */
+.booking-title {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: #45c3d2;
+    margin-bottom: 8px;
+}
+
+/* Các label */
+.booking-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #45c3d2;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Select + Input */
+.booking-control {
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.92rem;
+    border: 1px solid #cfdde3;
+}
+
+.booking-control:focus {
+    border-color: #45c3d2;
+    box-shadow: 0 0 0 3px rgba(69, 195, 210, 0.15);
+}
+
+/* Nút đặt lịch */
+.booking-btn {
+    width: 100%;
+    border-radius: 10px;
+    background-color: #45c3d2;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+}

@@ -2,9 +2,13 @@
 using BookingCare.Models;
 using BookingCare.Repository;
 using BookingCare.Services;
+using BookingCare.Services.Background;
+using BookingCare.Services.Email;
+using BookingCare.Services.Hubs;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingCare
@@ -44,9 +48,13 @@ namespace BookingCare
                 options.Password.RequiredUniqueChars = 1; //Số ký tự đặc biệt
             });
 
+            //Đăng ký config
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
             //Cấu hình dịch vụ email
             builder.Services.AddMemoryCache();
             builder.Services.AddTransient<IEmailSender, EmailSender>();
+            builder.Services.AddScoped<IEmailTemplate, EmailTemplate>();
             builder.Services.AddTransient<OtpService>();
 
             // Thêm dịch vụ Session
@@ -56,6 +64,16 @@ namespace BookingCare
                 options.IdleTimeout = TimeSpan.FromMinutes(30); // Thời gian tồn tại của session
                 options.Cookie.HttpOnly = true; // Không cho client script truy cập cookie
                 options.Cookie.IsEssential = true; // Bắt buộc có cookie ngay cả khi user từ chối cookie
+            });
+
+            //Thêm dịch vụ SignalR, Hosted Service
+            builder.Services.AddSignalR();
+            builder.Services.AddHostedService<AppointmentStatusService>();
+
+            //Tắt auto validation
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
             });
 
             var app = builder.Build();
@@ -87,11 +105,20 @@ namespace BookingCare
             app.UseAuthentication();
             app.UseAuthorization();
 
+            //---Cấu hình SignalR---
+            app.MapHub<AppointmentHub>("/appointmentHub");
+
             //---Cài đặt Route cho Project---
             //Route cho Area Admin
-            app.MapControllerRoute(
+            app.MapAreaControllerRoute(
                 name: "Admin",
-                pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
+                areaName: "Admin",
+                pattern: "Admin/{controller=Dashboard}/{action=Index}/{id?}");
+            //Route cho Area Patient
+            app.MapAreaControllerRoute(
+                name: "Patient",
+                areaName: "Patient",
+                pattern: "Patient/{controller=Home}/{action=Index}/{id?}");
             //Route mặc định
             app.MapControllerRoute(
                 name: "default",

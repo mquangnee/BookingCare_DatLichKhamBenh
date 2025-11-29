@@ -12,7 +12,7 @@ namespace BookingCare.Models
         [StringLength(15)]
         public string Gender { get; set; }
         [Required]
-        public DateOnly BirthOfDate { get; set; }
+        public DateOnly DateOfBirth { get; set; }
         [Required]
         [StringLength(200)]
         public string Address { get; set; }

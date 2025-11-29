@@ -35,15 +35,15 @@ namespace BookingCare.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<DateOnly>("BirthOfDate")
-                        .HasColumnType("date");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -204,6 +204,9 @@ namespace BookingCare.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Function")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -223,6 +226,9 @@ namespace BookingCare.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

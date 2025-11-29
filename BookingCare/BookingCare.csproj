@@ -7,15 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Areas\Patient\**" />
-    <Content Remove="Areas\Patient\**" />
-    <EmbeddedResource Remove="Areas\Patient\**" />
-    <None Remove="Areas\Patient\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.20" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.20" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.20" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.20" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.20">
