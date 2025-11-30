@@ -34,5 +34,10 @@
 
         //****Nhắc nhở lịch hẹn sắp tới****
         string GetAppointmentReminderEmailBody(string fullName, string appointmentTime, string doctorName, string roomName);
+
+        //****Đôi mật khẩu****
+        string getChangePasswordOtpEmailBody(string fullName, string otp);
+        string getChangePasswordSuccessEmailBody(string fullName);
+        string getResendChangePassOtpEmailBody(string otp);
     }
 }

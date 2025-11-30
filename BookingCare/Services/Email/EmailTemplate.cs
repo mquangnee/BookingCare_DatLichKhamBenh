@@ -360,5 +360,74 @@ namespace BookingCare.Services.Email
                 </div>";
         }
 
+        //****Đổi mật khẩu****
+        public string getChangePasswordOtpEmailBody(string fullName, string otp)
+        {
+            return $@"<div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
+                        <div style='max-width: 500px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px;'>
+                            <h2 style='color: #45c3d2; text-align: center; margin-bottom: 20px;'>Xác thực đổi mật khẩu BookingCare</h2>
+                            <p>Xin chào <strong>{fullName}</strong>,</p>
+                            <p>Bạn đã yêu cầu <strong>đổi mật khẩu</strong> cho tài khoản BookingCare của mình.</p>
+                            <p style='margin-top: 15px;'>
+                                Mã OTP của bạn là:
+                            </p>
+                            <p style='font-size: 22px; text-align: center; margin: 15px 0;'>
+                                <strong style='color: #e63946; letter-spacing: 2px;'>{otp}</strong>
+                            </p>
+                            <p style='text-align: center; color: #555;'>Mã có hiệu lực trong <strong>5 phút</strong>.</p>
+                            <hr style='margin: 20px 0; border: none; border-top: 1px solid #eee;' />
+                            <p style='font-size: 14px; color: #666; text-align: center;'>
+                                Nếu bạn không yêu cầu đổi mật khẩu, vui lòng bỏ qua email này.<br/>
+                                Trân trọng,<br/>
+                                <strong style='color: #45c3d2;'>Đội ngũ BookingCare</strong>
+                            </p>
+                        </div>
+                    </div>";
+        }
+
+        //****Đổi mật khẩu thành công****
+        public string getChangePasswordSuccessEmailBody(string fullName)
+        {
+            return $@"<div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
+                <div style='max-width: 500px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px;'>
+                    <h2 style='color: #45c3d2; text-align: center; margin-bottom: 20px;'>Đổi mật khẩu thành công</h2>
+                    <p>Xin chào <strong>{fullName}</strong>,</p>
+                    <p>Bạn đã <strong>đổi mật khẩu</strong> tài khoản BookingCare thành công.</p>
+                    <p style='color: #555;'>
+                        Bạn có thể đăng nhập lại bằng mật khẩu mới để tiếp tục sử dụng các dịch vụ của BookingCare.
+                    </p>
+                    <hr style='margin: 25px 0; border: none; border-top: 1px solid #eee;' />
+                    <p style='font-size: 14px; color: #666; text-align: center;'>
+                        Trân trọng,<br/>
+                        <strong style='color: #45c3d2;'>Đội ngũ BookingCare</strong>
+                    </p>
+                </div>
+            </div>";
+        }
+
+        //****Gửi lại OTP(đổi mật khẩu)****
+        public string getResendChangePassOtpEmailBody(string otp)
+        {
+            return $@"<div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
+                    <div style='max-width: 500px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px;'>
+                        <h2 style='color: #45c3d2; text-align: center; margin-bottom: 20px;'>Đổi mật khẩu BookingCare</h2>
+                        <p>Xin chào,</p>
+                        <p>Bạn đã yêu cầu <strong>đổi mật khẩu</strong> cho tài khoản BookingCare của mình.</p>
+                        <p style='margin-top: 15px;'>
+                            Mã OTP của bạn là:
+                        </p>
+                        <p style='font-size: 22px; text-align: center; margin: 15px 0;'>
+                            <strong style='color: #e63946; letter-spacing: 2px;'>{otp}</strong>
+                        </p>
+                        <p style='text-align: center; color: #555;'>Mã có hiệu lực trong <strong>5 phút</strong>.</p>
+                        <hr style='margin: 20px 0; border: none; border-top: 1px solid #eee;' />
+                        <p style='font-size: 14px; color: #666; text-align: center;'>
+                            Nếu bạn không yêu cầu đổi mật khẩu, vui lòng bỏ qua email này.<br/>
+                            Trân trọng,<br/>
+                            <strong style='color: #45c3d2;'>Đội ngũ BookingCare</strong>
+                        </p>
+                    </div>
+                </div>";
+        }
     }
 }
