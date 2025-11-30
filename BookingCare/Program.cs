@@ -69,6 +69,7 @@ namespace BookingCare
             //Thêm dịch vụ SignalR, Hosted Service
             builder.Services.AddSignalR();
             builder.Services.AddHostedService<AppointmentStatusService>();
+            builder.Services.AddHostedService<AppointmentNotificationService>();
 
             //Tắt auto validation
             builder.Services.Configure<ApiBehaviorOptions>(options =>

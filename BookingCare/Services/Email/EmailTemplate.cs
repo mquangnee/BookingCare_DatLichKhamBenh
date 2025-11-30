@@ -266,5 +266,99 @@ namespace BookingCare.Services.Email
                 </div>";
         }
 
+        //****Chỉnh sửa thông tin cá nhân bệnh nhân****
+        public string GetPatientUpdatedInfoEmailBody(string fullName, string email)
+        {
+            return $@"<div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
+                    <div style='max-width: 550px; margin: auto; background: #fff; border-radius: 10px;
+                                box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px;'>
+                        <h2 style='color: #45c3d2; text-align: center; margin-bottom: 20px;'>
+                            Cập nhật thông tin cá nhân thành công
+                        </h2>
+                        <p>Xin chào <strong>{fullName}</strong>,</p>
+                        <p>
+                            Bạn đã cập nhật thông tin cá nhân của mình trên hệ thống 
+                            <strong>BookingCare</strong> thành công.
+                        </p>
+                        <p>
+                            Việc cập nhật thông tin giúp chúng tôi phục vụ bạn tốt hơn trong quá trình 
+                            đặt lịch và khám chữa bệnh.
+                        </p>
+                        <p>
+                            Nếu bạn không thực hiện thao tác này hoặc có điều gì bất thường, 
+                            vui lòng liên hệ với bộ phận hỗ trợ ngay lập tức để được trợ giúp.
+                        </p>
+                        <hr style='margin: 25px 0; border: none; border-top: 1px solid #eee;' />
+                        <p style='font-size: 14px; color: #666; text-align: center;'>
+                            Trân trọng,<br/>
+                            <strong style='color: #45c3d2;'>Đội ngũ BookingCare</strong>
+                        </p>
+                    </div>
+                </div>";
+        }
+
+        //****Thông báo lịch hẹn trong ngày****
+        public string GetDailyAppointmentSummaryEmailBody(string fullName, string appointmentsHtml)
+        {
+            return $@"<div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
+                    <div style='max-width: 550px; margin: auto; background: #fff; border-radius: 10px;
+                                box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px;'>
+                        <h2 style='color: #45c3d2; text-align: center; margin-bottom: 20px;'>
+                            Lịch hẹn trong ngày của bạn
+                        </h2>
+                        <p>Xin chào <strong>{fullName}</strong>,</p>
+                        <p>
+                            Đây là danh sách các lịch hẹn của bạn trong ngày hôm nay trên hệ thống 
+                            <strong>BookingCare</strong>. Vui lòng kiểm tra chi tiết và sắp xếp thời gian phù hợp.
+                        </p>
+                        <div style='margin: 20px 0;'>
+                            {appointmentsHtml}
+                        </div>
+                        <p>
+                            Nếu bạn cần thay đổi hoặc hủy lịch hẹn, vui lòng truy cập trang lịch hẹn của mình
+                            hoặc liên hệ bộ phận hỗ trợ.
+                        </p>
+                        <hr style='margin: 25px 0; border: none; border-top: 1px solid #eee;' />
+                        <p style='font-size: 14px; color: #666; text-align: center;'>
+                            Trân trọng,<br/>
+                            <strong style='color: #45c3d2;'>Đội ngũ BookingCare</strong>
+                        </p>
+                    </div>
+                </div>";
+        }
+
+        //****Nhắc lịch hẹn sắp diễn ra****
+        public string GetAppointmentReminderEmailBody(string fullName, string appointmentTime, string doctorName, string roomName)
+        {
+            return $@"<div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
+                    <div style='max-width: 550px; margin: auto; background: #fff; border-radius: 10px;
+                                box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px;'>
+                        <h2 style='color: #45c3d2; text-align: center; margin-bottom: 20px;'>
+                            Nhắc lịch hẹn sắp diễn ra
+                        </h2>
+                        <p>Xin chào <strong>{fullName}</strong>,</p>
+                        <p>
+                            Đây là email nhắc nhở rằng bạn có một lịch hẹn sẽ diễn ra trong 
+                            <strong>30 phút nữa</strong>.
+                        </p>
+                        <div style='margin: 20px 0; padding: 15px; background: #f1f9ff;
+                                    border-left: 4px solid #45c3d2; border-radius: 5px;'>
+                            <p><strong>Thời gian:</strong> {appointmentTime}</p>
+                            <p><strong>Bác sĩ:</strong> {doctorName}</p>
+                            <p><strong>Phòng khám:</strong> {roomName}</p>
+                        </div>
+                        <p>
+                            Vui lòng đến đúng giờ để quá trình khám diễn ra thuận lợi. 
+                            Nếu bạn không thể tham gia, hãy hủy hoặc đổi lịch sớm để hệ thống sắp xếp lại.
+                        </p>
+                        <hr style='margin: 25px 0; border: none; border-top: 1px solid #eee;' />
+                        <p style='font-size: 14px; color: #666; text-align: center;'>
+                            Trân trọng,<br/>
+                            <strong style='color: #45c3d2;'>Đội ngũ BookingCare</strong>
+                        </p>
+                    </div>
+                </div>";
+        }
+
     }
 }

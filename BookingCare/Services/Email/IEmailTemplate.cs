@@ -25,5 +25,14 @@
 
         //****Đặt lịch khám bệnh thành công****
         string getBookingSuccessEmailBody(string fullName, string doctorName, string specialtyName, DateOnly appointmentDate, string appointmentTime, string room, int bookingCode);
+
+        //****Cập nhật thông tin cá nhân bệnh nhân****
+        string GetPatientUpdatedInfoEmailBody(string fullName, string email);
+
+        //****Thông báo lịch hẹn trong ngày****
+        string GetDailyAppointmentSummaryEmailBody(string fullName, string appointmentsHtml);
+
+        //****Nhắc nhở lịch hẹn sắp tới****
+        string GetAppointmentReminderEmailBody(string fullName, string appointmentTime, string doctorName, string roomName);
     }
 }

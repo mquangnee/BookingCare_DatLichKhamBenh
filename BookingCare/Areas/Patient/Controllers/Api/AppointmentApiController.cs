@@ -26,21 +26,59 @@ namespace BookingCare.Areas.Patient.Controllers.Api
             //Danh sách kiểm tra
             var result = new List<object> ();
 
-            foreach (var time in timeSlot)
+            //Ngày hôm nay
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            if (bookingDate == today)
             {
-                var count = await _dbContext.Appointments.Where(a => a.DoctorId == doctorId && a.AppointmentDate == bookingDate && a.AppointmentTime == time).CountAsync();
-                
-                bool check = false;
-                if (count < 3)
+                var currentTime = TimeOnly.FromDateTime(DateTime.Now);
+                foreach (var time in timeSlot)
                 {
-                    check = true;
-                }
+                    bool check = false;
+                    var parts = time.Split("-");
+                    var startTime = TimeOnly.Parse(parts[0]);
 
-                result.Add(new
+                    //Kiểm tra qua ca khám chưa
+                    if (currentTime > startTime)
+                    {
+                        result.Add(new
+                        {
+                            timeSlot = time,
+                            check
+                        });
+                    }
+                    else
+                    {
+                        //Kiểm tra đã hết slot trong ca khám chưa
+                        var count = await _dbContext.Appointments.Where(a => a.DoctorId == doctorId && a.AppointmentDate == bookingDate && a.AppointmentTime == time).CountAsync();
+                        if (count < 3)
+                        {
+                            check = true;
+                        }
+                        result.Add(new
+                        {
+                            timeSlot = time,
+                            check
+                        });
+                    }
+                }          
+            }
+            else
+            {
+                foreach (var time in timeSlot)
                 {
-                    timeSlot = time,
-                    check
-                });
+                    bool check = false;
+                    //Kiểm tra đã hết slot trong ca khám chưa
+                    var count = await _dbContext.Appointments.Where(a => a.DoctorId == doctorId && a.AppointmentDate == bookingDate && a.AppointmentTime == time).CountAsync();
+                    if (count < 3)
+                    {
+                        check = true;
+                    }
+                    result.Add(new
+                    {
+                        timeSlot = time,
+                        check
+                    });
+                }
             }
             return Ok(result);
         }
@@ -53,21 +91,59 @@ namespace BookingCare.Areas.Patient.Controllers.Api
             //Danh sách kiểm tra
             var result = new List<object>();
 
-            foreach (var time in timeSlot)
+            //Ngày hôm nay
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            if (bookingDate == today)
             {
-                var count = await _dbContext.Appointments.Where(a => a.DoctorId == doctorId && a.AppointmentDate == bookingDate && a.AppointmentTime == time).CountAsync();
-
-                bool check = false;
-                if (count < 3)
+                var currentTime = TimeOnly.FromDateTime(DateTime.Now);
+                foreach (var time in timeSlot)
                 {
-                    check = true;
+                    bool check = false;
+                    var parts = time.Split("-");
+                    var startTime = TimeOnly.Parse(parts[0]);
+
+                    //Kiểm tra qua ca khám chưa
+                    if (currentTime > startTime)
+                    {
+                        result.Add(new
+                        {
+                            timeSlot = time,
+                            check
+                        });
+                    }
+                    else
+                    {
+                        //Kiểm tra đã hết slot trong ca khám chưa
+                        var count = await _dbContext.Appointments.Where(a => a.DoctorId == doctorId && a.AppointmentDate == bookingDate && a.AppointmentTime == time).CountAsync();
+                        if (count < 3)
+                        {
+                            check = true;
+                        }
+                        result.Add(new
+                        {
+                            timeSlot = time,
+                            check
+                        });
+                    }
                 }
-
-                result.Add(new
+            }
+            else
+            {
+                foreach (var time in timeSlot)
                 {
-                    timeSlot = time,
-                    check
-                });
+                    bool check = false;
+                    //Kiểm tra đã hết slot trong ca khám chưa
+                    var count = await _dbContext.Appointments.Where(a => a.DoctorId == doctorId && a.AppointmentDate == bookingDate && a.AppointmentTime == time).CountAsync();
+                    if (count < 3)
+                    {
+                        check = true;
+                    }
+                    result.Add(new
+                    {
+                        timeSlot = time,
+                        check
+                    });
+                }
             }
             return Ok(result);
         }
