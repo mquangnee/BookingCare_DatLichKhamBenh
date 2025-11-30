@@ -1,67 +1,77 @@
-﻿document.addEventListener("DOMContentLoaded", async function () {
+﻿//Lấy các phần tử từ DOM
+const formUpdateInfo = document.getElementById("updateInfor");
+const fullName = document.getElementById("fullName");
+const dateOfBirth = document.getElementById("dateOfBirth");
+const address = document.getElementById("address");
+const phoneNumber = document.getElementById("phoneNumber");
+const medicalHistory = document.getElementById("medicalHistory");
+const maleRadio = document.getElementById("male");
+const femaleRadio = document.getElementById("female");
+
+//Load thông tin bệnh nhân vào form
+document.addEventListener("DOMContentLoaded", async function () {
     try {
-        const res = await fetch('/data/dataCurrentUser.json');
-        if (!res.ok) throw new Error("Không thể tải dữ liệu JSON");
-
-        const json = await res.json();
-        const patient = json.patient;
-
-        console.log("Dữ liệu bệnh nhân:", patient);
-
-        document.getElementById("hoTen").value = patient.FullName || "";
-        document.getElementById("ngaySinh").value = patient.BirthOfDate || "";
-        document.getElementById("diaChi").value = patient.Address || "";
-        document.getElementById("soDienThoai").value = patient.PhoneNumber || "";
-        document.getElementById("email").value = patient.Email || "";
-
-        if (patient.Gender === "Nam") {
-            document.getElementById("nam").checked = true;
-        } else {
-            document.getElementById("nu").checked = true;
+        //Gọi API để lấy thông tin bệnh nhân
+        const res = await fetch('/Patient/api/AccountManagementApi/accountManagement');
+        if (!res.ok) {
+            alert("Lỗi khi tải dữ liệu bệnh nhân!");
+            return;
         }
 
-    } catch (err) {
-        alert("❌ Không thể kết nối cơ sở dữ liệu, vui lòng thử lại!");
-        console.error("Lỗi load JSON:", err);
-    }
-});
+        //Xử lý dữ liệu trả về
+        const data = await res.json();
 
-document.getElementById("updateinfor").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const PatientUpdate = {
-        "FullName": document.getElementById("hoTen").value,
-        "BirthOfDate": document.getElementById("ngaySinh").value,
-        "Address": document.getElementById("diaChi").value,
-        "PhoneNumber": document.getElementById("soDienThoai").value,
-        "Email": document.getElementById("email").value,
-        "Gender": document.getElementById("nam").checked ? "Nam" : "Nữ"
-    };
-
-    console.log(" Dữ liệu gửi cập nhật:", PatientUpdate);
-
-    try {
-        const res = await fetch('/Patients/Update', { 
-            method: "PATCH",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(PatientUpdate)
-        });
-
-        if (!res.ok) {
-            alert(" Cập nhật dữ liệu không thành công!");
-            console.error("Lỗi cập nhật:", await res.text());
+        //Hiển thị thông tin lên form
+        fullName.value = data.fullName;
+        dateOfBirth.value = data.dateOfBirth;
+        address.value = data.address;
+        phoneNumber.value = data.phoneNumber;
+        medicalHistory.value = data.medicalHistory ? data.medicalHistory : "Chưa có tiền sử bệnh án."; 
+        if (data.gender == "Nam") {
+            maleRadio.checked = true;
         } else {
-            alert(" Cập nhật dữ liệu thành công!");
+            femaleRadio.checked = true;
         }
     } catch (error) {
-        alert("⚠️ Lỗi khi gửi yêu cầu cập nhật!");
-        console.error("Lỗi fetch PATCH:", error);
+        console.error("Lỗi:", error);
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.");
     }
 });
-document.getElementById("buttonReset").addEventListener("onClick", (e) => {
+
+//Cập nhật thông tin bệnh nhân
+formUpdateInfo.addEventListener("submit", async function (e) {
     e.preventDefault();
-    document.getElementById("hoTen").value = "";
-    document.getElementById("ngaySinh").value =  "";
-    document.getElementById("diaChi").value = "";
-    document.getElementById("soDienThoai").value =  "";
-    document.getElementById("email").value =  "";
-})
+
+    //Tạo đối tượng chứa dữ liệu cập nhật
+    var patientUpdate = {
+        fullName: fullName.value,
+        gender: maleRadio.checked ? "Nam" : "Nữ",
+        dateOfBirth: dateOfBirth.value,
+        address: address.value,
+        phoneNumber: phoneNumber.value,
+        medicalHistory: medicalHistory.value
+    };
+    try {
+        //Gửi yêu cầu về server để cập nhật thông tin bệnh nhân
+        const res = await fetch('/Patient/api/AccountManagementApi/updateInfor', { 
+            method: "PUT",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(patientUpdate)
+        });
+
+        //Xử lý phản hồi từ server và hiển thị thông báo
+        const result = await res.json();
+        alert(result.message);
+    } catch (error) {
+        console.error("Lỗi:", error);
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.");
+    }
+});
+//document.getElementById("buttonReset").addEventListener("onClick", (e) => {
+//    e.preventDefault();
+//    document.getElementById("hoTen").value = "";
+//    document.getElementById("ngaySinh").value =  "";
+//    document.getElementById("diaChi").value = "";
+//    document.getElementById("soDienThoai").value =  "";
+//    document.getElementById("email").value =  "";
+//})

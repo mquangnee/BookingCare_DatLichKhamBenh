@@ -105,7 +105,7 @@ namespace BookingCare.Areas.Admin.Controllers.Api
 
                 // Đếm theo trạng thái
                 int waitingCount = recentAppointments.Count(a => a.Status == "Chờ khám");
-                int successCount = recentAppointments.Count(a => a.Status == "Đã khám");
+                int successCount = recentAppointments.Count(a => a.Status == "Hoàn thành");
                 int canceledCount = recentAppointments.Count(a => a.Status == "Đã hủy");
                 var totalCount = recentAppointments.Count();
 

@@ -1,19 +1,21 @@
 ﻿using BookingCare.Repository;
+using BookingCare.Services.Email;
 using BookingCare.Services.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace BookingCare.Services.Background
 {
     public class AppointmentStatusService : BackgroundService
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly IHubContext<AppointmentHub> _appointmentHubContext;
+        private readonly IHubContext<AppointmentHub> _hub;
 
-        public AppointmentStatusService(IServiceProvider serviceProvider, IHubContext<AppointmentHub> appointmentHubContext)
+        public AppointmentStatusService(IServiceProvider serviceProvider, IHubContext<AppointmentHub> hub)
         {
             _serviceProvider = serviceProvider;
-            _appointmentHubContext = appointmentHubContext;
+            _hub = hub;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -55,12 +57,12 @@ namespace BookingCare.Services.Background
                 if (appt.Status == "Chờ khám" && (now > start || now < end))
                 {
                     appt.Status = "Đang khám";
-                    await _appointmentHubContext.Clients.All.SendAsync("StatusChanged", appt.Id, "Đang khám"); //Gửi về client với trạng thái mới
+                    await _hub.Clients.All.SendAsync("StatusChanged", appt.Id, "Đang khám"); //Gửi về client với trạng thái mới
                 }
                 if (appt.Status == "Đang khám" && now > end)
                 {
                     appt.Status = "Hoàn thành";
-                    await _appointmentHubContext.Clients.All.SendAsync("StatusChanged", appt.Id, "Hoàn thành"); //Gửi về client với trạng thái mới
+                    await _hub.Clients.All.SendAsync("StatusChanged", appt.Id, "Hoàn thành"); //Gửi về client với trạng thái mới
                 }
             }
             //Lưu xuống db

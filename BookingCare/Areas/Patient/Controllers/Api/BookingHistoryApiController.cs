@@ -1,10 +1,8 @@
 ﻿using BookingCare.Models;
 using BookingCare.Models.DTOs;
 using BookingCare.Repository;
-using BookingCare.Services.Email;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,15 +16,11 @@ namespace BookingCare.Areas.Patient.Controllers.Api
     {
         private readonly DataContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IEmailSender _emailSender;
-        private readonly IEmailTemplate _emailTemplate;
 
-        public BookingHistoryApiController(DataContext dbContext, UserManager<ApplicationUser> userManager, IEmailSender emailSender, IEmailTemplate emailTemplate)
+        public BookingHistoryApiController(DataContext dbContext, UserManager<ApplicationUser> userManager)
         {
             _dbContext = dbContext;
             _userManager = userManager;
-            _emailSender = emailSender;
-            _emailTemplate = emailTemplate;
         }
 
         //Lấy danh sách lịch đặt
@@ -72,22 +66,26 @@ namespace BookingCare.Areas.Patient.Controllers.Api
             var totalAppt = await appointments.CountAsync();
 
             //Lấy danh sách hiển thị ở trang muốn xem
-            var data = await appointments
-                            .OrderByDescending(a => a.AppointmentDate)
-                            .Skip((page - 1) * pageSize)
-                            .Take(pageSize)
-                            .Select(a => new BookingHistoryDtos
-                            {
-                                AppointmentId = a.Id,
-                                AppointmentDate = a.AppointmentDate,
-                                AppointmentTime = a.AppointmentTime,
-                                ReasonForVisit = a.ReasonForVisit,
-                                Status = a.Status,
-                                DoctorId = a.DoctorId,
-                                DoctorName = a.Doctor.User.FullName,
-                                RoomId = a.Doctor.RoomId,
-                                RoomName = a.Doctor.Room.Name
-                            }).ToListAsync();
+            var data = appointments
+                        .AsEnumerable() // Chuyển sang chạy trên bộ nhớ
+                        .OrderByDescending(a => a.AppointmentDate)
+                        .ThenBy(a =>
+                            TimeSpan.Parse(a.AppointmentTime.Split('-')[0].Trim()))
+                        .Skip((page - 1) * pageSize)
+                        .Take(pageSize)
+                        .Select(a => new BookingHistoryDtos
+                        {
+                            AppointmentId = a.Id,
+                            AppointmentDate = a.AppointmentDate,
+                            AppointmentTime = a.AppointmentTime,
+                            ReasonForVisit = a.ReasonForVisit,
+                            Status = a.Status,
+                            DoctorId = a.DoctorId,
+                            DoctorName = a.Doctor.User.FullName,
+                            RoomId = a.Doctor.RoomId,
+                            RoomName = a.Doctor.Room.Name
+                        })
+                        .ToList();
             return Ok(new { totalAppt, data });
         }
 

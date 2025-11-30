@@ -58,13 +58,13 @@ async function loadAppointmentPieChart() {
                     label: "Lịch khám (10 ngày gần nhất)",
                     data: [data.waitingCount, data.successCount, data.canceledCount],
                     backgroundColor: [
-                        "rgba(75, 192, 192, 0.8)", // xanh ngọc
                         "rgba(255, 205, 86, 0.8)",  // vàng
+                        "rgba(75, 192, 192, 0.8)", // xanh ngọc
                         "rgba(255, 99, 132, 0.8)"   // đỏ
                     ],
                     borderColor: [
-                        "rgba(75, 192, 192, 1)",
                         "rgba(255, 205, 86, 1)",
+                        "rgba(75, 192, 192, 1)",
                         "rgba(255, 99, 132, 1)"
                     ],
                     borderWidth: 1

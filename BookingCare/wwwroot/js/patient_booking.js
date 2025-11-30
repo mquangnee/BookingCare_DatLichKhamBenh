@@ -1,35 +1,4 @@
-﻿let chuyenKhoaData = [];
-let bacSiData = [];
-let roomData = [];
-let bookingData = [];
-
-/*fetch('/data/dataBooking.json')
-    .then(res => res.json())
-    .then(data => {
-        chuyenKhoaData = data.specialties.map(khoa => ({
-            id: khoa.id,
-            ten: khoa.name
-        }));
-
-        bacSiData = data.doctors.map(bs => ({
-            id: bs.id,
-            ten: bs.name, 
-            chuyenKhoaId: bs.specialtyId,
-            roomId: bs.roomId
-        }));
-
-        roomData = data.rooms;
-        bookingData = data.appointments.map(a => ({
-            doctorId: a.doctorId, 
-            roomId: a.roomId,   
-            date: a.Appointment_date,
-            time: a.Appointment_time
-        }));
-        loadChuyenKhoa();
-    })
-    .catch(err => console.error("Lỗi load JSON:", err));*/
-
-//Load dropdown chuyên khoa khi load trang xong
+﻿//Load dropdown chuyên khoa khi load trang xong
 document.addEventListener("DOMContentLoaded", async function () {
     loadSpecialty();
 });

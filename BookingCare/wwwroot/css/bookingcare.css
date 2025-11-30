@@ -95,3 +95,14 @@
     width: auto; /* giữ tỷ lệ ảnh */
     border-radius: 12px; /* bo góc */
 }
+
+.navbar .dropdown-menu.dropdown-menu-right {
+    right: 0 !important;
+    left: auto !important;
+    transform: translateX(-10px); 
+}
+
+.navbar .dropdown-menu {
+    max-width: 200px;
+    overflow-wrap: break-word;
+}
