@@ -67,11 +67,3 @@ formUpdateInfo.addEventListener("submit", async function (e) {
         alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.");
     }
 });
-//document.getElementById("buttonReset").addEventListener("onClick", (e) => {
-//    e.preventDefault();
-//    document.getElementById("hoTen").value = "";
-//    document.getElementById("ngaySinh").value =  "";
-//    document.getElementById("diaChi").value = "";
-//    document.getElementById("soDienThoai").value =  "";
-//    document.getElementById("email").value =  "";
-//})

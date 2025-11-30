@@ -7,12 +7,15 @@ namespace BookingCare.Areas.Patients.Controllers
     [Authorize(Roles = "Patient")]
     public class AccountManagerController : Controller
     {
-    
         public IActionResult Index()
         {
             return View();
         }
-        public IActionResult ChangePassword()
+        public IActionResult ChangePasswordStep1()
+        {
+            return View();
+        }
+        public IActionResult ChangePasswordStep2()
         {
             return View();
         }
