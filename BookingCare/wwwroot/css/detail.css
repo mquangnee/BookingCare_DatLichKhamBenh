@@ -1,104 +1,119 @@
-﻿/* Tổng thể container */
+﻿/* ============================================
+   CONTAINER – BookingCare Style
+   ============================================ */
 .container {
-    max-width: 700px;
-    margin: 50px auto;
-    padding: 30px;
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 32px;
     background: #ffffff;
     border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    border: 1px solid #d6f3ff;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    font-family: "Segoe UI", Tahoma, sans-serif;
 }
 
-/* Tiêu đề */
+/* ============================================
+   TITLE
+   ============================================ */
 .page-title {
     text-align: center;
-    color: #0d6efd;
-    margin-bottom: 25px;
-    font-size: 26px;
+    color: #0096c7; /* màu chủ đạo đậm */
+    margin-bottom: 28px;
+    font-size: 28px;
     font-weight: 700;
-    letter-spacing: 0.5px;
 }
 
-/* Bảng */
+/* ============================================
+   TABLE STYLE
+   ============================================ */
 .container table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0 10px; /* tạo khoảng giữa các row */
 }
 
 .container td {
-    padding: 10px 12px;
-    vertical-align: middle;
+    padding: 12px 0;
     font-size: 16px;
     color: #333;
+    vertical-align: middle;
 }
 
+    /* Label trong bảng */
     .container td:first-child {
         font-weight: 600;
-        color: #0d6efd;
+        color: #0096c7;
         width: 200px;
     }
 
+/* ============================================
+   LABEL “Lý do”
+   ============================================ */
 .label-text {
     font-weight: 600;
-    color: #0d6efd;
-    padding-top: 20px;
+    color: #0096c7;
+    padding-top: 25px;
+    font-size: 17px;
 }
 
-/* Textarea */
+/* ============================================
+   TEXTAREA
+   ============================================ */
 .container textarea {
     width: 100%;
-    padding: 12px 14px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    resize: vertical;
-    min-height: 100px;
+    border-radius: 12px;
+    padding: 14px;
     font-size: 15px;
-    line-height: 1.5;
-    color: #333;
-    outline: none;
-    transition: all 0.3s ease;
-    background-color: #f8f9fa;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    border: 1px solid #d6ecf8;
+    background: #f4fdff;
+    transition: 0.2s ease-in-out;
 }
 
     .container textarea:focus {
-        border-color: #0d6efd;
-        background-color: #fff;
-        box-shadow: 0 0 6px rgba(13, 110, 253, 0.3);
+        background: #ffffff;
+        border-color: #45c3d2;
+        box-shadow: 0 0 6px rgba(69, 195, 210, 0.4);
+        outline: none;
     }
 
-/* Buttons */
+/* ============================================
+   BUTTONS – BookingCare Style
+   ============================================ */
 button {
-    padding: 10px 22px;
-    border: none;
+    padding: 10px 24px;
     border-radius: 8px;
     font-size: 15px;
     font-weight: 500;
+    border: none;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: 0.25s ease;
 }
 
+/* Nút chính (primary) */
 .btn-primary {
-    background-color: #0d6efd;
+    background: #45c3d2;
     color: white;
 }
 
     .btn-primary:hover {
-        background-color: #0b5ed7;
+        background: #2baebe;
         transform: translateY(-1px);
     }
 
+/* Nút quay lại */
 .btn-secondary {
-    background-color: #6c757d;
+    background: #6c757d;
     color: white;
 }
 
     .btn-secondary:hover {
-        background-color: #5a6268;
+        background: #5a6268;
         transform: translateY(-1px);
     }
 
-/* Responsive */
+/* ============================================
+   RESPONSIVE
+   ============================================ */
 @media (max-width: 600px) {
     .container {
         padding: 20px;
@@ -107,9 +122,10 @@ button {
         .container td {
             display: block;
             width: 100%;
+            padding: 8px 0;
         }
 
             .container td:first-child {
-                color: #0d6efd;
+                margin-top: 10px;
             }
 }

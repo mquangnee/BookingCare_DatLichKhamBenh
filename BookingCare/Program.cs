@@ -120,6 +120,11 @@ namespace BookingCare
                 name: "Patient",
                 areaName: "Patient",
                 pattern: "Patient/{controller=Home}/{action=Index}/{id?}");
+            //Route cho Area Doctor
+            app.MapAreaControllerRoute(
+                name: "Doctor",
+                areaName: "Doctor",
+                pattern: "Doctor/{controller=Doctors}/{action=Index}/{id?}");
             //Route mặc định
             app.MapControllerRoute(
                 name: "default",
