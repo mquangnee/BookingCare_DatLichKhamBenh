@@ -87,6 +87,30 @@ namespace BookingCare.Models.DTOs
         public int RoomId { get; set; }
     }
 
+    //Dto lấy thông tin chi tiết bác sĩ cập nhật
+    public class DoctorInfoUpdateDtos
+    {
+        //Thông tin cơ bản
+        public string UserId { get; set; }
+        public string FullName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public DateOnly DateOfBirth { get; set; }
+        public string Gender { get; set; }
+        public string Address { get; set; }
+
+        //Thông tin chuyên ngành
+        public int DoctorId { get; set; }
+        public string Degree { get; set; }
+        public int YearsOfExp { get; set; }
+
+        //Thông tin chuyên khoa
+        public int SpecialtyId { get; set; }
+
+        //Thông tin phòng
+        public int RoomId { get; set; }
+    }
+
     //Dto cập nhật thông tin bác sĩ
     public class UpdateDoctor
     {

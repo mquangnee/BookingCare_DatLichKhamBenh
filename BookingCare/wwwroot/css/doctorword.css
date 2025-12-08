@@ -1,9 +1,145 @@
-﻿.status-Confirmed{
-    color : blue
+﻿/* ==========================================================
+   BOOKINGCARE COLORS (KHÔNG DÙNG :root)
+   ========================================================== */
+.bk-primary {
+    color: #45c3d2;
 }
-.status-Canceled {
-    color: red
+
+.bk-dark {
+    color: #0096c7;
 }
-.status-Pending {
-    color: green
+
+/* ==========================================================
+   PAGE CONTAINER
+   ========================================================== */
+.bk-container {
+    padding: 30px 50px;
+    background: #f4fdff;
+}
+
+/* ==========================================================
+   PAGE TITLE
+   ========================================================== */
+.bk-title-box {
+    margin-bottom: 25px;
+}
+
+.bk-page-title {
+    color: #0096c7;
+    font-size: 28px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* ==========================================================
+   FILTER BOX / SEARCH BOX
+   ========================================================== */
+.bk-filter-box {
+    background: #ffffff;
+    border: 1px solid #d6f3ff;
+    padding: 20px 25px;
+    border-radius: 12px;
+    margin-bottom: 28px;
+}
+
+.bk-label {
+    font-weight: 600;
+    color: #0096c7;
+}
+
+.bk-input {
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    border: 1px solid #d6ecf8 !important;
+}
+
+/* ==========================================================
+   TABLE WRAPPER
+   ========================================================== */
+.bk-table-wrapper {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid #d6f3ff;
+    overflow: hidden; /* giữ bo góc */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* TABLE */
+.bk-table {
+    width: 100%;
+    border-collapse: separate !important;
+    border-spacing: 0;
+}
+
+    /* TABLE HEADER */
+    .bk-table thead tr {
+        background: #45c3d2;
+        color: white;
+    }
+
+    .bk-table th {
+        padding: 14px !important;
+        font-weight: 600;
+        font-size: 15px;
+    }
+
+    /* BO GÓC HEADER */
+    .bk-table thead tr th:first-child {
+        border-top-left-radius: 14px;
+    }
+
+    .bk-table thead tr th:last-child {
+        border-top-right-radius: 14px;
+    }
+
+    /* TABLE BODY */
+    .bk-table td {
+        padding: 12px !important;
+        vertical-align: middle;
+        font-size: 15px;
+    }
+
+    .bk-table tbody tr {
+        background: white;
+        transition: background 0.15s;
+    }
+
+        .bk-table tbody tr:hover {
+            background: #f4fdff;
+        }
+
+/* ==========================================================
+   BADGES
+   ========================================================== */
+.badge-status {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.badge-pending {
+    background: #fff4cd;
+    color: #b88a00;
+}
+
+.badge-confirmed {
+    background: #dafbe4;
+    color: #0e7a33;
+}
+
+.badge-canceled {
+    background: #ffe0e0;
+    color: #c10000;
+}
+
+/* ==========================================================
+   BUTTONS
+   ========================================================== */
+.btn-cancel {
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
 }

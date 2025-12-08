@@ -1,42 +1,65 @@
 ﻿@{
     ViewData["Title"] = "DoctorWorkStay";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "_Layout";
 }
+
 <link rel="stylesheet" href="~/css/doctorword.css" asp-append-version="true" />
 
-<div class="container">
-    <h2 class="mb-4 text-primary mt-4">Danh sách bệnh nhân đặt lịch khám</h2>
-    <div class="mb-3 row align-items-center">
-        <div class="col-auto">
-            <label for="statusFilter" class="form-label">Lọc theo trạng thái</label>
-        </div>
-        <div class="col-auto">
-            <select id="statusFilter" class="form-select">
-                <option value="All">Tất cả</option>
-                <option value="Pending">Chờ khám</option>
-                <option value="Confirmed">Hoàn thành</option>
-                <option value="Canceled">Đã hủy</option>
-            </select>
+<div class="bk-container">
+
+    <!-- Header -->
+    <div class="bk-title-box text-center">
+        <h2 class="bk-page-title">
+            <i class="bi bi-clipboard2-pulse"></i> DANH SÁCH LỊCH KHÁM
+        </h2>
+    </div>
+
+    <!-- Filter -->
+    <div class="bk-filter-box shadow-sm">
+        <div class="row g-4 align-items-end">
+
+            <div class="col-md-4">
+                <label class="bk-label">Lọc theo trạng thái</label>
+                <select id="statusFilter" class="form-select bk-input">
+                    <option value="All">Tất cả</option>
+                    <option value="Pending">Chờ khám</option>
+                    <option value="Confirmed">Hoàn thành</option>
+                    <option value="Canceled">Đã hủy</option>
+                </select>
+            </div>
+
+            <div class="col-md-8">
+                <label class="bk-label">Tìm kiếm theo tên bệnh nhân hoặc lý do</label>
+                <input type="text" id="searchBox" class="form-control bk-input" placeholder="Nhập từ khóa tìm kiếm...">
+            </div>
+
         </div>
     </div>
 
-    <table class="table table-hover table-bordered" id="appointmentsTable">
-        <thead class="table-primary">
-            <tr>
-                <th>ID</th>
-                <th>Ngày</th>
-                <th>Giờ</th>
-                <th>Tên bệnh nhân</th>
-                <th>Lý do khám</th>
-                <th>Trạng thái</th>
-                <th>Hành động</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <!-- Table -->
+    <div class="bk-table-wrapper shadow-sm">
+        <div class="table-responsive">
+            <table class="table bk-table" id="appointmentsTable">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Ngày</th>
+                        <th>Ca</th>
+                        <th>Bệnh nhân</th>
+                        <th>Lý do</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
 
-    <div id="emptyMessage" class="alert alert-info d-none">
+    <div id="emptyMessage" class="alert alert-info text-center mt-3 d-none">
         Bạn chưa có lịch hẹn nào.
     </div>
+
 </div>
+
 <script src="~/js/doctorwork.js" asp-append-version="true"></script>
