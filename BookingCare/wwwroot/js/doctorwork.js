@@ -60,7 +60,7 @@ function displayAppointments(status) {
 
         let statusColor = "black";
         if (a.status === "Pending" || a.status === "Chờ khám") statusColor = "green";
-        if (a.status === "Confirmed" || a.status === "Đã xác nhận") statusColor = "blue";
+        if (a.status === "Confirmed" || a.status === "Đã khám") statusColor = "blue";
         if (a.status === "Canceled" || a.status === "Đã hủy") statusColor = "red";
 
         const tr = document.createElement("tr");

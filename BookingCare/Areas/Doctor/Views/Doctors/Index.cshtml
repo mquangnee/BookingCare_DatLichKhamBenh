@@ -2,45 +2,26 @@
     ViewData["Title"] = "DoctorWorkStay";
     Layout = "_Layout";
 }
-
 <link rel="stylesheet" href="~/css/doctorword.css" asp-append-version="true" />
 
-
-<div class="container">
-    <h2 class="mb-4 text-primary mt-4">Danh sách bệnh nhân đặt lịch khám</h2>
-
-    <div class="mb-3 row align-items-center">
-        <div class="col-auto">
-            <label for="statusFilter" class="form-label">Lọc theo trạng thái</label>
-        </div>
-        <div class="col-auto">
-            <select id="statusFilter" class="form-select" onchange="onStatusFilterChange(this)">
-                <option value="All">Tất cả</option>
-                <option value="Chờ khám">Chờ khám</option>
-                <option value="Đã xác nhận">Hoàn thành</option>
-                <option value="Đã hủy">Đã hủy</option>
-            </select>
-
 <div class="bk-container">
-
     <!-- Header -->
     <div class="bk-title-box text-center">
         <h2 class="bk-page-title">
             <i class="bi bi-clipboard2-pulse"></i> DANH SÁCH LỊCH KHÁM
         </h2>
     </div>
-
     <!-- Filter -->
     <div class="bk-filter-box shadow-sm">
         <div class="row g-4 align-items-end">
 
             <div class="col-md-4">
                 <label class="bk-label">Lọc theo trạng thái</label>
-                <select id="statusFilter" class="form-select bk-input">
+                    <select id="statusFilter" class="form-select bk-input" onchange="onStatusFilterChange(this)">
                     <option value="All">Tất cả</option>
-                    <option value="Pending">Chờ khám</option>
-                    <option value="Confirmed">Hoàn thành</option>
-                    <option value="Canceled">Đã hủy</option>
+                    <option value="Chờ khám">Chờ khám</option>
+                    <option value="Đã khám">Hoàn thành</option>
+                    <option value="Đã hủy">Đã hủy</option>
                 </select>
             </div>
 
@@ -51,7 +32,6 @@
 
         </div>
     </div>
-
     <!-- Table -->
     <div class="bk-table-wrapper shadow-sm">
         <div class="table-responsive">
@@ -72,11 +52,8 @@
 
         </div>
     </div>
-
     <div id="emptyMessage" class="alert alert-info text-center mt-3 d-none">
         Bạn chưa có lịch hẹn nào.
     </div>
-
-</div>
-
+ </div>
 <script src="~/js/doctorwork.js" asp-append-version="true"></script>
