@@ -5,8 +5,6 @@
 <link rel="stylesheet" href="~/css/detail.css" asp-append-version="true" />
 
 <div class="container">
-
-    <!-- ✅ BẮT BUỘC PHẢI CÓ -->
     <input type="hidden" id="appointmentId" value="@ViewBag.AppointmentId" />
 
     <h2 class="page-title">Thông tin chi tiết bệnh nhân</h2>
@@ -45,7 +43,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <!-- ✅ PHẢI CÓ id="reason" -->
+         
                 <textarea rows="3" id="reason" readonly></textarea>
             </td>
         </tr>
@@ -56,10 +54,12 @@
             <td>
                 <button class="btn-primary"
                         id="traKqKhamBenh"
-                        data-url="@Url.Action("TraKetQuaKhamBenh", "Doctor", new { id = ViewBag.AppointmentId })">
+                        data-url="@Url.Action(
+                                            "TraKetQuaKhamBenh",
+                                            "Doctors",
+                                            new { area = "Doctor", id = ViewBag.AppointmentId })">
                     Trả kết quả khám bệnh
                 </button>
-
             </td>
         </tr>
     </table>

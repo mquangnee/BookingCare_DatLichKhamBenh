@@ -10,7 +10,7 @@
 
 .title {
     text-align: center;
-    color: #007bff;
+    color: #45C3D2;
     margin-bottom: 20px;
 }
 
@@ -22,8 +22,14 @@ label {
     font-weight: bold;
     display: block;
     margin-bottom: 8px;
+    color: #45C3D2;
 }
-
+.section label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+    color: #45C3D2;
+}
 textarea {
     width: 100%;
     border-radius: 8px;
@@ -122,7 +128,7 @@ textarea {
     }
 
     #medicineTable th {
-        background: #007bff;
+        background: #45C3D2;
         color: white;
     }
 
@@ -142,7 +148,7 @@ textarea {
 .submit-btn {
     width: 100%;
     padding: 12px;
-    background: #28a745;
+    background: #45C3D2;
     border: none;
     color: white;
     border-radius: 6px;
@@ -153,3 +159,6 @@ textarea {
     .submit-btn:hover {
         background: #218838;
     }
+#addMedicinebtn{
+    background-color: #45C3D2;
+}

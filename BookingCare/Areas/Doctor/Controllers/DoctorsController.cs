@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookingCare.Areas.Doctors.Controllers
 {
     [Area("Doctor")]
-    [Authorize(Roles = "Doctor")]
+    [Authorize(Roles ="Doctor")]
     public class DoctorsController : Controller
     {
 
