@@ -6,6 +6,9 @@
 <link rel="stylesheet" href="~/css/traKetQuaKhamBenh.css" asp-append-version="true" />
 
 <div class="container-tra">
+
+    <input type="hidden" id="appointmentId" value="@ViewBag.AppointmentId" />
+
     <h2 class="title">Trả Kết Quả Khám Bệnh</h2>
 
     <div class="section">
@@ -18,20 +21,26 @@
         <textarea id="instructions" rows="3" placeholder="Nhập dặn dò bác sĩ..."></textarea>
     </div>
 
-        <div class="section">
-            <h3>Thêm thuốc cho bệnh nhân</h3>
-            <div class="search-box">
-                <input type="text" id="searchMedicine" placeholder="Tìm thuốc...">
-                <ul id="suggestionList"></ul>
-            </div>
+    <div class="section">
+        <h3>Thêm thuốc cho bệnh nhân</h3>
 
-            <div class="medicine-form">
-                <input type="text" id="selectedMedicine" placeholder="Tên thuốc" readonly>
-                <input type="number" id="dosage" placeholder="Liều lượng">
-                <input type="text" id="usage" placeholder="Cách dùng">
-                <button id="addMedicineBtn">Thêm</button>
-            </div>
+        <div class="search-box">
+            <input type="text" id="searchMedicine" placeholder="Tìm thuốc...">
+            <ul id="suggestionList"></ul>
         </div>
+
+        <div class="medicine-form">
+            <input type="text" id="selectedMedicine" placeholder="Tên thuốc" readonly>
+
+            <input type="number" id="quantity" placeholder="Số lượng">
+
+            <input type="text" id="dosage" placeholder="Liều dùng">
+
+            <input type="text" id="usage" placeholder="Cách dùng">
+
+            <button id="addMedicineBtn">Thêm</button>
+        </div>
+    </div>
 
     <div class="section">
         <h3>Danh sách thuốc đã thêm</h3>
@@ -39,9 +48,9 @@
             <thead>
                 <tr>
                     <th>Tên thuốc</th>
-                    <th>Liều lượng</th>
+                    <th>Số lượng</th>
+                    <th>Liều dùng</th>
                     <th>Cách dùng</th>
-                    <th>Hành động</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -50,5 +59,5 @@
 
     <button id="submitBtn" class="submit-btn">Hoàn tất trả kết quả</button>
 </div>
-<script src="~/js/traKetQuaKhamBenh.js" asp-append-version="true"></script>
 
+<script src="~/js/traKetQuaKhamBenh.js" asp-append-version="true"></script>

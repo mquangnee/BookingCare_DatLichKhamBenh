@@ -1,18 +1,22 @@
 ﻿let medicineData = [];
 let addedMedicines = [];
 
+const appointmentId = document.getElementById("appointmentId")?.value;
 
+// ================== LOAD DANH SÁCH THUỐC TỪ DB ==================
 async function loadMedicines() {
     try {
-        const res = await fetch("/data/medicines.json");
+        const res = await fetch("/Doctor/api/ReturnResults/get-medicines", {
+            credentials: "include"
+        });
         const data = await res.json();
-        medicineData = data.medicines;
+        medicineData = data;
     } catch (error) {
         console.error("Không thể tải dữ liệu thuốc:", error);
     }
 }
 
-
+// ================== TÌM THUỐC ==================
 document.getElementById("searchMedicine").addEventListener("input", function () {
     const query = this.value.toLowerCase();
     const suggestionList = document.getElementById("suggestionList");
@@ -20,13 +24,17 @@ document.getElementById("searchMedicine").addEventListener("input", function () 
 
     if (query.length === 0) return;
 
-    const matches = medicineData.filter(med => med.Name.toLowerCase().includes(query));
+    const matches = medicineData.filter(med =>
+        med.name.toLowerCase().includes(query)
+    );
 
     matches.forEach(med => {
         const li = document.createElement("li");
-        li.textContent = `${med.Name} (${med.Unit}) - ${med.Function}`;
+        li.textContent = `${med.name} (${med.unit})`;
         li.addEventListener("click", () => {
-            document.getElementById("selectedMedicine").value = med.Name;
+            const selected = document.getElementById("selectedMedicine");
+            selected.value = med.name;
+            selected.dataset.id = med.id; // ✅ ID thật từ DB
             suggestionList.innerHTML = "";
             document.getElementById("searchMedicine").value = "";
         });
@@ -34,58 +42,63 @@ document.getElementById("searchMedicine").addEventListener("input", function () 
     });
 });
 
-
+// ================== THÊM THUỐC ==================
 document.getElementById("addMedicineBtn").addEventListener("click", () => {
-    const name = document.getElementById("selectedMedicine").value.trim();
-    const dosage = document.getElementById("dosage").value.trim();
+    const selectedInput = document.getElementById("selectedMedicine");
+    const name = selectedInput.value.trim();
+    const medId = selectedInput.dataset.id;
+    const quantity = document.getElementById("dosage").value.trim();
     const usage = document.getElementById("usage").value.trim();
 
-    if (!name || !dosage || !usage) {
+    if (!name || !quantity || !usage || !medId) {
         alert("Vui lòng nhập đầy đủ thông tin thuốc!");
         return;
     }
 
-    const med = { Name: name, Dosage: dosage, Usage: usage };
+    const med = {
+        MedicineId: parseInt(medId),
+        Quantity: parseInt(quantity),
+        Dosage: quantity,
+        Instructions: usage
+    };
+
     addedMedicines.push(med);
     renderTable();
 
-    document.getElementById("selectedMedicine").value = "";
+    selectedInput.value = "";
     document.getElementById("dosage").value = "";
     document.getElementById("usage").value = "";
 });
 
-
+// ================== RENDER BẢNG ==================
 function renderTable() {
     const tbody = document.querySelector("#medicineTable tbody");
     tbody.innerHTML = "";
 
-    addedMedicines.forEach((med, index) => {
+    addedMedicines.forEach(med => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-            <td>${med.Name}</td>
+            <td>${med.MedicineId}</td>
+            <td>${med.Quantity}</td>
             <td>${med.Dosage}</td>
-            <td>${med.Usage}</td>
-            <td><button class="deleteBtn" data-index="${index}">Xóa</button></td>
+            <td>${med.Instructions}</td>
         `;
         tbody.appendChild(tr);
     });
-
-    document.querySelectorAll(".deleteBtn").forEach(btn => {
-        btn.addEventListener("click", function () {
-            const index = this.getAttribute("data-index");
-            addedMedicines.splice(index, 1);
-            renderTable();
-        });
-    });
 }
 
-
+// ================== GỬI KẾT QUẢ KHÁM ==================
 document.getElementById("submitBtn").addEventListener("click", async () => {
     const diagnosis = document.getElementById("diagnosis").value.trim();
     const instructions = document.getElementById("instructions").value.trim();
 
     if (!diagnosis) {
         alert("Vui lòng nhập chẩn đoán!");
+        return;
+    }
+
+    if (!appointmentId) {
+        alert("Không tìm thấy ID lịch khám!");
         return;
     }
 
@@ -96,31 +109,32 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     };
 
     try {
-        const res = await fetch("/api/patient/submit-result", {
+        const res = await fetch(`/Doctor/api/ReturnResults/submit-result/${appointmentId}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
+            credentials: "include",
             body: JSON.stringify(result)
         });
 
-        if (!res.ok) {
-            throw new Error(`Server trả về lỗi: ${res.status}`);
+        const responseData = await res.json();
+
+        if (!res.ok || !responseData.success) {
+            throw new Error("Lưu thất bại!");
         }
 
-        const responseData = await res.json();
-        alert("Đã lưu kết quả khám bệnh thành công!");
-        console.log("Phản hồi từ server:", responseData);
+        alert("✅ Đã lưu kết quả khám bệnh thành công!");
 
         addedMedicines = [];
         renderTable();
         document.getElementById("diagnosis").value = "";
         document.getElementById("instructions").value = "";
+
     } catch (error) {
         console.error("Lỗi khi gửi kết quả khám:", error);
-        alert("Không thể gửi dữ liệu lên server!");
+        alert("❌ Không thể gửi dữ liệu lên server!");
     }
 });
-
 
 document.addEventListener("DOMContentLoaded", loadMedicines);

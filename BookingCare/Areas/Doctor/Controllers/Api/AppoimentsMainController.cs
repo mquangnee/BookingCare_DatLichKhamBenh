@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BookingCare.Areas.Admin.Controllers.Api;
 using BookingCare.Repository;
 using Microsoft.AspNetCore.Authorization;
-using BookingCare.Areas.Admin.Controllers.Api;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 namespace BookingCare.Areas.Doctors.Controllers.Api
 {
     [Area("Doctor")]
@@ -20,16 +21,30 @@ namespace BookingCare.Areas.Doctors.Controllers.Api
         public IActionResult GetAppointments()
         {
             var data = _dbContext.Appointments
+                .Include(a => a.Patient)
+                .ThenInclude(p => p.User)
                 .Select(a => new
                 {
                     id = a.Id,
+                    rawDate = a.AppointmentDate,
                     date = a.AppointmentDate.ToString("dd/MM/yyyy"),
                     time = a.AppointmentTime,
-                    patientName = a.Patient.User.FullName,
+                    patientName = a.Patient != null && a.Patient.User != null
+                        ? a.Patient.User.FullName
+                        : "Chưa có thông tin",
                     reason = a.ReasonForVisit,
                     status = a.Status
                 })
-                .OrderBy(a => a.date)
+                .OrderBy(a => a.rawDate)
+                .Select(a => new
+                {
+                    a.id,
+                    a.date,
+                    a.time,
+                    a.patientName,
+                    a.reason,
+                    a.status
+                })
                 .ToList();
 
             return Ok(new { success = true, appointments = data });

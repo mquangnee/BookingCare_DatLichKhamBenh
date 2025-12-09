@@ -6,16 +6,17 @@
 
 <div class="container">
     <h2 class="mb-4 text-primary mt-4">Danh sách bệnh nhân đặt lịch khám</h2>
+
     <div class="mb-3 row align-items-center">
         <div class="col-auto">
             <label for="statusFilter" class="form-label">Lọc theo trạng thái</label>
         </div>
         <div class="col-auto">
-            <select id="statusFilter" class="form-select">
+            <select id="statusFilter" class="form-select" onchange="onStatusFilterChange(this)">
                 <option value="All">Tất cả</option>
-                <option value="Pending">Chờ khám</option>
-                <option value="Confirmed">Hoàn thành</option>
-                <option value="Canceled">Đã hủy</option>
+                <option value="Chờ khám">Chờ khám</option>
+                <option value="Đã xác nhận">Hoàn thành</option>
+                <option value="Đã hủy">Đã hủy</option>
             </select>
         </div>
     </div>
@@ -39,4 +40,5 @@
         Bạn chưa có lịch hẹn nào.
     </div>
 </div>
+
 <script src="~/js/doctorwork.js" asp-append-version="true"></script>

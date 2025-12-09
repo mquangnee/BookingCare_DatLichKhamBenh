@@ -1,40 +1,63 @@
 ﻿async function loadData() {
-    try {
-        const res = await fetch("/data/detailPatient.json");
-        const data = await res.json();
-        console.log(data);
+    const id = document.getElementById("appointmentId")?.value;
 
-        const p = data.detailPatient;
-        document.getElementById("tenBenhNhan").textContent = p.FullName;
-        document.getElementById("ngaySinh").textContent = p.BirthOfDate;
-        document.getElementById("gender").textContent = p.Gender;
-        document.getElementById("appointmentDate").textContent = p.AppointmentDate;
-        document.getElementById("appointmentTime").textContent = p.AppointmentTime;
-        document.getElementById("phoneNumber").textContent = p.PhoneNumber;
-        document.getElementById("address").textContent = p.Address;
-        document.querySelector("textarea").value = p.ReasonForVisit;
+    if (!id) {
+        alert("Không tìm thấy ID lịch khám!");
+        return;
+    }
+
+    try {
+        const res = await fetch(`/Doctors/api/AppoimentDetail/detail/${id}`, {
+            credentials: "include"
+        });
+
+        if (!res.ok) {
+            throw new Error("Không tìm thấy dữ liệu!");
+        }
+
+        const data = await res.json();
+        console.log("DATA API:", data);
+
+        if (!data.success) {
+            alert("Không có dữ liệu!");
+            return;
+        }
+
+        const p = data.data;
+
+        document.getElementById("tenBenhNhan").textContent = p.patientName;
+        document.getElementById("ngaySinh").textContent = p.dob;
+        document.getElementById("gender").textContent = p.gender;
+        document.getElementById("appointmentDate").textContent = p.date;
+        document.getElementById("appointmentTime").textContent = p.time;
+        document.getElementById("phoneNumber").textContent = p.phone;
+        document.getElementById("address").textContent = p.address;
+        document.getElementById("reason").value = p.reason;
+
     } catch (err) {
-        alert("Không thể kết nối với cơ sở dữ liệu");
-        console.error(err);
+        alert("Không thể kết nối với server!");
+        console.error("Lỗi load chi tiết:", err);
     }
 }
+
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
 
-    document.getElementById("quayLai").addEventListener("click", () => {
-        window.history.back();
-    });
-    const btn = document.getElementById("traKqKhamBenh");
-    if (btn) {
-        btn.addEventListener("click", function () {
-            const url = btn.getAttribute("data-url");
-            if (url) {
-                window.location.href = url;
-            } else {
-                alert("Không tìm thấy URL điều hướng!");
-            }
+    // ✅ Quay lại danh sách
+    const btnBack = document.getElementById("quayLai");
+    if (btnBack) {
+        btnBack.addEventListener("click", () => {
+            window.location.href = "/Doctor/Doctors/Index";
         });
     }
-
 });
+document.getElementById("traKqKhamBenh").addEventListener("click", function () {
+    const url = this.getAttribute("data-url");
 
+    if (!url) {
+        alert("Không tìm thấy URL điều hướng!");
+        return;
+    }
+
+    window.location.href = url;
+});
