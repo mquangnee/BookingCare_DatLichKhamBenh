@@ -21,9 +21,9 @@ namespace BookingCare.Data.Seed
             await SeedSpecialty.SeedAsync(dbContext);
             await SeedDoctor.SeedAsync(userManager, dbContext);
             await SeedAdmin.SeedAsync(userManager, dbContext);
+            await SeedPatient.SeedAsync(userManager, dbContext);
+            await SeedAppointment.SeedAsync(dbContext);
             await dbContext.SaveChangesAsync();
-            // ===================== SEED MEDICINES =====================
-            // ===================== SEED MEDICINES =====================
             if (!dbContext.Medicines.Any())
             {
                 dbContext.Medicines.AddRange(
