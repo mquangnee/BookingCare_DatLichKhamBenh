@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BookingCare.Areas.Admin.Controllers.Api
 {
     [Area("Admin")]
-    [Route("Admin/api/[controller]")]
+    [Route("api/admin/specialties")]
     [ApiController]
     [Authorize(Roles = "Admin")]
     public class SpecialtyApiController : ControllerBase
@@ -18,12 +18,19 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             _dbContext = dbContext;
         }
 
-        //Lấy danh sách chuyên khoa
-        [HttpGet("getAll")]
+        //=============================================
+        // 1. Lấy danh sách chuyên khoa
+        // GET: /api/admin/specialties
+        //=============================================
+        [HttpGet]
         public async Task<IActionResult> GetSpecialties()
         {
             var listSpecialties = await _dbContext.Specialties.Select(s => new { s.Id, s.Name }).ToListAsync();
-            return Ok(listSpecialties);
+            return Ok(new
+            {
+                success = true,
+                data = listSpecialties
+            });
         }
     }
 }

@@ -106,4 +106,4 @@ function handleChangePasswordStep2() {
 document.addEventListener("DOMContentLoaded", () => {
     handleChangePasswordStep1();
     handleChangePasswordStep2();
-});S
+});
