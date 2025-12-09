@@ -7,20 +7,28 @@ namespace BookingCare.Areas.Doctors.Controllers
     [Authorize(Roles = "Doctor")]
     public class DoctorsController : Controller
     {
+
         public IActionResult Index()
         {
             return View();
         }
-        public IActionResult TraKetQuaKhamBenh()
+
+        public IActionResult Detail(int id)
         {
+            ViewBag.AppointmentId = id;
             return View();
         }
-        public IActionResult Detail()
+
+        public IActionResult TraKetQuaKhamBenh(int id)
         {
+            ViewBag.AppointmentId = id;
             return View();
         }
-        public IActionResult ReturnResult()
+
+
+        public IActionResult ReturnResult(int id)
         {
+            ViewBag.AppointmentId = id;
             return View();
         }
     }

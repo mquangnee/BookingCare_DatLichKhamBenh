@@ -129,7 +129,10 @@ namespace BookingCare
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Account}/{action=Login}/{id?}");
-
+            app.MapAreaControllerRoute(
+                name: "Doctor",
+                areaName: "Doctor",
+                pattern: "Doctor/{controller=Doctors}/{action=Index}/{id?}");
             app.Run();
         }
     }
