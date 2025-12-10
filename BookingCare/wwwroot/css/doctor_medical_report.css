@@ -2,7 +2,7 @@
     background-color: #F5FBFD;
 }
 
-.container {
+.container-body {
     max-width: 850px;
     margin: 40px auto;
     background: #fff;
@@ -10,7 +10,6 @@
     border-radius: 30px;
     box-shadow: 0 4px 15px #7EDCE5;
     overflow: hidden;
-    /*    font-family: 'Segoe UI', sans-serif;*/
 }
 
 .title {

@@ -27,7 +27,11 @@ const medReportBtn = document.getElementById("MedReportBtn");
 
 // Hiển thị danh sách khi tải trang
 document.addEventListener("DOMContentLoaded", function () {
-    selectedDate = new Date().toISOString().split("T")[0];
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    selectedDate = `${yyyy}-${mm}-${dd}`;
     dateFilter.value = selectedDate;
 
     // Mặc định load danh sách lịch đặt hôm nay
@@ -150,9 +154,6 @@ nextBtn.addEventListener("click", () => {
     if (currentPage < totalPages) loadAppointments(currentPage + 1);
 });
 
-//Lần đầu load
-loadAppointments(currentPage);
-
 //===HỦY LỊCH ĐẶT===//
 const cancelApptId = document.getElementById("cancelApptId");
 const cancelBtn = document.getElementById("confirmCancelBtn");
@@ -254,10 +255,10 @@ connection.start().then(() => {
 
 //Cập nhật giao diện
 connection.on("StatusChanged", (appointmentId, newStatus) => {
-    const status = document.getElementById(`appt-${appointmentId}"`);
+    const status = document.getElementById(`appt-${appointmentId}`);
     status.textContent = newStatus;
     if (newStatus == "Đang khám") {
-        status.className = "badge-status badge-info`";
+        status.className = "badge-status badge-info";
     }
     if (newStatus == "Hoàn thành") {
         status.className = "badge-status badge-confirmed";

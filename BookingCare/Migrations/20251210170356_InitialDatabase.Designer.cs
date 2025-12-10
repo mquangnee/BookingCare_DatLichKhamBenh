@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingCare.Migrations
 {
     [DbContext(typeof(DataContext))]
-<<<<<<<< HEAD:BookingCare/Migrations/20251209032845_initDatabase.Designer.cs
-    [Migration("20251209032845_initDatabase")]
-    partial class initDatabase
-========
-    [Migration("20251210140417_InitialDb")]
-    partial class InitialDb
->>>>>>>> Doctor/AppointmentSchedule:BookingCare/Migrations/20251210140417_InitialDb.Designer.cs
+    [Migration("20251210170356_InitialDatabase")]
+    partial class InitialDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
