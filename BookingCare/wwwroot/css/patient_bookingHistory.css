@@ -75,13 +75,6 @@
     color: #c62828;
 }
 
-/* ===============================
-   EMPTY MESSAGE
-   =============================== */
-#emptyMessage {
-    margin-top: 20px;
-}
-
 /*===PHÂN TRANG====*/
 .pagination li a {
     color: #45c3d2 !important;
@@ -97,4 +90,26 @@
 
 .pagination li a:hover {
     background-color: #e0f7fb;
+}
+
+.get-prescription {
+    background-color: #45c3d2;
+}
+
+    .get-prescription:hover {
+        background-color: #2FA7B5;
+    }
+
+.section-title {
+    color: #1e9bb3 !important;
+    font-size: 18px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    border-left: 4px solid #1e9bb3;
+}
+
+.bg-light {
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid #d6ecf8;
 }

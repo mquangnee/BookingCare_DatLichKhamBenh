@@ -182,7 +182,7 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                 await _userManager.AddToRoleAsync(newDoctor, "Doctor"); //Gán vai trò Bác sĩ
 
                 //Tạo bản ghi mới trong bảng Doctors
-                var doctorEntity = new Doctor
+                var doctorEntity = new Models.Doctor
                 {
                     UserId = newDoctor.Id,
                     Degree = doctor.Degree,

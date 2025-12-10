@@ -1,0 +1,167 @@
+﻿@{
+    ViewData["Title"] = "DoctorWorkStay";
+    Layout = "_Layout";
+}
+
+<div class="bk-container">
+
+    <!-- Header -->
+    <div class="bk-title-box text-center">
+        <h2 class="bk-page-title">
+            <i class="bi bi-clipboard2-pulse"></i> DANH SÁCH LỊCH KHÁM
+        </h2>
+        <p class="text-muted mt-2">Xem lịch khám trong hôm nay hoặc các ngày sắp tới</p>
+    </div>
+
+    <!-- Filter -->
+    <div class="bk-filter-box shadow-sm">
+        <div class="row g-4 align-items-end">
+
+            <!-- Chọn ngày -->
+            <div class="col-md-4">
+                <label class="bk-label">Chọn ngày</label>
+                <input type="date" id="dateFilter" class="form-control bk-input" min="@DateOnly.FromDateTime(DateTime.Now).ToString("yyyy-MM-dd")" />
+            </div>
+
+            <div class="col-md-4">
+                <label class="bk-label">Lọc theo trạng thái</label>
+                <select id="statusFilter" class="form-select bk-input">
+                    <option value="Tất cả">Tất cả</option>
+                    <option value="Chờ khám">Chờ khám</option>
+                    <option value="Đã khám">Hoàn thành</option>
+                    <option value="Đã hủy">Đã hủy</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="bk-label">Tìm kiếm theo tên bệnh nhân hoặc lý do</label>
+                <input type="text" id="searchBox" class="form-control bk-input" placeholder="Nhập từ khóa tìm kiếm...">
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bk-table-wrapper shadow-sm">
+        <div class="table-responsive">
+            <table class="table bk-table" id="appointmentsTable">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Ngày</th>
+                        <th>Ca</th>
+                        <th>Bệnh nhân</th>
+                        <th>Lý do</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Phân trang -->
+    <div class="d-flex justify-content-center align-items-center mt-3">
+        <button id="prevPage" class="btn btn-outline-primary btn-sm mr-2">← Trước</button>
+        <span id="pageInfo" class="fw-bold text-primary mx-2"></span>
+        <button id="nextPage" class="btn btn-outline-primary btn-sm ml-2">Sau →</button>
+    </div>
+</div>
+
+<!-- Appointment Detail Modal -->
+<div class="modal fade" id="AppointmentDetailModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div id="modalAppointmentDetail" class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-white">Thông tin lịch khám</h4>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr>
+                        <td class="title-infor">Tên bệnh nhân</td>
+                        <td id="PatientName"></td>
+                    </tr>
+                    <tr>
+                        <td class ="title-infor">Ngày sinh</td>
+                        <td id="DateOfBirth"></td>
+                    </tr>
+                    <tr>
+                        <td class="title-infor">Giới tính</td>
+                        <td id="Gender"></td>
+                    </tr>
+                    <tr>
+                        <td class="title-infor">Ngày khám</td>
+                        <td id="AppointmentDate"></td>
+                    </tr>
+                    <tr>
+                        <td class="title-infor">Ca khám</td>
+                        <td id="AppointmentTime"></td>
+                    </tr>
+                    <tr>
+                        <td class="title-infor">Tiền sử bệnh</td>
+                        <td id="MedicalHistory"></td>
+                    </tr>
+                    <tr>
+                        <td class="title-infor">Lý do khám bệnh</td>
+                        <td id="ReasonForVisit"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary text-white rounded-pill" id="BackBtn" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn rounded-pill text-white" id="MedReportBtn">Trả kết quả</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Doctor Confirm Cancel Appointment -->
+<div class="modal fade" id="confirmCancelModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+
+            <!-- Header -->
+            <div class="modal-header border-0 rounded-top-4" style="background-color: #45c3d2;">
+                <h5 class="modal-title text-white fw-bold">
+                    <i class="fa-solid fa-circle-exclamation mr-2"></i>
+                    Xác nhận hủy lịch khám
+                </h5>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body text-center px-4">
+                <input type="hidden" id="cancelApptId" />
+
+                <p class="mb-4" style="font-size: 16px;">
+                    Bạn có chắc chắn muốn hủy lịch khám này không?<br />
+                    Hành động này không thể hoàn tác.
+                </p>
+
+                <!-- Icon -->
+                <div class="mb-4">
+                    <i class="fa-solid fa-calendar-xmark" style="font-size: 48px; color: #ff4d4f;"></i>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-outline-secondary px-4 py-2 rounded-pill" data-dismiss="modal">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Quay lại
+                    </button>
+
+                    <button id="confirmCancelBtn" class="btn px-4 py-2 rounded-pill text-white"
+                            style="background-color: #ff4d4f;">
+                        <i class="fa-solid fa-check mr-1"></i> Xác nhận hủy
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/doctor_home.js"></script>
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/doctor_home.css" asp-append-version="true" />
+}

@@ -1,17 +1,13 @@
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookingCare.Controllers
+namespace BookingCare.Areas.Doctor.Controllers
 {
+    [Area("Doctor")]
+    [Authorize(Roles = "Doctor")]
     public class HomeController : Controller
     {
-        public HomeController() {}
-
         public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
         {
             return View();
         }

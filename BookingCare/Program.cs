@@ -5,7 +5,6 @@ using BookingCare.Services;
 using BookingCare.Services.Background;
 using BookingCare.Services.Email;
 using BookingCare.Services.Hubs;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
