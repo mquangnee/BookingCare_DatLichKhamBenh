@@ -39,9 +39,7 @@ loginForm.addEventListener("submit", async function (e) {
             if (data.roles.includes("Admin")) { //Nếu là Admin
                 setTimeout(() => window.location.href = "/Admin/Dashboard/Index", 1000);
             } else if (data.roles.includes("Doctor")) { //Nếu là Bác sĩ
-
-                setTimeout(() => window.location.href = "/Doctor/doctors/Index", 1000);
-
+                setTimeout(() => window.location.href = "/Doctor/Home/Index", 1000);
             } else { //Nếu là Bệnh nhân
                 setTimeout(() => window.location.href = "/Patient/Home/Index", 1000);
             }

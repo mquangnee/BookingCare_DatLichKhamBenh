@@ -1,5 +1,4 @@
 ﻿using BookingCare.Repository;
-using BookingCare.Services.Email;
 using BookingCare.Services.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;

@@ -1,4 +1,4 @@
-﻿using Humanizer;
+﻿using BookingCare.Models.DTOs;
 
 namespace BookingCare.Services.Email
 {
@@ -428,6 +428,75 @@ namespace BookingCare.Services.Email
                         </p>
                     </div>
                 </div>";
+        }
+
+        //****Gửi kết quả khám bệnh****
+        public string GeneratePrescriptionTable(List<MedPrescriptionDtos> medicines)
+        {
+            if (medicines == null || medicines.Count == 0)
+            {
+                return "<p>Không có đơn thuốc.</p>";
+            }
+
+            var html = @"<table style='width:100%; border-collapse: collapse; font-size: 14px;'>
+                            <tr style='background: #45c3d2; color: #fff; text-align: left;'>
+                                <th style='padding: 10px;'>Tên thuốc</th>
+                                <th style='padding: 10px;'>Liều lượng</th>
+                                <th style='padding: 10px;'>Cách dùng</th>
+                            </tr>";
+
+            foreach (var med in medicines)
+            {
+                html += $@"<tr>
+                            <td style='padding: 10px; border-bottom: 1px solid #eee;'>{med.Name}</td>
+                            <td style='padding: 10px; border-bottom: 1px solid #eee;'>{med.Dosage}</td>
+                            <td style='padding: 10px; border-bottom: 1px solid #eee;'>{med.Usage}</td>
+                        </tr>";
+            }
+
+            html += "</table>";
+
+            return html;
+        }
+        public string GetMedicalReportEmailBody(string patientName, string diagnosis, string instructions, List<MedPrescriptionDtos> medicines)
+        {
+            string prescriptionTable = GeneratePrescriptionTable(medicines);
+
+            return $@"
+                    <div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
+                        <div style='max-width: 600px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px;'>
+
+                            <h2 style='color: #45c3d2; text-align: center; margin-bottom: 20px;'>
+                                Kết quả khám bệnh BookingCare
+                            </h2>
+
+                            <p>Xin chào <strong>{patientName}</strong>,</p>
+                            <p>Bạn nhận được email này vì đã hoàn thành buổi khám bệnh trên hệ thống <strong>BookingCare</strong>.</p>
+        
+                            <h3 style='color: #45c3d2; margin-top: 25px;'>Chuẩn đoán</h3>
+                            <p style='background: #f1f9fa; padding: 12px 15px; border-left: 4px solid #45c3d2; border-radius: 5px;'>
+                                {diagnosis}
+                            </p>
+
+                            <h3 style='color: #45c3d2; margin-top: 25px;'>Lời dặn của bác sĩ</h3>
+                            <p style='background: #fdf6e3; padding: 12px 15px; border-left: 4px solid #f4a261; border-radius: 5px;'>
+                                {instructions}
+                            </p>
+
+                            <h3 style='color: #45c3d2; margin-top: 25px;'>Đơn thuốc</h3>
+                            <div style='margin-top: 10px;'>
+                                {prescriptionTable}
+                            </div>
+
+                            <hr style='margin: 30px 0; border: none; border-top: 1px solid #eee;' />
+
+                            <p style='font-size: 14px; color: #666; text-align: center;'>
+                                Nếu bạn có bất kỳ thắc mắc nào, vui lòng liên hệ lại để được hỗ trợ.<br/>
+                                Trân trọng,<br/>
+                                <strong style='color: #45c3d2;'>Đội ngũ BookingCare</strong>
+                            </p>
+                        </div>
+                    </div>";
         }
     }
 }

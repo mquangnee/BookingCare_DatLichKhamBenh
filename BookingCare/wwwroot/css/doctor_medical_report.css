@@ -1,17 +1,39 @@
-﻿.container-tra {
+﻿body {
+    background-color: #F5FBFD;
+}
+
+.container {
     max-width: 850px;
     margin: 40px auto;
     background: #fff;
-    padding: 25px 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    font-family: 'Segoe UI', sans-serif;
+    padding: 0;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px #7EDCE5;
+    overflow: hidden;
+    /*    font-family: 'Segoe UI', sans-serif;*/
 }
 
 .title {
+    font-size: 32px;
     text-align: center;
-    color: #45C3D2;
-    margin-bottom: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #007bff;
+    margin: 10px;
+}
+
+.card-header, .card-body, .card-footer {
+    padding: 20px;
+}
+
+.card-footer {
+    background-color: #FFFFFF;
+}
+
+.card-header {
+    background-color: #4EC3D3;
+    border-top-right-radius: 30px;
+    border-top-left-radius: 30px;
 }
 
 .section {
@@ -22,45 +44,65 @@ label {
     font-weight: bold;
     display: block;
     margin-bottom: 8px;
-    color: #45C3D2;
-}
-.section label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 8px;
-    color: #45C3D2;
+    color: #1572A1;
 }
 textarea {
     width: 100%;
-    border-radius: 8px;
+    border-radius: 15px;
     padding: 10px;
     border: 1px solid #ccc;
     resize: none;
     transition: 0.2s;
+    background-color: #F8FBFF;
 }
 
-    textarea:focus {
-        border-color: #007bff;
-        outline: none;
-    }
+textarea:focus {
+    border-color: #45c3d2;
+    outline: none;
+}
+
+.prescription {
+    color: #1572A1;
+}
 
 .search-box {
     position: relative;
+    font-weight: bold;
 }
 
-#searchMedicine {
+.pres-input:focus {
+    border-color: #45c3d2;
+    outline: none;
+}
+
+#addMedicineBtn {
+    background-color: #45c3d2;
+}
+
+    #addMedicineBtn:hover {
+        background-color: #2FA7B5;
+    }
+
+#medSearchBox {
     width: 100%;
     padding: 8px 12px;
     border: 1px solid #ccc;
-    border-radius: 8px;
+    border-radius: 12px;
+    background-color: #F8FBFF;
 }
+
+    #medSearchBox:focus {
+        border-color: #45c3d2;
+        outline: none;
+    }
+
 
 #suggestionList {
     position: absolute;
     top: 38px;
     width: 100%;
     background: #fff;
-    border: 1px solid #ddd;
+    border: 0px solid #ddd;
     border-radius: 6px;
     max-height: 180px;
     overflow-y: auto;
@@ -86,6 +128,8 @@ textarea {
     #suggestionList li {
         padding: 8px;
         cursor: pointer;
+        list-style-type: none;
+/*        color: #1572A1;*/
     }
 
         #suggestionList li:hover {
@@ -100,8 +144,9 @@ textarea {
 
     .medicine-form input, .medicine-form button {
         padding: 8px;
-        border-radius: 6px;
+        border-radius: 12px;
         border: 1px solid #ccc;
+        background-color: #F8FBFF;
     }
 
     .medicine-form button {
@@ -115,10 +160,16 @@ textarea {
             background: #0056b3;
         }
 
+.table-wrapper {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+    border: 1px solid #CFECEF;
+}
+
 #medicineTable {
-    width: 100%;
     border-collapse: collapse;
-    margin-top: 15px;
+    width: 100%;
 }
 
     #medicineTable th, #medicineTable td {
@@ -137,7 +188,7 @@ textarea {
     color: white;
     border: none;
     padding: 6px 10px;
-    border-radius: 4px;
+    border-radius: 12px;
     cursor: pointer;
 }
 
@@ -148,16 +199,16 @@ textarea {
 .submit-btn {
     width: 100%;
     padding: 12px;
-    background: #45C3D2;
+    background-color: #21B876;
     border: none;
     color: white;
-    border-radius: 6px;
+    border-radius: 12px;
     margin-top: 25px;
     font-size: 16px;
 }
 
     .submit-btn:hover {
-        background: #218838;
+        background: #169961;
     }
 #addMedicinebtn{
     background-color: #45C3D2;
