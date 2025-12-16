@@ -1,0 +1,55 @@
+﻿    @{
+        ViewData["Title"] = "Detail";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    <link rel="stylesheet" href="~/css/detail.css" asp-append-version="true" />
+
+    <div class="container">
+        <h2 class="page-title">Thông tin chi tiết bệnh nhân</h2>
+
+        <table>
+            <tr>
+                <td>Tên bệnh nhân:</td>
+                <td id="tenBenhNhan"></td>
+            </tr>
+            <tr>
+                <td>Ngày sinh:</td>
+                <td id="ngaySinh"></td>
+            </tr>
+            <tr>
+                <td>Giới tính:</td>
+                <td id="gender"></td>
+            </tr>
+            <tr>
+                <td>Ngày khám:</td>
+                <td id="appointmentDate"></td>
+            </tr>
+            <tr>
+                <td>Ca khám:</td>
+                <td id="appointmentTime"></td>
+            </tr>
+            <tr>
+                <td>Số điện thoại:</td>
+                <td id="phoneNumber"></td>
+            </tr>
+            <tr>
+                <td>Địa chỉ:</td>
+                <td id="address"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="label-text">Lý do khám bệnh:</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <textarea rows="3"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td><button class="btn-secondary" id="quayLai">Quay lại</button></td>
+                <td>  <button class="btn-primary" id="traKqKhamBenh" data-url="@Url.Action("TraKetQuaKhamBenh", "Doctors")">Trả kết quả khám bệnh</button>  </td>
+          
+            </tr>
+        </table>
+    </div>
+    <script src="~/js/detailPatient.js" asp-append-version="true"></script>
+

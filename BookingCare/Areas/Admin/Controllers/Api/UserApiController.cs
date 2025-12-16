@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BookingCare.Areas.Admin.Controllers.Api
 {
     [Area("Admin")]
-    [Route("api/admin/users")]
+    [Route("Admin/api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
     public class UserApiController : ControllerBase
@@ -29,11 +29,8 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             _emailTemplate = emailTemplate; 
         }
 
-        //=============================================
-        // I. QUẢN LÝ TÀI KHOẢN BÁC SĨ
-        // 1. Lấy danh sách bác sĩ
-        // GET: /api/admin/users/doctors
-        //=============================================
+        //====QUẢN LÝ TÀI KHOẢN BÁC SĨ====//
+        //Lấy danh sách bác sĩ để phân trang
         [HttpGet("doctors")]
         public async Task<IActionResult> GetDoctors(string? search = "", int page = 1, int pageSize = 10)
         {
@@ -52,7 +49,7 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             var totalDoctors = await doctors.CountAsync();
 
             //Lấy danh sách hiển thị ở trang muốn xem
-            var listDoctor = await doctors
+            var data = await doctors
                             .OrderByDescending(d => d.Doctor.Id)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
@@ -68,22 +65,11 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                                 IsLocked = u.LockoutEnd
                             }).ToListAsync();
 
-            return Ok(new
-            {
-                success = true,
-                data = new
-                {
-                    totalDoctors,
-                    listDoctor
-                }
-            });
+            return Ok(new { totalDoctors, data });
         }
 
-        //=============================================
-        // 2. Lấy thông tin chi tiết bác sĩ
-        // GET: /api/admin/users/doctors/id
-        //=============================================
-        [HttpGet("doctors/{id}")]
+        //Lấy thông tin chi tiết bác sĩ
+        [HttpGet("infoDoctor")]
         public IActionResult DoctorDetails(string id)
         {
             var doctor = _dbContext.Users
@@ -95,15 +81,11 @@ namespace BookingCare.Areas.Admin.Controllers.Api
 
             if (doctor == null)
             {
-                return NotFound(new 
-                {
-                    success = false,
-                    message = "Không tìm thấy bác sĩ!"
-                });
+                return NotFound(new { message = "Không tìm thấy bác sĩ!" });
             }
 
             // Gói dữ liệu cần thiết
-            var inforDoctor = new DoctorInfoDtos
+            var result = new DoctorInfoDtos
             {
                 UserId = doctor.Id,
                 FullName = doctor.FullName,
@@ -119,48 +101,29 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                 RoomName = doctor.Doctor.Room.Name
             };
             
-            return Ok(new
-            {
-                success = true,
-                data = inforDoctor
-            });
+            return Ok(result);
         }
 
-        //=============================================
-        // 3. Tạo tài khoản bác sĩ
-        // POST: /api/admin/users/doctors
-        //=============================================
-        [HttpPost("doctors")]
+        //Thêm tài khoản bác sĩ
+        [HttpPost("create")]
         public async Task<IActionResult> AddDoctor([FromBody] AddDoctor doctor)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new 
-                {
-                    success = false, 
-                    message = "Vui lòng điền đầy đủ thông tin bác sĩ!" 
-                });
+                return BadRequest(new { success = false, message = "Vui lòng điền đầy đủ thông tin bác sĩ!" });
             }
 
             //Kiểm tra phòng còn trống không
             int doctorCountInRoom = _dbContext.Doctors.Count(d => d.RoomId == doctor.RoomId);
             if(doctorCountInRoom >= 2)
             {
-                return BadRequest(new 
-                { 
-                    success = false, 
-                    message = "Phòng này đã đủ 2 bác sĩ, vui lòng chọn phòng khác!" 
-                });
+                return BadRequest(new { success = false, message = "Phòng này đã đủ 2 bác sĩ, vui lòng chọn phòng khác!" });
             }
 
             var user = await _userManager.FindByEmailAsync(doctor.Email);
             if (user != null)
             {
-                return BadRequest(new
-                { 
-                    success = false,
-                    message = "Email đã tồn tại trong hệ thông!" 
-                });
+                return BadRequest(new { success = false, message = "Email đã tồn tại trong hệ thông!" });
             }
 
             //Tạo đối tượng ApplicationUser mới
@@ -182,7 +145,7 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                 await _userManager.AddToRoleAsync(newDoctor, "Doctor"); //Gán vai trò Bác sĩ
 
                 //Tạo bản ghi mới trong bảng Doctors
-                var doctorEntity = new Models.Doctor
+                var doctorEntity = new Doctor
                 {
                     UserId = newDoctor.Id,
                     Degree = doctor.Degree,
@@ -198,25 +161,14 @@ namespace BookingCare.Areas.Admin.Controllers.Api
 
                 //Gửi email tạo tài khoản thành công
                 _ = Task.Run(() => _emailSender.SendEmailAsync(doctor.Email, "Tài khoản bác sĩ - BookingCare", body));
-                return Ok(new 
-                { 
-                    success = true, 
-                    message = "Tạo tài khoản Bác sĩ thành công!" 
-                });
+                return Ok(new { success = true, message = "Tạo tài khoản Bác sĩ thành công!" });
             }
-            return BadRequest(new 
-            { 
-                success = false, 
-                message = "Tạo tài khoản Bác sĩ không thành công!" 
-            });
+            return BadRequest(new { success = false, message = "Tạo tài khoản Bác sĩ không thành công!" });
         }
 
-        //=============================================
-        // 4. Cập nhật thông tin bác sĩ
-        // Bước 1: Lấy thông tin bác sĩ cần cập nhật
-        // GET: /api/admin/users/doctors/id/edit
-        //=============================================
-        [HttpGet("doctors/{id}/edit")]
+        //Cập nhật thông tin bác sĩ
+        //1. Lấy thông tin chi tiết bác sĩ
+        [HttpGet("updateInfoDoctor")]
         public IActionResult UpdateDoctorDetails(string id)
         {
             var doctor = _dbContext.Users
@@ -228,15 +180,11 @@ namespace BookingCare.Areas.Admin.Controllers.Api
 
             if (doctor == null)
             {
-                return NotFound(new 
-                { 
-                    success = true,
-                    message = "Không tìm thấy bác sĩ!"
-                });
+                return NotFound(new { message = "Không tìm thấy bác sĩ!" });
             }
 
             // Gói dữ liệu cần thiết
-            var inforUpdateDoctor = new DoctorInfoUpdateDtos
+            var result = new DoctorInfoDtos
             {
                 UserId = doctor.Id,
                 FullName = doctor.FullName,
@@ -248,42 +196,30 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                 DoctorId = doctor.Doctor.Id,
                 Degree = doctor.Doctor.Degree,
                 YearsOfExp = doctor.Doctor.YearsOfExp,
-                SpecialtyId = doctor.Doctor.SpecialtyId,
-                RoomId = doctor.Doctor.RoomId
+                SpecialtyName = doctor.Doctor.Specialty.Name,
+                RoomName = doctor.Doctor.Room.Name
             };
 
-            return Ok(new 
-            {
-                success = true,
-                data = inforUpdateDoctor
-            });
+            var specialtyId = doctor.Doctor.SpecialtyId;
+            var roomId = doctor.Doctor.RoomId;
+
+            return Ok(new { result, specialtyId, roomId });
         }
 
-        //=============================================
-        // Bước 2: Cập nhật thông tin bác sĩ
-        // PUT: /api/admin/users/doctors/id/edit
-        //=============================================
-        [HttpPut("doctors/{id}/edit")]
+        //2. Cập nhật thông tin bác sĩ
+        [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateDoctor(string id, [FromBody] UpdateDoctor update_doctor)
         {
             //Kiểm tra dữ liệu gửi về hợp lệ không
             if (!ModelState.IsValid)
             {
-                return BadRequest(new 
-                {
-                    success = false, 
-                    message = "Vui lòng điền đầy đủ thông tin bác sĩ!" 
-                });
+                return BadRequest(new { success = false, message = "Vui lòng điền đầy đủ thông tin bác sĩ!" });
             }
 
             var doctor = await _userManager.Users.Include(u => u.Doctor).FirstOrDefaultAsync(u => u.Id == id);
             if (doctor == null)
             {
-                return NotFound(new
-                {
-                    success = false,
-                    message = "Không tìm thấy bác sĩ!"
-                });
+                return NotFound();
             }
 
             //Cập nhật thông tin
@@ -293,11 +229,7 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                 int doctorCountInRoom = _dbContext.Doctors.Count(d => d.RoomId == update_doctor.RoomId);
                 if (doctorCountInRoom == 2)
                 {
-                    return BadRequest(new 
-                    {
-                        success = false,
-                        message = "Phòng đã đầy, vui lòng chọn phòng khác!" 
-                    });
+                    return BadRequest(new { success = false, message = "Phòng đã đầy, vui lòng chọn phòng khác!" });
                 }
                 doctor.Doctor.RoomId = update_doctor.RoomId;
             }
@@ -313,18 +245,10 @@ namespace BookingCare.Areas.Admin.Controllers.Api
 
             //Gửi email
             _ = Task.Run(() => _emailSender.SendEmailAsync(doctor.Email, "Cập nhật thông tin - BookingCare", body));
-            return Ok(new 
-            { 
-                success = true, 
-                message = "Cập nhật thông tin Bác sĩ thành công!" 
-            });
+            return Ok(new { success = true, message = "Cập nhật thông tin Bác sĩ thành công!" });
         }
 
-        //=============================================
-        // II. QUẢN LÝ TÀI KHOẢN BỆNH NHÂN
-        // 1. Lấy danh sách bệnh nhân
-        // GET: /api/admin/users/patients
-        //=============================================
+        //====QUẢN LÝ TÀI KHOẢN BỆNH NHÂN====//
         [HttpGet("patients")]
         public async Task<IActionResult> GetPatients (string? search = "", int page = 1, int pageSize = 10)
         {
@@ -347,7 +271,7 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             var totalPatients = await patients.CountAsync();
 
             //Lấy danh sách hiển thị ở trang muốn xem
-            var listPatients = await patients
+            var data = await patients
                             .OrderByDescending(d => d.Patient.Id)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
@@ -364,22 +288,11 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                             })
                             .ToListAsync();
 
-            return Ok(new 
-            {
-                success = true,
-                data = new
-                {
-                    totalPatients,
-                    listPatients
-                }
-            });
+            return Ok(new { totalPatients, data });
         }
 
-        //=============================================
-        // 2. Lấy thông tin chi tiết bệnh nhân
-        // GET: /api/admin/users/patients/id
-        //=============================================
-        [HttpGet("patients/{id}")]
+        //Lấy thông tin chi tiết bệnh nhân
+        [HttpGet("infoPatient")]
         public IActionResult PatientDetails(string id)
         {
             var patient = _dbContext.Users
@@ -388,15 +301,11 @@ namespace BookingCare.Areas.Admin.Controllers.Api
 
             if (patient == null)
             {
-                return NotFound(new 
-                {
-                    success = false,
-                    message = "Không tìm thấy bệnh nhân!"
-                });
+                return NotFound(new { message = "Không tìm thấy bệnh nhân!" });
             }
 
             // Gói dữ liệu cần thiết
-            var inforPatient = new PatientInfoDtos
+            var result = new PatientInfoDtos
             {
                 UserId = patient.Id,
                 FullName = patient.FullName,
@@ -409,29 +318,17 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                 MedicalHistory = patient.Patient.MedicalHistory
             };
 
-            return Ok(new
-            {
-                success = true,
-                data = inforPatient
-            });
+            return Ok(result);
         }
 
-        //=============================================
-        // III. KHÓA/MỞ KHÓA TÀI KHOẢN BÁC SĨ VÀ BỆNH NHÂN
-        // 1. Khóa tài khoản
-        // PUT: /api/admin/users/lock/id
-        //=============================================
+        //Khóa tài khoản
         [HttpPut("lock/{id}")]
         public async Task<IActionResult> LockAccount(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                return NotFound(new 
-                {
-                    success = false, 
-                    message = "Không tìm thấy người dùng!" 
-                });
+                return NotFound(new { success = false, message = "Không tìm thấy người dùng!" });
             }
             await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue); //Khóa tài khoản vô thời hạn
             user.UpdatedAt = DateTime.Now;
@@ -441,40 +338,24 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             {
                 var body = _emailTemplate.GetAccountLockedEmailBody(user.FullName, "Bác sĩ");
                 _ = Task.Run(() => _emailSender.SendEmailAsync(user.Email, "Thông báo khóa tài khoản - BookingCare", body));
-                return Ok(new
-                {
-                    success = true,
-                    message = "Khóa tài khoản thành công!" 
-                });
+                return Ok(new { success = true, message = "Khóa tài khoản thành công!" });
             }
             else //Nếu là tài khoản Bệnh nhân
             {
                 var body = _emailTemplate.GetAccountLockedEmailBody(user.FullName, "Bệnh nhân");
                 _ = Task.Run(() => _emailSender.SendEmailAsync(user.Email, "Thông báo khóa tài khoản - BookingCare", body));
-                return Ok(new
-                { 
-                    success = true, 
-                    message = "Khóa tài khoản thành công!"
-                });
+                return Ok(new { success = true, message = "Khóa tài khoản thành công!" });
             }
         }
 
-        //=============================================
-        // III. KHÓA/MỞ KHÓA TÀI KHOẢN BÁC SĨ VÀ BỆNH NHÂN
-        // 2. Mở khóa tài khoản
-        // PUT: /api/admin/users/unlock/id
-        //=============================================
+        //Mở khóa tài khoản
         [HttpPut("unlock/{id}")]
         public async Task<IActionResult> UnlockAccount(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                return NotFound(new 
-                {
-                    success = false,
-                    message = "Không tìm thấy người dùng!" 
-                });
+                return NotFound(new { success = false, message = "Không tìm thấy người dùng!" });
             }
             await _userManager.SetLockoutEndDateAsync(user, null); //Mở khóa
             user.UpdatedAt = DateTime.Now;
@@ -484,21 +365,13 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             {
                 var body = _emailTemplate.GetAccountUnlockedEmailBody(user.FullName, "Bác sĩ");
                 _ = Task.Run(() => _emailSender.SendEmailAsync(user.Email, "Thông báo mở khóa tài khoản - BookingCare", body));
-                return Ok(new 
-                { 
-                    success = true, 
-                    message = "Mở khóa tài khoản thành công!" 
-                });
+                return Ok(new { success = true, message = "Mở khóa tài khoản thành công!" });
             }
             else //Nếu là tài khoản Bệnh nhân
             {
                 var body = _emailTemplate.GetAccountUnlockedEmailBody(user.FullName, "Bệnh nhân");
                 _ = Task.Run(() => _emailSender.SendEmailAsync(user.Email, "Thông báo mở khóa tài khoản - BookingCare", body));
-                return Ok(new 
-                { 
-                    success = true,
-                    message = "Mở khóa tài khoản thành công!" 
-                });
+                return Ok(new { success = true, message = "Mở khóa tài khoản thành công!" });
             }
         }
     }

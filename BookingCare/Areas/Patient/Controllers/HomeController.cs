@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingCare.Areas.Patient.Controllers
 {
     [Area("Patient")]
+    [Authorize(Roles = "Patient")]
     public class HomeController : Controller
     {
         public HomeController (){}

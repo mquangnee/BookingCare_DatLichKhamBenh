@@ -1,0 +1,9 @@
+﻿.status-Confirmed{
+    color : blue
+}
+.status-Canceled {
+    color: red
+}
+.status-Pending {
+    color: green
+}

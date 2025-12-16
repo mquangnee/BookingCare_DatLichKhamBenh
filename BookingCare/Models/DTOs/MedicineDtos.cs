@@ -27,6 +27,7 @@ namespace BookingCare.Models.DTOs
         public string Status { get; set; } = "Đang sử dụng";
     }
 
+
     public class Add_UpdateMedicineDtos
     {
         [Required]
@@ -40,17 +41,5 @@ namespace BookingCare.Models.DTOs
         [Required]
         [StringLength(200)]
         public string Function { get; set; }
-    }
-
-    public class MedPrescriptionDtos
-    {
-        [Required]
-        public string Name { get; set; }
-
-        [Required]
-        public string Dosage { get; set; }
-
-        [Required]
-        public string Usage { get; set; }
     }
 }

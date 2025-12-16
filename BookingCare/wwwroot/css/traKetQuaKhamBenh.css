@@ -1,0 +1,139 @@
+﻿.container-tra {
+    max-width: 850px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 25px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.title {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.section {
+    margin-top: 20px;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+}
+
+textarea {
+    width: 100%;
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    resize: none;
+    transition: 0.2s;
+}
+
+    textarea:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+
+.search-box {
+    position: relative;
+}
+
+#searchMedicine {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+#suggestionList {
+    position: absolute;
+    top: 38px;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    max-height: 180px;
+    overflow-y: auto;
+    z-index: 10;
+}
+
+    #suggestionList li {
+        padding: 8px;
+        cursor: pointer;
+    }
+
+        #suggestionList li:hover {
+            background: #f0f0f0;
+        }
+
+.medicine-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+    .medicine-form input, .medicine-form button {
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+
+    .medicine-form button {
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+        .medicine-form button:hover {
+            background: #0056b3;
+        }
+
+#medicineTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+    #medicineTable th, #medicineTable td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+    }
+
+    #medicineTable th {
+        background: #007bff;
+        color: white;
+    }
+
+.deleteBtn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+    .deleteBtn:hover {
+        background: #c82333;
+    }
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: #28a745;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    margin-top: 25px;
+    font-size: 16px;
+}
+
+    .submit-btn:hover {
+        background: #218838;
+    }

@@ -1,68 +1,32 @@
-﻿// Phân trang
-let currentPage = 1; //Trang hiện tại
+﻿let currentPage = 1; //Trang hiện tại
 const pageSize = 10; //Mỗi trang 10 dòng
 let totalPages = 1; //Tổng số trang (sẽ tính lại sau khi gọi API)
 let doctorKeyword = "";  //Từ khóa dùng cho search + phân trang
 
-// Lấy các thành phần trong View
-// 1. Danh sách bác sĩ và phân trang
 const tableBody = document.getElementById("doctorTableBody");
 const prevBtn = document.getElementById("prevPage");
 const nextBtn = document.getElementById("nextPage");
 const pageInfo = document.getElementById("pageInfo");
-// 2. Modal xem thông tin chi tiết bác sĩ
 const modalDoctor = document.querySelector("#doctorModal #modalDoctor");
-// 3. Thêm tài khoản bác sĩ
-const btnAddDoctor = document.getElementById("btnAddDoctor");
-const formAddDoctor = document.getElementById("formAddDoctor");
-const create_email = document.getElementById("create_email");
-const create_fullName = document.getElementById("create_fullName");
-const create_gender = document.getElementById("create_gender");
-const create_dateOfBirth = document.getElementById("create_dateOfBirth");
-const create_address = document.getElementById("create_address");
-const create_phoneNumber = document.getElementById("create_phoneNumber");
-const create_specialty = document.getElementById("create_specialty");
-const create_degree = document.getElementById("create_degree");
-const create_yearsOfExp = document.getElementById("create_yearsOfExp");
-const create_room = document.getElementById("create_room");
-// 4. Cập nhật thông tin bác sĩ
-const formUpdateDoctor = document.getElementById("formUpdateDoctor");
-const update_email = document.getElementById("update_email");
-const update_fullName = document.getElementById("update_fullName");
-const update_gender = document.getElementById("update_gender");
-const update_dateOfBirth = document.getElementById("update_dateOfBirth");
-const update_address = document.getElementById("update_address");
-const update_phoneNumber = document.getElementById("update_phoneNumber");
-const update_specialty = document.getElementById("update_specialty");
-const update_degree = document.getElementById("update_degree");
-const update_yearsOfExp = document.getElementById("update_yearsOfExp");
-const update_room = document.getElementById("update_room");
-const update_userId = document.getElementById("update_userId");
-// 5. Khóa/Mở khóa tài khoản bác sĩ
-const lockId = document.getElementById("lockDoctorId");
-const unlockId = document.getElementById("unlockDoctorId");
-const btnLock = document.getElementById("confirmLockBtn");
-const btnUnlock = document.getElementById("confirmUnlockBtn");
 
 //====DANH SÁCH BÁC SĨ====//
-// Tải danh sách bác sĩ
+//Gọi API và render dữ liệu
 async function loadDoctors(page = 1, keyword = doctorKeyword) {
     try {
         currentPage = page;
         doctorKeyword = keyword;
 
         //Gửi yêu cầu lấy dữ liệu về server
-        const res = await fetch(`/api/admin/users/doctors?page=${page}&pageSize=${pageSize}&search=${doctorKeyword}`);
-        const body = await handleResponse(res);
+        const res = await fetch(`/Admin/api/UserApi/doctors?page=${page}&pageSize=${pageSize}&search=${doctorKeyword}`);
+        const result = await res.json();
 
         // Cập nhật lại tổng số trang
-        const data = body.data;
-        totalPages = Math.ceil(data.totalDoctors / pageSize);
-        renderTable(data.listDoctor);
+        totalPages = Math.ceil(result.totalDoctors / pageSize);
+        renderTable(result.data);
         updatePagination();
-    } catch (error) {
-        console.error("Lỗi:", error);
-        alert(error)
+
+    } catch (err) {
+        console.error("Lỗi tải dữ liệu:", err);
     }
 }
 
@@ -77,6 +41,7 @@ function renderTable(data) {
         tableBody.innerHTML = '<tr><td colspan="8">Không có dữ liệu</td></tr>';
         return;
     }
+
     tableBody.innerHTML = data.map(d => {
         const createdAt = new Date(d.createdAt.split('.')[0]).toLocaleString("vi-VN");
         const updatedAt = d.updatedAt ? new Date(d.updatedAt.split('.')[0]).toLocaleString("vi-VN") : "Chưa cập nhật";
@@ -125,15 +90,19 @@ loadDoctors(currentPage);
 //Cập nhật hiển thị phân trang
 function updatePagination() {
     pageInfo.textContent = `Trang ${currentPage} / ${totalPages}`;
+
     prevBtn.disabled = currentPage <= 1;
     nextBtn.disabled = currentPage >= totalPages;
 }
+
 prevBtn.addEventListener("click", () => {
     if (currentPage > 1) loadDoctors(currentPage - 1);
 });
+
 nextBtn.addEventListener("click", () => {
     if (currentPage < totalPages) loadDoctors(currentPage + 1);
 });
+
 
 //====XEM THÔNG TIN CHI TIẾT BÁC SĨ====//
 document.addEventListener("click", async function (e) {
@@ -145,17 +114,23 @@ document.addEventListener("click", async function (e) {
         alert("Không thể lấy Id bác sĩ!");
         return;
     }
+
     try {
-        // Gửi yêu cầu lấy thông tin chi tiết về server 
-        const res = await fetch(` /api/admin/users/doctors/${doctorId}`);
-        const body = await handleResponse(res);
+        //Gửi yêu cầu lấy thông tin chi tiết về server 
+        const res = await fetch(`/Admin/api/UserApi/infoDoctor?id=${doctorId}`);
 
         //Thông tin chi tiết
-        const data = body.data;
+        const data = await res.json();
+
+        //Kiểm tra dữ liệu
+        if (!res.ok) {
+            alert("Không thể lấy thông tin bác sĩ!");
+            return;
+        }
         renderInfo(data);
     } catch (error) {
         console.error("Lỗi:", error);
-        alert(error)
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.");
     }
 });
 
@@ -203,39 +178,44 @@ function renderInfo(data) {
 }
 
 //====THÊM BÁC SĨ====//
+const btnAddDoctor = document.getElementById("btnAddDoctor");
 btnAddDoctor.addEventListener("click", async function () {
     //Lấy dữ liệu từ modal
-    const inforDoctor = {
-        email: create_email.value.trim(),
-        fullName: create_fullName.value.trim(),
-        gender: create_gender.value,
-        dateOfBirth: create_dateOfBirth.value,
-        address: create_address.value.trim(),
-        phoneNumber: create_phoneNumber.value.trim(),
-        specialtyId: create_specialty.value,
-        degree: create_degree.value,
-        yearsOfExp: create_yearsOfExp.value,
-        roomId: create_room.value
+    const body = {
+        email: document.getElementById("create_email").value.trim(),
+        fullName: document.getElementById("create_fullName").value.trim(),
+        gender: document.getElementById("create_gender").value,
+        dateOfBirth: document.getElementById("create_dateOfBirth").value,
+        address: document.getElementById("create_address").value.trim(),
+        phoneNumber: document.getElementById("create_phoneNumber").value.trim(),
+        specialtyId: document.getElementById("create_specialty").value,
+        degree: document.getElementById("create_degree").value,
+        yearsOfExp: document.getElementById("create_yearsOfExp").value,
+        roomId: document.getElementById("create_room").value
     };
 
     try {
         //Gửi yêu cầu thêm tài khoản bác sĩ đến server
-        const res = await fetch(`/api/admin/users/doctors`, {
+        const res = await fetch(`/Admin/api/UserApi/create`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(inforDoctor)
+            body: JSON.stringify(body)
         });
-        const body = await handleResponse(res);
 
-        if (body.success) {
-            alert(body.message);
-            formAddDoctor.reset(); //Làm rỗng modal
+        //Xử lý phản hồi từ server
+        const result = await res.json();
+
+        if (result.success) {
+            alert(result.message);
+            document.getElementById("formAddDoctor").reset(); //Làm rỗng modal
             $('#addDoctorModal').modal('hide');
             loadDoctors();
+        } else {
+            alert(result.message);
         }
     } catch (error) {
         console.error("Lỗi:", error);
-        alert(error)
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.");
     }
 });
 
@@ -260,30 +240,50 @@ document.addEventListener("click", async function (e) {
 
     try {
         //Gửi yêu cầu lấy thông tin chi tiết về server 
-        const res = await fetch(`/api/admin/users/doctors/${doctorId}/edit`);
-        const body = await handleResponse(res);
+        const res = await fetch(`/Admin/api/UserApi/updateInfoDoctor?id=${doctorId}`);
+
+        //Thông tin chi tiết
+        const data = await res.json();
+
+        //Kiểm tra dữ liệu
+        if (!res.ok) {
+            alert("Không thể lấy thông tin bác sĩ!");
+            return;
+        }
+
+        //Lấy các thành phần trong modal
+        const email = document.getElementById("update_email");
+        const fullName = document.getElementById("update_fullName");
+        const gender = document.getElementById("update_gender");
+        const dateOfBirth = document.getElementById("update_dateOfBirth");
+        const address = document.getElementById("update_address");
+        const phoneNumber = document.getElementById("update_phoneNumber");
+        const specialty = document.getElementById("update_specialty");
+        const degree = document.getElementById("update_degree");
+        const yearsOfExp = document.getElementById("update_yearsOfExp");
+        const room = document.getElementById("update_room");
 
         //Lưu user ID
-        const data = body.data;
-        update_userId.value = data.userId;
+        document.getElementById("update_userId").value = data.result.userId;
 
         //Hiển thị thông tin
-        update_email.value = data.email;
-        update_fullName.value = data.fullName;
-        update_gender.value = data.gender;
-        update_dateOfBirth.value = data.dateOfBirth;
-        update_address.value = data.address;
-        update_phoneNumber.value = data.phoneNumber;
-        update_specialty.value = data.specialtyId.toString();
-        update_degree.value = data.degree;
-        update_yearsOfExp.value = data.yearsOfExp;
-        update_room.value = data.roomId.toString();
+        email.value = data.result.email;
+        fullName.value = data.result.fullName;
+        gender.value = data.result.gender;
+        dateOfBirth.value = data.result.dateOfBirth;
+        address.value = data.result.address;
+        phoneNumber.value = data.result.phoneNumber;
+        specialty.value = data.specialtyId.toString();
+        degree.value = data.result.degree;
+        yearsOfExp.value = data.result.yearsOfExp;
+        room.value = data.roomId.toString();
 
         //Hiển thị modal
         $("#updateDoctorModal").modal("show");
+
     } catch (error) {
         console.error("Lỗi:", error);
-        alert(error)
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.");
     }
 });
 
@@ -300,36 +300,45 @@ document.addEventListener("click", async function (e) {
 
     try {
         //Lấy dữ liệu từ modal
-        const inforDoctor = {
-            address: update_address.value.trim(),
-            phoneNumber: update_phoneNumber.value.trim(),
-            specialtyId: update_specialty.value,
-            degree: update_degree.value,
-            yearsOfExp: update_yearsOfExp.value,
-            roomId: update_room.value
+        const body = {
+            address: document.getElementById("update_address").value.trim(),
+            phoneNumber: document.getElementById("update_phoneNumber").value.trim(),
+            specialtyId: document.getElementById("update_specialty").value,
+            degree: document.getElementById("update_degree").value,
+            yearsOfExp: document.getElementById("update_yearsOfExp").value,
+            roomId: document.getElementById("update_room").value
         };
 
         //Gửi yêu cầu lấy thông tin chi tiết về server 
-        const res = await fetch(`/api/admin/users/doctors/${userId}/edit`, { 
+        const res = await fetch(`/Admin/api/UserApi/update/${userId}`, { 
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(inforDoctor)
+            body: JSON.stringify(body)
         });
-        const body = await handleResponse(res);
 
-        if (body.success) {
-            alert(body.message);
-            formUpdateDoctor.reset(); //Làm rỗng modal
+        //Xử lý phản hồi từ server
+        const result = await res.json();
+
+        if (result.success) {
+            alert(result.message);
+            document.getElementById("formUpdateDoctor").reset(); //Làm rỗng modal
             $('#updateDoctorModal').modal('hide');
             loadDoctors(currentPage);
+        } else {
+            alert(result.message);
         }
     } catch (error) {
         console.error("Lỗi:", error);
-        alert(error)
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.");
     }
 });
 
 //====KHÓA/MỞ KHÓA TÀI KHOẢN BÁC SĨ====//
+const lockId = document.getElementById("lockDoctorId");
+const unlockId = document.getElementById("unlockDoctorId");
+const btnLock = document.getElementById("confirmLockBtn");
+const btnUnlock = document.getElementById("confirmUnlockBtn");
+
 /* Khóa bác sĩ */
 //1. Hiển thị modal xác nhận khóa
 document.addEventListener("click", async function (e) {
@@ -354,16 +363,18 @@ btnLock.addEventListener("click", async function (e) {
 
     try {
         //Gửi yêu cầu khóa tài khoản bác sĩ về server
-        const res = await fetch(`/api/admin/users/lock/${doctorId}`, { method: "PUT" });
-        const body = await handleResponse(res);
+        const res = await fetch(`/Admin/api/UserApi/lock/${doctorId}`, { method: "PUT" });
+
+        //Thông tin chi tiết
+        const data = await res.json();
 
         //Hiển thị thông báo
         $('#confirmLockModal').modal('hide');
-        alert(body.message);
+        alert(data.message);
         loadDoctors();
     } catch (error) {
         console.error("Lỗi:", error);
-        alert(error)
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.");
     }
 });
 
@@ -391,50 +402,59 @@ btnUnlock.addEventListener("click", async function (e) {
 
     try {
         //Gửi yêu cầu mở khóa tài khoản bác sĩ về server
-        const res = await fetch(`/api/admin/users/unlock/${doctorId}`, { method: "PUT" });
-        const body = await handleResponse(res);
+        const res = await fetch(`/Admin/api/UserApi/unlock/${doctorId}`, { method: "PUT" });
+
+        //Thông tin chi tiết
+        const data = await res.json();
 
         //Hiển thị thông báo
         $('#confirmUnlockModal').modal('hide');
-        alert(body.message);
+        alert(data.message);
         loadDoctors();
     } catch (error) {
         console.error("Lỗi:", error);
-        alert(error)
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.");
     }
 });
 
 //====HÀM LOAD DROPDOWNS====//
 async function loadDropdownsCreate() {
     try {
+        const specialtySelect = document.getElementById("create_specialty");
+        const roomSelect = document.getElementById("create_room");
+
         // Reset options
-        create_specialty.innerHTML = `<option value="">-- Chọn chuyên khoa --</option>`;
-        create_room.innerHTML = `<option value="">-- Chọn phòng khám --</option>`;
+        specialtySelect.innerHTML = `<option value="">-- Chọn chuyên khoa --</option>`;
+        roomSelect.innerHTML = `<option value="">-- Chọn phòng khám --</option>`;
 
         // Gọi API chuyên khoa
-        const resSpecialty = await fetch("/api/admin/specialties");
-        const bodySpecialty = await handleResponse(resSpecialty);
+        const resSpecialty = await fetch("/Admin/api/SpecialtyApi/getAll");
+        if (!resSpecialty.ok) {
+            alert("Không thể tải danh sách chuyên khoa");
+        }
+        const specialties = await resSpecialty.json();
 
         //Thêm dropdown chuyên khoa
-        const specialties = bodySpecialty.data;
         specialties.forEach(specialty => {
             const opt = document.createElement("option");
             opt.value = specialty.id;
             opt.textContent = specialty.name;
-            create_specialty.appendChild(opt);
+            specialtySelect.appendChild(opt);
         });
 
         // Gọi API phòng
-        const resRoom = await fetch("/api/admin/rooms");
-        const bodyRoom = await handleResponse(resRoom);
+        const resRoom = await fetch("/Admin/api/RoomApi/getAll");
+        if (!resRoom.ok) {
+            alert("Không thể tải danh sách phòng khám");
+        }
+        const rooms = await resRoom.json();
 
         //Thêm dropdown phòng khám
-        const rooms = bodyRoom.data;
         rooms.forEach(room => {
             const opt = document.createElement("option");
             opt.value = room.id;
             opt.textContent = `${room.name} (${room.currentDoctorCount}/2)`;
-            create_room.appendChild(opt);
+            roomSelect.appendChild(opt);
         });
     } catch (error) {
         console.error("Lỗi loadDropdowns:", error);
@@ -444,76 +464,44 @@ async function loadDropdownsCreate() {
 
 async function loadDropdownsUpdate() {
     try {
+        const specialtySelect = document.getElementById("update_specialty");
+        const roomSelect = document.getElementById("update_room");
+
         // Reset options
-        update_specialty.innerHTML = `<option value="">-- Chọn chuyên khoa --</option>`;
-        update_room.innerHTML = `<option value="">-- Chọn phòng khám --</option>`;
+        specialtySelect.innerHTML = `<option value="">-- Chọn chuyên khoa --</option>`;
+        roomSelect.innerHTML = `<option value="">-- Chọn phòng khám --</option>`;
 
         // Gọi API chuyên khoa
-        const resSpecialty = await fetch("/api/admin/specialties");
-        const bodySpecialty = await handleResponse(resSpecialty);
+        const resSpecialty = await fetch("/Admin/api/SpecialtyApi/getAll");
+        if (!resSpecialty.ok) {
+            alert("Không thể tải danh sách chuyên khoa");
+        }
+        const specialties = await resSpecialty.json();
 
         //Thêm dropdown chuyên khoa
-        const specialties = bodySpecialty.data;
         specialties.forEach(specialty => {
             const opt = document.createElement("option");
             opt.value = specialty.id;
             opt.textContent = specialty.name;
-            update_specialty.appendChild(opt);
+            specialtySelect.appendChild(opt);
         });
 
         // Gọi API phòng
-        const resRoom = await fetch("/api/admin/rooms");
-        const bodyRoom = await handleResponse(resRoom);
+        const resRoom = await fetch("/Admin/api/RoomApi/getAll");
+        if (!resRoom.ok) {
+            alert("Không thể tải danh sách phòng khám");
+        }
+        const rooms = await resRoom.json();
 
         //Thêm dropdown phòng khám
-        const rooms = bodyRoom.data;
         rooms.forEach(room => {
             const opt = document.createElement("option");
             opt.value = room.id;
             opt.textContent = `${room.name} (${room.currentDoctorCount}/2)`;
-            update_room.appendChild(opt);
+            roomSelect.appendChild(opt);
         });
     } catch (error) {
         console.error("Lỗi loadDropdowns:", error);
         alert("Không thể tải dữ liệu chuyên khoa hoặc phòng khám!");
     }
-}
-
-// Xử lý phản hồi từ server
-async function handleResponse(res) {
-    let body = null;
-    try {
-        body = await res.json();
-    } catch {
-        body = null;
-    }
-
-    // Bad Request
-    if (res.status === 400) {
-        throw body?.message || "Dữ liệu gửi lên không hợp lệ.";
-    }
-    // Unauthorized
-    if (res.status === 401) {
-        alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
-        location.href = "/Account/Login";
-        return;
-    }
-    // Forbidden
-    if (res.status === 403) {
-        throw "Bạn không có quyền truy cập chức năng này.";
-    }
-    // API not found
-    if (res.status === 404) {
-        throw body?.message || "API không tồn tại.";
-    }
-    // Server Error
-    if (res.status >= 500) {
-        throw body?.message || "Lỗi máy chủ. Vui lòng thử lại sau.";
-    }
-    // Business Error (success = false)
-    if (!body.success) {
-        throw body?.message || "Xử lý thất bại.";
-    }
-    // SUCCESS
-    return body;
 }

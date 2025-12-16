@@ -11,10 +11,6 @@ namespace BookingCare.Models
         [StringLength(100)]
         public string Diagnosis { get; set; }
 
-        [Required]
-        [StringLength(100)]
-        public string Instructions { get; set; }
-
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         //Quan hệ 1-N với bảng Appointment

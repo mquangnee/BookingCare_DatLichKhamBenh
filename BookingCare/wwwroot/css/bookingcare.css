@@ -95,14 +95,13 @@
     width: auto; /* giữ tỷ lệ ảnh */
     border-radius: 12px; /* bo góc */
 }
-
-.navbar .dropdown-menu.dropdown-menu-right {
-    right: 0 !important;
-    left: auto !important;
-    transform: translateX(-10px); 
+/* Dropdown menu mở khi hover */
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0; /* căn sát nút */
 }
 
-.navbar .dropdown-menu {
-    max-width: 200px;
-    overflow-wrap: break-word;
+/* Tạo hiệu ứng mượt */
+.dropdown-menu {
+    transition: 0.2s ease-in-out;
 }
