@@ -1,47 +1,10 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace BookingCare.Controllers
 {
     public class HomeController : Controller
     {
-        public HomeController() {}
+        public HomeController() { }
 
         public IActionResult Index()
         {

@@ -18,6 +18,12 @@ namespace BookingCare
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Thêm Chatbot
+            builder.Services.Configure<ChatbotSetting>(
+                builder.Configuration.GetSection("Chatbot")
+            );
+            builder.Services.AddHttpClient<IChatbot, Chatbot>();
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 

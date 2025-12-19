@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="~/css/bookingcare.css" />
     <link rel="stylesheet" href="~/css/home_page.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" asp-append-version="true" />
+    <!-- Markdown Renderer -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <header>
@@ -102,6 +104,21 @@
             </div>
         </footer>
     </div>
+    <div id="chatbot-container">
+        <div id="chatbot-button" onclick="toggleChatbot()">💬</div>
+
+        <div id="chatbot-box" class="hidden">
+            <div id="chatbot-header">Trợ lý ảo BookingCare</div>
+
+            <div id="chatbot-messages"></div>
+
+            <div id="chatbot-input-area">
+                <input id="chatbot-input" type="text" placeholder="Nhập câu hỏi..." autocomplete="off" />
+                <button id="chatbot-send">Gửi</button>
+            </div>
+        </div>
+    </div>
+    <script src="/js/chatbot.js"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap Bundle -->
