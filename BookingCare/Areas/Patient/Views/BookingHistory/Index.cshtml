@@ -58,12 +58,63 @@
         <span id="pageInfo" class="fw-bold text-primary mx-2"></span>
         <button id="nextPage" class="btn btn-outline-primary btn-sm ml-2">Sau →</button>
     </div>
+</div>
 
-    <!-- EMPTY -->
-    <div id="emptyMessage" class="alert alert-info text-center d-none">
-        <i class="fa-solid fa-circle-info"></i> Bạn chưa có lịch hẹn nào.
+<!-- Patient Get Prescription -->
+<div class="modal fade" id="getPrescription" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <!-- Header -->
+            <div class="modal-header border-0 rounded-top-4" style="background-color: #45c3d2;">
+                <h5 class="modal-title text-white fw-bold">
+                    <i class="fa-solid fa-notes-medical mr-2"></i>
+                    Kết quả khám bệnh
+                </h5>
+            </div>
+            <!-- Body -->
+            <div class="modal-body p-4">
+                <!-- Diagnosis -->
+                <div class="mb-4">
+                    <h6 class="fw-bold section-title">
+                        <i class="fa-solid fa-stethoscope mr-2"></i>
+                        Chuẩn đoán
+                    </h6>
+                    <div id="presDiagnosis" class="bg-light"></div>
+                </div>
+                <!-- Instructions -->
+                <div class="mb-4">
+                    <h6 class="fw-bold section-title">
+                        <i class="fa-solid fa-comment-medical mr-2"></i>
+                        Lời dặn của bác sĩ
+                    </h6>
+                    <div id="presInstructions" class="bg-light"></div>
+                </div>
+                <!-- Medicines -->
+                <div>
+                    <h6 class="fw-bold section-title">
+                        <i class="fa-solid fa-pills mr-2"></i>
+                        Đơn thuốc
+                    </h6>
+                    <table class="table table-bordered mt-3">
+                        <thead class="text-white" style="background-color: #45c3d2;">
+                            <tr>
+                                <th style="width: 10%;">STT</th>
+                                <th style="width: 25%;">Tên thuốc</th>
+                                <th style="width: 25%;">Liều lượng</th>
+                                <th style="width: 40%;">Cách dùng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="presMedicines"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button class="btn px-4 py-2 rounded-pill text-white" style="background-color: #45c3d2;" data-dismiss="modal">
+                    <i class="fa-solid fa-check mr-1"></i> Đóng
+                </button>
+            </div>
+        </div>
     </div>
-
 </div>
 
 <!-- Patient Confirm Cancel Appointment -->
@@ -114,5 +165,5 @@
     <script src="~/js/patient_bookingHistory.js" asp-append-version="true"></script>
 }
 @section styles {
-    <link rel="stylesheet" href="~/css/historybooking.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/patient_bookingHistory.css" asp-append-version="true" />
 }

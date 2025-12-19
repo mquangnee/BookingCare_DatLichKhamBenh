@@ -8,7 +8,7 @@ namespace BookingCare.Models
         public int Id { get; set; }
 
         [StringLength(200)]
-        public string? MedicalHistory { get; set; }
+        public string MedicalHistory { get; set; } = "Chưa có tiền sử bệnh án";
 
         //Quan hệ 1-N với bảng Appointment
         public ICollection<Appointment> Appointments { get; set; }

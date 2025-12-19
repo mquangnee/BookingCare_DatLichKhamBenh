@@ -10,6 +10,9 @@ const tableBody = document.getElementById("apptTableBody");
 const prevBtn = document.getElementById("prevPage");
 const nextBtn = document.getElementById("nextPage");
 const pageInfo = document.getElementById("pageInfo");
+const preDiagnosis = document.getElementById("presDiagnosis");
+const presInstructions = document.getElementById("presInstructions");
+const tbody = document.getElementById("presMedicines");
 
 //====DANH SÁCH LỊCH ĐẶT====//
 //Gọi Api và render dữ liệu
@@ -20,22 +23,17 @@ async function loadAppointments(page = 1, keyword = nameKeyword, filterSelect = 
         filter = filterSelect;
 
         //Gửi yêu cầu lấy dữ liệu về server
-        const res = await fetch(`/Patient/api/BookingHistoryApi/bookingHistory?page=${page}&pageSize=${pageSize}&search=${nameKeyword}&filter=${filter}`);
-        const result = await res.json();
+        const res = await fetch(`/api/patient/appointments?page=${page}&pageSize=${pageSize}&search=${nameKeyword}&filter=${filter}`);
+        const body = await handleResponse(res);
 
-        //Hiển thị thông báo (nếu lỗi)
-        if (!res.ok) {
-            alert(data.message);
-            return
-        }
-        
         //Cập nhật lại tổng số trang
-        totalPages = Math.ceil(result.totalAppt / pageSize);
-        renderTable(result.data);
+        const data = body.data;
+        totalPages = Math.ceil(data.totalAppointments / pageSize);
+        renderTable(data.listAppointments);
         updatePagination();
-    } catch (err) {
-        alert('Không thể kết nối dữ liệu. Vui lòng thử lại.');
-        console.error(err);
+    } catch (error) {
+        console.error("Lỗi:", error);
+        alert(error)
     }
 }
 
@@ -65,13 +63,10 @@ function renderTable(data) {
     tableBody.innerHTML = data.map((d, index) => {
         //STT
         const stt = (currentPage - 1) * pageSize + index + 1;
-        
         //Format ngày đặt
         const appointmentDate = new Date(d.appointmentDate).toLocaleDateString("vi-VN");
-
         //Hiển thị action theo trạng thái lịch đặt
         const actionHtml = getActionButton(d.status, d.appointmentId);
-
         //Hiển thị trạng thái
         const statusHtml = getStatusBadge(d.status, d.appointmentId);
 
@@ -98,7 +93,13 @@ function getActionButton(status, appointmentId) {
             </button>
         `;
     }
-
+    if (status == "Hoàn thành") {
+        return `
+            <button class="btn btn-sm text-white get-prescription" data-id="${appointmentId}">
+                Kết quả khám
+            </button>
+        `;
+    }
     //Disable nút
     return `
         <button class="btn btn-secondary btn-sm" disabled>
@@ -163,18 +164,62 @@ cancelBtn.addEventListener("click", async function () {
     }
     try {
         //Gửi yêu cầu hủy lịch về server
-        const res = await fetch(`/Patient/api/BookingHistoryApi/cancelBooking/${apptId}`, { method: "PUT" });
-        const data = await res.json();
+        const res = await fetch(`/api/patient/appointments/${apptId}`, { method: "PUT" });
+        const body = await handleResponse(res);
 
         //Hiển thị thông báo
         $('#confirmCancelModal').modal('hide');
-        alert(data.message);
+        alert(body.message);
         loadAppointments();
     } catch (err) {
         alert('Không thể kết nối dữ liệu. Vui lòng thử lại.');
         console.error(err);
     }
 });
+
+// Xem kết quả
+document.addEventListener("click", async function (e) {
+    const btn = e.target.closest(".get-prescription"); //Tìm đúng nút "Kết quả khám"
+    if (!btn) return;
+
+    //Lấy ID lịch khám
+    const appointmentId = btn.dataset.id;
+    try {
+        //Gửi yêu cầu thêm tài khoản bác sĩ đến server
+        const res = await fetch(`/api/patient/appointments/prescription/${appointmentId}`);
+        const body = await handleResponse(res);
+        const data = body.data;
+        showPrescription(data);
+    } catch (error) {
+        console.error("Lỗi:", error);
+        alert(error)
+    }
+});
+
+function showPrescription(report) {
+    presDiagnosis.innerText = report.diagnosis || "Không có dữ liệu";
+    presInstructions.innerText = report.instructions || "Không có dữ liệu";
+
+    tbody.innerHTML = "";
+    if (!report.medicines || report.medicines.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="3" class="text-center text-muted">Không có thuốc nào.</td>
+            </tr>`;
+        return;
+    }
+    report.medicines.forEach((m, index) => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${m.name}</td>
+                <td>${m.dosage}</td>
+                <td>${m.usage}</td>
+            </tr>`;
+    });
+    $("#getPrescription").modal("show");
+}
+
 //===CẬP NHẬT TRẠNG THÁI LỊCH HẸN===//
 //Kết nối với hub
 const connection = new signalR.HubConnectionBuilder().withUrl("/appointmentHub").build();
@@ -193,86 +238,45 @@ connection.on("StatusChanged", (appointmentId, newStatus) => {
         status.className = "badge-status badge-confirmed";
     }
 });
-//function displayAppointments(status) {
-//    const tbody = document.querySelector('#appointmentsTable tbody');
-//    tbody.innerHTML = '';
 
-//    let filtered = appointmentsData;
-//    if (status !== 'All') {
-//        filtered = appointmentsData.filter(a => a.Status === status);
-//    }
+//Xem kết quả khám bệnh
 
-//    if (filtered.length === 0) {
-//        document.getElementById('emptyMessage').classList.remove('d-none');
-//    } else {
-//        document.getElementById('emptyMessage').classList.add('d-none');
-//    }
 
-//    filtered.forEach(a => {
-//        const tr = document.createElement('tr');
-//        let actionCell = '';
+// Xử lý phản hồi từ server
+async function handleResponse(res) {
+    let body = null;
+    try {
+        body = await res.json();
+    } catch {
+        body = null;
+    }
 
-//        if (a.Status === 'Pending') {
-//            actionCell = `<button class="btn btn-sm btn-danger cancel-btn" data-id="${a.id}">Hủy</button>`;
-//        }
-
-//        tr.innerHTML = `
-//            <td>${a.id}</td>
-//            <td>${a.AppointmentDate}</td>
-//            <td>${a.AppoinmentTime}</td>
-//            <td>${a.DoctorName}</td>
-//            <td>${a.RoomNumber}</td>
-//            <td>${a.ReasonForVisit}</td>
-//            <td class="status-${a.Status}">${a.Status}</td>
-//            <td>${actionCell}</td>
-//        `;
-
-//        tbody.appendChild(tr);
-//    });
-
-//    // Gắn sự kiện hủy lịch
-//    document.querySelectorAll('.cancel-btn').forEach(btn => {
-//        btn.addEventListener('click', e => {
-//            const id = e.target.getAttribute('data-id');
-//            cancelAppointment(id);
-//        });
-//    });
-//}
-
-//function cancelAppointment(id) {
-//    const appointment = appointmentsData.find(a => a.id == id);
-//    if (!appointment) return;
-
-//    if (confirm(`Bạn có chắc muốn hủy lịch hẹn ID ${id}?`)) {
-//        appointment.Status = 'Canceled';
-//        displayAppointments(document.getElementById('statusFilter').value);
-
-//        fetch('/Appointments/Cancel', {
-//            method: 'POST',
-//            headers: { 'Content-Type': 'application/json' },
-//            body: JSON.stringify({ id: id })
-//        })
-//            .then(async res => {
-//                if (!res.ok) {
-//                    const text = await res.text();
-//                    throw new Error(text || 'Hủy lịch thất bại!');
-//                }
-//                return res.json();
-//            })
-//            .then(result => {
-//                alert(result.message || `Đã hủy lịch hẹn ID ${id} thành công!`);
-//                console.log("Kết quả server trả về:", result);
-//            })
-//            .catch(error => {
-//                alert("Lỗi khi hủy lịch: " + error.message);
-//                console.error("Chi tiết lỗi:", error);
-//            });
-//    }
-//}
-
-//document.getElementById('statusFilter').addEventListener('change', e => {
-//    displayAppointments(e.target.value);
-//});
-
-//loadAppointments();
-    
+    // Bad Request
+    if (res.status === 400) {
+        throw body?.message || "Dữ liệu gửi lên không hợp lệ.";
+    }
+    // Unauthorized
+    if (res.status === 401) {
+        alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+        location.href = "/Account/Login";
+        return;
+    }
+    // Forbidden
+    if (res.status === 403) {
+        throw "Bạn không có quyền truy cập chức năng này.";
+    }
+    // API not found
+    if (res.status === 404) {
+        throw body?.message || "API không tồn tại.";
+    }
+    // Server Error
+    if (res.status >= 500) {
+        throw body?.message || "Lỗi máy chủ. Vui lòng thử lại sau.";
+    }
+    // Business Error (success = false)
+    if (!body.success) {
+        throw body?.message || "Xử lý thất bại.";
+    }
+    // SUCCESS
+    return body;
+}

@@ -5,42 +5,70 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookingCare.Data.Seed
 {
-    //Khởi tạo tài khoản bác sĩ trong hệ thống
+    // Khởi tạo tài khoản bác sĩ trong hệ thống
     public static class SeedDoctor
     {
         public static async Task SeedAsync(UserManager<ApplicationUser> _userManager, DataContext _dbContext)
         {
-            var email = "n.guyenminhquangg03012004@gmail.com";
-            if (await _userManager.FindByEmailAsync(email) == null) //Kiểm tra email đã tồn tại chưa
+            var doctors = new List<(string Email, string FullName, string Gender, DateOnly Dob, string SpecialtyName, string RoomName, int YearsExp)>
             {
-                var doctor = new ApplicationUser
+                // ✅ Bác sĩ cũ (Nội khoa)
+                ("ngokhactai03011970@gmail.com", "Ngô Khắc Tài", "Nam", new DateOnly(1970, 1, 3), "Nội khoa", "P101", 20),
+
+                // ✅ 5 bác sĩ mới – TÊN THẬT
+                ("nguyenvanthang12061978@gmail.com", "Nguyễn Văn Thắng", "Nam", new DateOnly(1978, 6, 12), "Ngoại khoa", "P102", 18),
+                ("tranthilan15031982@gmail.com", "Trần Thị Lan", "Nữ", new DateOnly(1982, 3, 15), "Sản khoa", "P103", 16),
+                ("levanhung22091985@gmail.com", "Lê Văn Hùng", "Nam", new DateOnly(1985, 9, 22), "Nhi khoa", "P104", 14),
+                ("phamthimai08111980@gmail.com", "Phạm Thị Mai", "Nữ", new DateOnly(1980, 11, 8), "Răng hàm mặt", "P105", 15),
+                ("hoangvanphuc04041977@gmail.com", "Hoàng Văn Phúc", "Nam", new DateOnly(1977, 4, 4), "Mắt", "P106", 17)
+            };
+
+            foreach (var item in doctors)
+            {
+                if (await _userManager.FindByEmailAsync(item.Email) == null)
                 {
-                    UserName = email, //Tên đăng nhập = email
-                    Email = email,
-                    EmailConfirmed = true,
-                    FullName = "Ngô Khắc Tài",
-                    DateOfBirth = new DateOnly(1970, 01, 03),
-                    Gender = "Nam",
-                    Address = "Nghệ An",
-                    PhoneNumber = "0123456789"
-                };
-                var result = await _userManager.CreateAsync(doctor, "Abcd@123"); //Mật khẩu: Abcd@123
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(doctor, "Doctor"); //Gán role Doctor
-                    var specialty = await _dbContext.Specialties.FirstOrDefaultAsync(s => s.Name == "Nội khoa"); //Lấy chuyên khoa Nội khoa
-                    var room = await _dbContext.Rooms.FirstOrDefaultAsync(r => r.Name == "P101"); //Lấy phòng khám P101
-                    var doctorEntity = new Doctor //Tạo bản ghi trong bảng Doctors
+                    var doctorUser = new ApplicationUser
                     {
-                        UserId = doctor.Id,
-                        Degree = "Bác sĩ chuyên khoa (BSCK)",
-                        YearsOfExp = 20,
-                        SpecialtyId = specialty.Id,
-                        RoomId = room.Id
+                        UserName = item.Email,
+                        Email = item.Email,
+                        EmailConfirmed = true,
+                        FullName = item.FullName,
+                        DateOfBirth = item.Dob,
+                        Gender = item.Gender,
+                        Address = "Việt Nam",
+                        PhoneNumber = "0909000000"
                     };
-                    await _dbContext.Doctors.AddAsync(doctorEntity); //Thêm bản ghi vào bảng Doctors
+
+                    var result = await _userManager.CreateAsync(doctorUser, "Abcd@123");
+
+                    if (result.Succeeded)
+                    {
+                        await _userManager.AddToRoleAsync(doctorUser, "Doctor");
+
+                        var specialty = await _dbContext.Specialties
+                            .FirstOrDefaultAsync(s => s.Name == item.SpecialtyName);
+
+                        var room = await _dbContext.Rooms
+                            .FirstOrDefaultAsync(r => r.Name == item.RoomName);
+
+                        if (specialty != null && room != null)
+                        {
+                            var doctorEntity = new Doctor
+                            {
+                                UserId = doctorUser.Id,
+                                Degree = "Bác sĩ chuyên khoa (BSCK)",
+                                YearsOfExp = item.YearsExp,
+                                SpecialtyId = specialty.Id,
+                                RoomId = room.Id
+                            };
+
+                            await _dbContext.Doctors.AddAsync(doctorEntity);
+                        }
+                    }
                 }
             }
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

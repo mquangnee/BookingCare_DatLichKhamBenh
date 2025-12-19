@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BookingCare.Areas.Admin.Controllers.Api
 {
     [Area("Admin")]
-    [Route("Admin/api/[controller]")]
+    [Route("api/admin/rooms")]
     [ApiController]
     [Authorize(Roles = "Admin")]
     public class RoomApiController : ControllerBase
@@ -18,12 +18,19 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             _dbContext = dbContext;
         }
 
-        //Lấy danh sách phòng khám
-        [HttpGet("getAll")]
+        //=============================================
+        // 1. Lấy danh sách phòng khám
+        // GET: /api/admin/rooms
+        //=============================================
+        [HttpGet]
         public async Task<IActionResult> GetRooms()
         {
             var listRooms = await _dbContext.Rooms.Select(r => new { r.Id, r.Name, CurrentDoctorCount = r.Doctors.Count() }).ToListAsync();
-            return Ok(listRooms);
+            return Ok(new
+            {
+                success = true,
+                data = listRooms
+            });
         }
     }
 }
