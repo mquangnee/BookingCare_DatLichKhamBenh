@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookingCare.Areas.Admin.Controllers.Api
 {
     [Area("Admin")]
-    [Route("Admin/api/[controller]")]
+    [Route("api/admin/dashboard")]
     [ApiController]
     [Authorize(Roles = "Admin")]
     public class DashboardApiController : ControllerBase
@@ -17,9 +17,12 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             _dbContext = dataContext;
         }
 
-        //====HIỂN THỊ SỐ BÁC SĨ, SỐ BỆNH NHÂN, SỐ LỊCH KHÁM ĐÃ ĐẶT TRONG HÔM NAY, SỐ LỊCH KHÁM ĐÃ HỦY====//
-        [HttpGet("index")]
-        public IActionResult GetStats()
+        //=============================================
+        // 1. TỔNG QUAN DASHBOARD
+        // GET: /api/admin/dashboard/summary
+        //=============================================
+        [HttpGet("summary")]
+        public IActionResult GetSummary()
         {
             try
             {
@@ -44,54 +47,84 @@ namespace BookingCare.Areas.Admin.Controllers.Api
 
                 //Số lịch khám trong hôm nay đã hủy
                 var totalCanceledApptToday = _dbContext.Appointments.Count(a => a.AppointmentDate == today && a.Status == "Đã hủy");
-                return Ok(new { success = true, totalDoctors, totalPatients, totalApptToday, totalCanceledApptToday });
+                return Ok(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        totalDoctors,
+                        totalPatients,
+                        totalApptToday,
+                        totalCanceledApptToday
+                    }
+                });
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Lỗi: " + ex.ToString());
-                return Ok(new
+                return StatusCode(500, new
                 {
                     success = false,
-                    message = "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu!",
-                    totalDoctors = 0,
-                    totalPatients = 0,
-                    totalApptToday = 0,
-                    totalCanceledApptToday = 0
+                    message = "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu!"
                 });
             }
         }
 
-        //====BIỂU ĐỒ THỐNG KÊ SỐ LỊCH ĐẶT 10 NGÀY GẦN NHẤT====//
-        [HttpGet("booking-last-10days-1")]
-        public IActionResult GetBookingStatsLast10Days()
+        //=============================================
+        // 2. BIỂU ĐỒ LỊCH KHÁM THEO NGÀY
+        // GET: /api/admin/dashboard/appointments/daily
+        //=============================================
+        [HttpGet("appointments/daily")]
+        public IActionResult GetAppointmentsDaily()
         {
-            var today = DateOnly.FromDateTime(DateTime.Now);
-            var startDate = today.AddDays(-9); // lấy 10 ngày gần nhất (bao gồm hôm nay)
+            try
+            {
+                var today = DateOnly.FromDateTime(DateTime.Now);
+                var startDate = today.AddDays(-9); // lấy 10 ngày gần nhất (bao gồm hôm nay)
 
-            var stats = _dbContext.Appointments
-                .Where(a => a.AppointmentDate >= startDate && a.AppointmentDate <= today)
-                .GroupBy(a => a.AppointmentDate)
-                .Select(g => new
-                {
-                    Date = g.Key,
-                    Total = g.Count()
-                })
-                .OrderBy(g => g.Date)
-                .ToList();
+                var stats = _dbContext.Appointments
+                    .Where(a => a.AppointmentDate >= startDate && a.AppointmentDate <= today)
+                    .GroupBy(a => a.AppointmentDate)
+                    .Select(g => new
+                    {
+                        Date = g.Key,
+                        Total = g.Count()
+                    })
+                    .OrderBy(g => g.Date)
+                    .ToList();
 
-            // Đảm bảo có đủ 10 ngày (nếu ngày nào không có thì thêm 0)
-            var result = Enumerable.Range(0, 10)
-                .Select(i => startDate.AddDays(i))
-                .Select(date => new
+                // Đảm bảo có đủ 10 ngày (nếu ngày nào không có thì thêm 0)
+                var result = Enumerable.Range(0, 10)
+                    .Select(i => startDate.AddDays(i))
+                    .Select(date => new
+                    {
+                        Date = date.ToString("dd/MM"),
+                        Total = stats.FirstOrDefault(s => s.Date == date)?.Total ?? 0
+                    });
+
+                return Ok(new
                 {
-                    Date = date.ToString("dd/MM"),
-                    Total = stats.FirstOrDefault(s => s.Date == date)?.Total ?? 0
+                    success = true,
+                    data = result
                 });
-
-            return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi: " + ex.ToString());
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu!"
+                });
+            }
         }
-        [HttpGet("booking-last-10days-2")]
-        public IActionResult GetAppointmentStatusStats()
+
+        //=============================================
+        // 3. BIỂU ĐỒ LỊCH KHÁM TRẠNG THÁI
+        // GET: /api/admin/dashboard/appointments/status
+        //=============================================
+        [HttpGet("appointments/status")]
+        public IActionResult GetAppointmentsStatus()
         {
             try
             {
@@ -105,28 +138,29 @@ namespace BookingCare.Areas.Admin.Controllers.Api
 
                 // Đếm theo trạng thái
                 int waitingCount = recentAppointments.Count(a => a.Status == "Chờ khám");
-                int successCount = recentAppointments.Count(a => a.Status == "Đã khám");
+                int successCount = recentAppointments.Count(a => a.Status == "Hoàn thành");
                 int canceledCount = recentAppointments.Count(a => a.Status == "Đã hủy");
                 var totalCount = recentAppointments.Count();
 
                 return Ok(new
                 {
-                    waitingCount,
-                    successCount,
-                    canceledCount,
-                    totalCount
+                    success = true,
+                    data = new
+                    {
+                        waitingCount,
+                        successCount,
+                        canceledCount,
+                        totalCount
+                    }
                 });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[Dashboard Error] {ex.Message}");
-                return Ok(new
+                Console.WriteLine("Lỗi: " + ex.ToString());
+                return StatusCode(500, new
                 {
-                    waitingCount = 0,
-                    successCount = 0,
-                    canceledCount = 0,
                     success = false,
-                    message = "Lỗi khi lấy thống kê lịch khám."
+                    message = "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu!"
                 });
             }
         }

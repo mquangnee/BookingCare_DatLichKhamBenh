@@ -1,82 +1,109 @@
-﻿const step1 = document.querySelector('.step1');
-const step2 = document.querySelector('.step2');
-const step3 = document.querySelector('.step3');
-const stepTitle = document.querySelector('.step-title');
+﻿//Bước 1: Nhập email đăng ký, mật khẩu mới và xác nhận mật khẩu mới
+function handleChangePasswordStep1() {
+    const form = document.getElementById("changePasswordStep1Form");
+    if (!form) return;
 
-document.getElementById('btnNext').addEventListener('click', async () => {
-        const email = document.getElementById('email').value.trim();
-        const oldPassword = document.getElementById('oldPassword').value.trim();
-        const newPassword = document.getElementById('newPassword').value.trim();
-        const confirmPassword = document.getElementById('confirmPassword').value.trim();
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
 
+        //Lấy giá trị email, password và confirmedPassword từ form
+        const OldPassword = document.getElementById("oldPassword").value.trim();
+        const NewPassword = document.getElementById("newPassword").value.trim();
+        const ConfirmNewPassword = document.getElementById("confirmNewPassword").value.trim();
 
-        if (!email || !oldPassword || !newPassword || !confirmPassword) {
-            alert("Vui lòng điền đầy đủ thông tin!");
-            return;
-        }
-        if (newPassword !== confirmPassword) {
+        if (NewPassword !== ConfirmNewPassword) {
             alert("Mật khẩu xác nhận không khớp!");
             return;
         }
 
         try {
-            const res = await fetch('/Account/RequestOtp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, oldPassword, newPassword })
+            //Gửi yêu cầu đổi mật khẩu đến server
+            const res = await fetch("/Patient/api/ChangePasswordApi/changePass-step1", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ OldPassword, NewPassword, ConfirmNewPassword })
             });
 
+            //Xử lý phản hồi từ server
             const result = await res.json();
-
+            alert(result.message);
             if (res.ok && result.success) {
-                alert("✅ Mã OTP đã được gửi tới email của bạn!");
-                step1.classList.remove('active');
-                step2.classList.add('active');
-                stepTitle.textContent = "BƯỚC 2: XÁC NHẬN OTP";
-            } else {
-                alert("❌ " + (result.message || "Không thể gửi OTP!"));
+                setTimeout(() => window.location.href = "/Patient/AccountManager/ChangePasswordStep2", 1000);
             }
         } catch (error) {
-            console.error("Lỗi gửi OTP:", error);
-            alert("Có lỗi khi gửi yêu cầu đến server!");
+            console.error("Lỗi:", error);
+            alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
         }
     });
+}
 
+//Bước 2: Xác thực mã OTP
+function handleChangePasswordStep2() {
+    const form1 = document.getElementById("changePasswordStep2Form");
+    if (!form1) return;
 
-document.getElementById('btnConfirmOtp').addEventListener('click', async () => {
-        const email = document.getElementById('email').value.trim();
-        const otpCode = document.getElementById('otpCode').value.trim();
-        const newPassword = document.getElementById('newPassword').value.trim();
+    alert("Mã xác thực đã được gửi tới email của bạn!");
 
-        if (!otpCode) {
-            alert("Vui lòng nhập mã OTP!");
-            return;
-        }
+    //****Xử lý gửi mã OTP****
+    form1.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        //Lấy giá trị otp từ form
+        const otp = document.getElementById("otp").value;
 
         try {
-            const res = await fetch('/Account/ConfirmOtp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, otpCode, newPassword })
+            //Gửi yêu cầu xác thực OTP đến server
+            const res = await fetch("/Patient/api/ChangePasswordApi/changePass-step2", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ otp })
             });
 
+            //Xử lý phản hồi từ server
             const result = await res.json();
 
-            if (res.ok && result.success) {
-                step2.classList.remove('active');
-                step3.classList.add('active');
-                stepTitle.textContent = "BƯỚC 3: HOÀN TẤT";
-            } else {
-                alert("❌ " + (result.message || "Mã OTP không hợp lệ!"));
+            //Hiển thị thông báo
+            alert(result.message);
+
+            //Nếu thành công, chuyển đến trang đăng nhập
+            if (result.success) {
+                setTimeout(() => window.location.href = "/Patient/Home/Index", 1000);
             }
         } catch (error) {
-            console.error("Lỗi xác nhận OTP:", error);
-            alert("Có lỗi khi xác nhận OTP!");
+            console.error("Lỗi:", error);
+            alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
         }
     });
 
-document.getElementById('btnBack').addEventListener('click', () => {
-        step2.classList.remove('active');
-        step1.classList.add('active');
-        stepTitle.textContent = "BƯỚC 1: TÀI KHOẢN";
+    //****Xử lý gửi lại mã OTP****
+    const form2 = document.getElementById("resendOtpForm");
+    form2.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        var otp = "000000";
+
+        try {
+            //Gửi yêu cầu gửi lại mã OTP đến server
+            const res = await fetch("/Patient/api/ChangePasswordApi/changePass-resend-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ otp })
+            });
+
+            //Xử lý phản hồi từ server
+            const result = await res.json();
+
+            //Hiển thị thông báo
+            alert(result.message);
+        } catch (error) {
+            console.error("Lỗi:", error);
+            alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
+        }
     });
+}
+
+// ===== Gọi tất cả hàm =====
+document.addEventListener("DOMContentLoaded", () => {
+    handleChangePasswordStep1();
+    handleChangePasswordStep2();
+});

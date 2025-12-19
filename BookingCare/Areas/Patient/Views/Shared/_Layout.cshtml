@@ -1,353 +1,116 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> signInManager
-@inject UserManager<ApplicationUser> userManager
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BookingCare</title>
-
-    <!-- Styles -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BookingCare.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/bookingcare.css" />
     <link rel="stylesheet" href="~/css/home_page.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
-
-    <!-- Markdown Renderer -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
-    <style>
-        /* ================= CHATBOT CONTAINER ================= */
-        #chatbot-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 99999;
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-        }
-
-        #chatbot-button {
-            background: #00af66;
-            color: white;
-            width: 58px;
-            height: 58px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 28px;
-            cursor: pointer;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
-            transition: 0.2s ease;
-        }
-
-            #chatbot-button:hover {
-                transform: scale(1.1);
-                background: #009e5d;
-            }
-
-        /* PANEL CHAT */
-        #chatbot-box {
-            width: 360px;
-            height: 480px;
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-
-            #chatbot-box.hidden {
-                display: none;
-            }
-
-        #chatbot-header {
-            background: #00af66;
-            color: white;
-            padding: 14px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 15px;
-            letter-spacing: 0.3px;
-        }
-
-        /* MESSAGES */
-        #chatbot-messages {
-            flex: 1;
-            padding: 12px;
-            overflow-y: auto;
-            background: #f5f7fb;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .chatbot-row {
-            display: flex;
-            align-items: flex-end;
-            gap: 8px;
-        }
-
-            .chatbot-row.from-user {
-                justify-content: flex-end;
-            }
-
-        .chatbot-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #00af66;
-            color: white;
-            font-weight: bold;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chatbot-row.from-user .chatbot-avatar {
-            background: #0d6efd;
-        }
-
-        .chatbot-bubble {
-            max-width: 70%;
-            padding: 10px 12px;
-            border-radius: 14px;
-            font-size: 14px;
-            line-height: 1.45;
-            word-wrap: break-word;
-        }
-
-        /* Bot bubble */
-        .chatbot-row.from-bot .chatbot-bubble {
-            background: #e6fff3;
-            border: 1px solid #00af66;
-            border-radius: 14px 14px 14px 4px;
-            color: #0a2f1f;
-            box-shadow: 0 2px 4px rgba(0, 175, 102, 0.12);
-        }
-
-        /* User bubble */
-        .chatbot-row.from-user .chatbot-bubble {
-            background: #e7f0ff;
-            border: 1px solid #0d6efd;
-            border-radius: 14px 14px 4px 14px;
-            color: #0a2a43;
-            box-shadow: 0 2px 4px rgba(13, 110, 253, 0.12);
-        }
-
-        /* MARKDOWN STYLE */
-        .markdown-body {
-            line-height: 1.6;
-        }
-
-            .markdown-body ul,
-            .markdown-body ol {
-                margin: 6px 0 6px 20px;
-            }
-
-            .markdown-body li {
-                margin-bottom: 3px;
-            }
-
-            .markdown-body p {
-                margin: 6px 0;
-            }
-
-        /* INPUT AREA */
-        #chatbot-input-area {
-            display: flex;
-            padding: 10px;
-            border-top: 1px solid #ddd;
-            background: white;
-            gap: 6px;
-        }
-
-        #chatbot-input {
-            flex: 1;
-            border: 1px solid #cccccc;
-            border-radius: 999px;
-            padding: 8px 14px;
-            font-size: 14px;
-        }
-
-            #chatbot-input:focus {
-                border-color: #00af66;
-                box-shadow: 0 0 0 2px rgba(0, 175, 102, 0.2);
-                outline: none;
-            }
-
-        #chatbot-send {
-            background: #00af66;
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 999px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-            #chatbot-send:hover {
-                background: #009e5d;
-            }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" asp-append-version="true" />
 </head>
-
 <body>
-
-    <!-- HEADER / NAVBAR -->
     <header>
         <nav class="navbar navbar-expand-sm navbar-dark booking-navbar">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold" asp-area="Patient" asp-controller="Home" asp-action="Index">
-                    <img src="~/images/BookingCareLogo.png" class="booking-logo" />
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/BookingCareLogo.png"
+                         alt="BookingCare Logo"
+                         class="d-inline-block align-text-top booking-logo" />
                 </a>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="Patient" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
                         </li>
-
                         @if (signInManager.IsSignedIn(User))
                         {
                             if (User.IsInRole("Patient"))
                             {
-                                <li class="nav-item"><a class="nav-link text-white" asp-controller="PatientBooking" asp-action="Index">Đặt lịch khám</a></li>
-                                <li class="nav-item"><a class="nav-link text-white" asp-controller="BookingHistory" asp-action="Index">Lịch đặt</a></li>
-                                <li class="nav-item"><a class="nav-link text-white" asp-controller="AccountManager" asp-action="Index">Tài khoản</a></li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="Patient" asp-controller="PatientBooking" asp-action="Index">Đặt lịch khám</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="Patient" asp-controller="BookingHistory" asp-action="Index">Lịch đặt</a>
+                                </li>
                             }
                             else if (User.IsInRole("Doctor"))
                             {
-                                <li class="nav-item"><a class="nav-link text-white" asp-controller="Doctors" asp-action="Index">Lịch khám</a></li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="Doctor" asp-controller="Home" asp-action="Index">Lịch khám</a>
+                                </li>
                             }
                         }
                     </ul>
-
+                    <!-- Hiển thị đăng nhập / đăng xuất -->
                     <ul class="navbar-nav">
                         @if (signInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-link nav-link text-white">Đăng xuất</button>
-                                </form>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="accountDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-user-circle"></i> Tài khoản
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdown">
+                                    <!-- Quản lý tài khoản -->
+                                    <a class="dropdown-item" asp-area="Patient" asp-controller="AccountManager" asp-action="Index">
+                                        <i class="fa fa-user-cog mr-2"></i> Quản lý tài khoản
+                                    </a>
+                                    <!-- Đổi mật khẩu -->
+                                    <a class="dropdown-item" asp-area="Patient" asp-controller="AccountManager" asp-action="ChangePasswordStep1">
+                                        <i class="fa fa-lock mr-2"></i> Đổi mật khẩu
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <!-- Đăng xuất -->
+                                    <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="dropdown-item p-0" onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất không?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-link dropdown-item">
+                                            <i class="fa fa-sign-out-alt mr-2"></i> Đăng xuất
+                                        </button>
+                                    </form>
+                                </div>
                             </li>
                         }
                         else
                         {
-                            <li class="nav-item"><a class="nav-link text-white" asp-controller="Account" asp-action="Login">Đăng nhập</a></li>
-                            <li class="nav-item"><a class="nav-link text-white" asp-controller="Account" asp-action="RegisterStep1">Đăng ký</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Account" asp-action="Login">Đăng nhập</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Account" asp-action="RegisterStep1">Đăng ký</a>
+                            </li>
                         }
                     </ul>
-
                 </div>
             </div>
         </nav>
     </header>
-
-    <main class="pb-3">@RenderBody()</main>
-
-    <footer class="booking-footer text-white mt-5">
-        <div class="container text-center py-3">
-            <p class="fw-bold mb-1">© 2025 BookingCare Việt Nam</p>
-            <small>support@bookingcare.vn | Hotline: 1900 1234</small>
-        </div>
-    </footer>
-
-    <!-- CHATBOT WIDGET -->
-    <div id="chatbot-container">
-        <div id="chatbot-button" onclick="toggleChatbot()">💬</div>
-
-        <div id="chatbot-box" class="hidden">
-            <div id="chatbot-header">Trợ lý ảo BookingCare</div>
-
-            <div id="chatbot-messages"></div>
-
-            <div id="chatbot-input-area">
-                <input id="chatbot-input" type="text" placeholder="Nhập câu hỏi..." autocomplete="off" />
-                <button id="chatbot-send">Gửi</button>
-            </div>
-        </div>
+    <div>
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
     </div>
-
-    <!-- CHATBOT JS -->
-    <script>
-        function toggleChatbot() {
-            document.getElementById("chatbot-box").classList.toggle("hidden");
-        }
-
-        function showMessage(sender, text) {
-            const messages = document.getElementById("chatbot-messages");
-
-            const row = document.createElement("div");
-            row.className = `chatbot-row ${sender === "user" ? "from-user" : "from-bot"}`;
-
-            const avatar = document.createElement("div");
-            avatar.className = "chatbot-avatar";
-            avatar.innerText = sender === "user" ? "Bạn" : "BC";
-
-            const bubble = document.createElement("div");
-            bubble.className = "chatbot-bubble";
-
-            if (sender === "bot")
-                bubble.innerHTML = `<div class="markdown-body">${marked.parse(text)}</div>`;
-            else
-                bubble.innerText = text;
-
-            if (sender === "user") {
-                row.appendChild(bubble);
-                row.appendChild(avatar);
-            } else {
-                row.appendChild(avatar);
-                row.appendChild(bubble);
-            }
-
-            messages.appendChild(row);
-            messages.scrollTop = messages.scrollHeight;
-        }
-
-        document.getElementById("chatbot-send").onclick = async () => {
-            const input = document.getElementById("chatbot-input");
-            const msg = input.value.trim();
-            if (!msg) return;
-
-            showMessage("user", msg);
-            input.value = "";
-
-            const res = await fetch("/api/chat/ask", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: msg })
-            });
-
-            const data = await res.json();
-            showMessage("bot", data.reply);
-        };
-
-        document.getElementById("chatbot-input")
-            .addEventListener("keydown", e => {
-                if (e.key === "Enter") {
-                    document.getElementById("chatbot-send").click();
-                }
-            });
-    </script>
-
-    <!-- Scripts -->
+    <div>
+        <footer class="booking-footer text-white mt-5">
+            <div class="container text-center py-3">
+                <p class="mb-1 fw-bold">© 2025 BookingCare Việt Nam</p>
+                <small>Liên hệ: support@bookingcare.vn | Hotline: 1900 1234  <a class="text-white fw-bold" asp-area="" asp-controller="Home" asp-action="Privacy">Chính sách</a></small>
+            </div>
+        </footer>
+    </div>
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-
+    <!-- jQuery Easing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+    <!-- SignalR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Styles", required: false)
 </body>
 </html>

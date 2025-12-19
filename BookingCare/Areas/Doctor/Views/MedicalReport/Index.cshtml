@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "Trả kết quả khám bệnh";
+    Layout = "_Layout";
+}
+
+<div class="container-body">
+    <div class="card-header">
+        <h2 class="title text-white">Trả Kết Quả Khám Bệnh</h2>
+    </div>
+    <div class="card-body">
+        <div class="section">
+            <label for="diagnosis">Chẩn đoán</label>
+            <textarea id="diagnosis" rows="3" placeholder="Nhập kết quả chẩn đoán..."></textarea>
+        </div>
+
+        <div class="section">
+            <label for="instructions">Dặn dò bệnh nhân</label>
+            <textarea id="instructions" rows="3" placeholder="Nhập dặn dò bác sĩ..."></textarea>
+        </div>
+
+        <div class="section">
+            <h3 class="prescription">Đơn thuốc</h3>
+            <div class="search-box">
+                <input class="pres-input" type="text" id="medSearchBox" placeholder="Tìm thuốc...">
+                <ul id="suggestionList"></ul>
+            </div>
+
+            <div class="medicine-form">
+                <input class="pres-input" type="text" id="medName" placeholder="Tên thuốc" readonly>
+                <input class="pres-input" type="number" id="dosage" min="1" step="1" placeholder="Liều lượng" disabled>
+                <input class="pres-input" type="text" id="usage" placeholder="Cách dùng" disabled>
+                <button id="addMedicineBtn" disabled>Thêm</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3 class ="prescription">Danh sách thuốc đã thêm</h3>
+            <div class="table-wrapper">
+                <table id="medicineTable">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên thuốc</th>
+                            <th>Liều lượng</th>
+                            <th>Cách dùng</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <button id="sendMedReportBtn" class="submit-btn">Gửi kết quả</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/doctor_medical_report.js" asp-append-version="true"></script>
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/doctor_medical_report.css" asp-append-version="true" />
+}

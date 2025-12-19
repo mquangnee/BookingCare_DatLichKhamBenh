@@ -1,0 +1,214 @@
+﻿body {
+    background-color: #F5FBFD;
+}
+
+.container-body {
+    max-width: 850px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 0;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px #7EDCE5;
+    overflow: hidden;
+}
+
+.title {
+    font-size: 32px;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #007bff;
+    margin: 10px;
+}
+
+.card-header, .card-body, .card-footer {
+    padding: 20px;
+}
+
+.card-footer {
+    background-color: #FFFFFF;
+}
+
+.card-header {
+    background-color: #4EC3D3;
+    border-top-right-radius: 30px;
+    border-top-left-radius: 30px;
+}
+
+.section {
+    margin-top: 20px;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+    color: #1572A1;
+}
+textarea {
+    width: 100%;
+    border-radius: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    resize: none;
+    transition: 0.2s;
+    background-color: #F8FBFF;
+}
+
+textarea:focus {
+    border-color: #45c3d2;
+    outline: none;
+}
+
+.prescription {
+    color: #1572A1;
+}
+
+.search-box {
+    position: relative;
+    font-weight: bold;
+}
+
+.pres-input:focus {
+    border-color: #45c3d2;
+    outline: none;
+}
+
+#addMedicineBtn {
+    background-color: #45c3d2;
+}
+
+    #addMedicineBtn:hover {
+        background-color: #2FA7B5;
+    }
+
+#medSearchBox {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    background-color: #F8FBFF;
+}
+
+    #medSearchBox:focus {
+        border-color: #45c3d2;
+        outline: none;
+    }
+
+
+#suggestionList {
+    position: absolute;
+    top: 38px;
+    width: 100%;
+    background: #fff;
+    border: 0px solid #ddd;
+    border-radius: 6px;
+    max-height: 180px;
+    overflow-y: auto;
+    z-index: 10;
+}
+.medicine-form {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto; /* Tên | Số lượng | Liều | Cách dùng | Button */
+    gap: 10px;
+    align-items: center;
+}
+
+    .medicine-form input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .medicine-form button {
+        white-space: nowrap;
+        height: 40px;
+    }
+
+    #suggestionList li {
+        padding: 8px;
+        cursor: pointer;
+        list-style-type: none;
+/*        color: #1572A1;*/
+    }
+
+        #suggestionList li:hover {
+            background: #f0f0f0;
+        }
+
+.medicine-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+    .medicine-form input, .medicine-form button {
+        padding: 8px;
+        border-radius: 12px;
+        border: 1px solid #ccc;
+        background-color: #F8FBFF;
+    }
+
+    .medicine-form button {
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+        .medicine-form button:hover {
+            background: #0056b3;
+        }
+
+.table-wrapper {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+    border: 1px solid #CFECEF;
+}
+
+#medicineTable {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+    #medicineTable th, #medicineTable td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+    }
+
+    #medicineTable th {
+        background: #45C3D2;
+        color: white;
+    }
+
+.deleteBtn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+    .deleteBtn:hover {
+        background: #c82333;
+    }
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #21B876;
+    border: none;
+    color: white;
+    border-radius: 12px;
+    margin-top: 25px;
+    font-size: 16px;
+}
+
+    .submit-btn:hover {
+        background: #169961;
+    }
+#addMedicinebtn{
+    background-color: #45C3D2;
+}

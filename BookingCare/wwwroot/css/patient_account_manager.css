@@ -1,0 +1,21 @@
+﻿form input.form-control {
+    height: 44px;
+    padding-left: 15px;
+}
+
+form .form-label {
+    font-size: 15px;
+}
+
+form .form-control:focus {
+    border-color: #45c3d2 !important;
+    box-shadow: 0 0 6px rgba(69,195,210,0.4);
+}
+
+a:hover {
+    opacity: 0.8;
+}
+
+.booking-control {
+    border-radius: 20px;
+}
