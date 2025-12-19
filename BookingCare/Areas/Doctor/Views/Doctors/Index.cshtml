@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "DoctorWorkStay";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/css/doctorword.css" asp-append-version="true" />
+
+<div class="container">
+    <h2 class="mb-4 text-primary mt-4">Danh sách bệnh nhân đặt lịch khám</h2>
+    <div class="mb-3 row align-items-center">
+        <div class="col-auto">
+            <label for="statusFilter" class="form-label">Lọc theo trạng thái</label>
+        </div>
+        <div class="col-auto">
+            <select id="statusFilter" class="form-select">
+                <option value="All">Tất cả</option>
+                <option value="Pending">Chờ khám</option>
+                <option value="Confirmed">Hoàn thành</option>
+                <option value="Canceled">Đã hủy</option>
+            </select>
+        </div>
+    </div>
+
+    <table class="table table-hover table-bordered" id="appointmentsTable">
+        <thead class="table-primary">
+            <tr>
+                <th>ID</th>
+                <th>Ngày</th>
+                <th>Giờ</th>
+                <th>Tên bệnh nhân</th>
+                <th>Lý do khám</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <div id="emptyMessage" class="alert alert-info d-none">
+        Bạn chưa có lịch hẹn nào.
+    </div>
+</div>
+<script src="~/js/doctorwork.js" asp-append-version="true"></script>

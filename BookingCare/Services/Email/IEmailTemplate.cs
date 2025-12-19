@@ -1,6 +1,4 @@
-﻿using BookingCare.Models.DTOs;
-
-namespace BookingCare.Services.Email
+﻿namespace BookingCare.Services.Email
 {
     public interface IEmailTemplate
     {
@@ -27,22 +25,5 @@ namespace BookingCare.Services.Email
 
         //****Đặt lịch khám bệnh thành công****
         string getBookingSuccessEmailBody(string fullName, string doctorName, string specialtyName, DateOnly appointmentDate, string appointmentTime, string room, int bookingCode);
-
-        //****Cập nhật thông tin cá nhân bệnh nhân****
-        string GetPatientUpdatedInfoEmailBody(string fullName, string email);
-
-        //****Thông báo lịch hẹn trong ngày****
-        string GetDailyAppointmentSummaryEmailBody(string fullName, string appointmentsHtml);
-
-        //****Nhắc nhở lịch hẹn sắp tới****
-        string GetAppointmentReminderEmailBody(string fullName, string appointmentTime, string doctorName, string roomName);
-
-        //****Đôi mật khẩu****
-        string getChangePasswordOtpEmailBody(string fullName, string otp);
-        string getChangePasswordSuccessEmailBody(string fullName);
-        string getResendChangePassOtpEmailBody(string otp);
-        //****Gửi kết quả khám bệnh****
-        string GeneratePrescriptionTable(List<MedPrescriptionDtos> medicines);
-        string GetMedicalReportEmailBody(string patientName, string diagnosis, string instructions, List<MedPrescriptionDtos> medicines);
     }
 }

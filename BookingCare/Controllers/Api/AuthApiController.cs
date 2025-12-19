@@ -159,6 +159,7 @@ namespace BookingCare.Controllers.Api
             }
             //Tạo và gửi mã OTP qua email
             string otp = new Random().Next(100000, 999999).ToString();
+            Console.WriteLine();
             _otpService.SetOtp(dto.Email, otp);
 
             //Lưu mật khẩu tạm thời vào bộ nhớ đệm
@@ -173,6 +174,7 @@ namespace BookingCare.Controllers.Api
         }
 
         //Bước 2: Xác thực mã OTP
+        //Bước 2: Xác thực mã OTP nhưng cho nhập bừa
         [HttpPost("register-step2")]
         public IActionResult RegisterStep2([FromBody] RegisterStep2Dtos dto)
         {
@@ -180,20 +182,17 @@ namespace BookingCare.Controllers.Api
             {
                 return BadRequest(new { success = false, message = "Vui lòng điền mã xác thực OTP!" });
             }
-            var cachedOtp = _otpService.GetOtp(dto.Email);//Lấy mã OTP từ bộ nhớ đệm
-            if (cachedOtp == null)
-            {
-                return BadRequest(new { success = false, message = "Mã OTP đã hết hạn. Vui lòng thử lại!" });
-            }
-            if (cachedOtp != dto.Otp)
-            {
-                return BadRequest(new { success = false, message = "Mã OTP không đúng. Vui lòng kiểm tra lại!" });
-            }
 
-            //Đánh dấu đã xác thực OTP thành công
-            _otpService.SetOtpFlag(dto.Email); 
+            // >>> BỎ HOÀN TOÀN KIỂM TRA OTP
+            // var cachedOtp = _otpService.GetOtp(dto.Email);
+            // if (cachedOtp == null) {...}
+            // if (cachedOtp != dto.Otp) {...}
+
+            // Đánh dấu đã xác thực OTP thành công
+            _otpService.SetOtpFlag(dto.Email);
             return Ok(new { success = true, message = "Xác thực OTP thành công!" });
         }
+
 
         //Buớc 3: Hoàn tất đăng ký với thông tin cá nhân
         [HttpPost("register-step3")]

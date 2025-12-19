@@ -1,32 +1,12 @@
-﻿// Phân trang
-let currentPage = 1; //Trang hiện tại
+﻿let currentPage = 1; //Trang hiện tại
 const pageSize = 10; //Mỗi trang 10 dòng
 let totalPages = 1; //Tổng số trang (sẽ tính lại sau khi gọi API)
 let medicineKeyword = "";
 
-// Lấy các thành phần trong View
-// 1. Danh sách thuốc và phân trang
 const tableBody = document.getElementById("medicineTableBody");
 const prevBtn = document.getElementById("prevPage");
 const nextBtn = document.getElementById("nextPage");
 const pageInfo = document.getElementById("pageInfo");
-// 2. Thêm thuốc
-const formAddMedicine = document.getElementById("formAddMedicine");
-const btnAddMedicine = document.getElementById("btnAddMedicine");
-const create_name = document.getElementById("create_name");
-const create_unit = document.getElementById("create_unit");
-const create_function = document.getElementById("create_function");
-// 3. Cập nhật thuốc
-const formUpdateMedicine = document.getElementById("formUpdateMedicine");
-const update_name = document.getElementById("update_name");
-const update_unit = document.getElementById("update_unit");
-const update_func = document.getElementById("update_function");
-const update_medicineId = document.getElementById("update_medicineId");
-// 4. Khóa/Mở khóa thuốc
-const lockId = document.getElementById("lockMedicineId");
-const unlockId = document.getElementById("unlockMedicineId");
-const btnLock = document.getElementById("confirmLockBtn");
-const btnUnlock = document.getElementById("confirmUnlockBtn");
 
 //====DANH SÁCH THUỐC====//
 //Gọi API và render dữ liệu
@@ -35,18 +15,16 @@ async function loadMedicines(page = 1, keyword = medicineKeyword) {
         currentPage = page;
         medicineKeyword = keyword;
 
-        const res = await fetch(`/api/admin/medicines?page=${page}&pageSize=${pageSize}&search=${medicineKeyword}`);
-        const body = await handleResponse(res);
+        const res = await fetch(`/Admin/api/MedicineApi/medicines?page=${page}&pageSize=${pageSize}&search=${medicineKeyword}`);
+        const result = await res.json();
 
         // Cập nhật lại tổng số trang
-        const data = body.data;
-        totalPages = Math.ceil(data.totalMedicines / pageSize);
-        renderTable(data.listMedicines);
+        totalPages = Math.ceil(result.totalMedicines / pageSize);
+        renderTable(result.data);
         updatePagination();
 
-    } catch (error) {
-        console.error("Lỗi:", error);
-        alert(error)
+    } catch (err) {
+        console.error("Lỗi tải dữ liệu:", err);
     }
 }
 
@@ -107,11 +85,13 @@ function updatePagination() {
     prevBtn.disabled = currentPage <= 1;
     nextBtn.disabled = currentPage >= totalPages;
 }
+
 prevBtn.addEventListener("click", () => {
     if (currentPage > 1) {
         loadMedicines(currentPage - 1);
     }
 });
+
 nextBtn.addEventListener("click", () => {
     if (currentPage < totalPages) {
         loadMedicines(currentPage + 1);
@@ -124,32 +104,37 @@ function searchMedicines(keyword) {
 }
 
 //====THÊM THUỐC====//
+const btnAddMedicine = document.getElementById("btnAddMedicine");
 btnAddMedicine.addEventListener("click", async function () {
     //Lấy dữ liệu từ modal
-    const addMedicine = {
-        name: create_name.value.trim(),
-        unit: create_unit.value,
-        function: create_function.value.trim()
+    const body = {
+        name: document.getElementById("create_name").value.trim(),
+        unit: document.getElementById("create_unit").value,
+        function: document.getElementById("create_function").value.trim()
     };
 
     try {
         //Gửi yêu cầu thêm thuốc đến server
-        const res = await fetch(`/api/admin/medicines`, {
+        const res = await fetch(`/Admin/api/MedicineApi/create`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(addMedicine)
+            body: JSON.stringify(body)
         });
-        const body = await handleResponse(res);
 
-        if (body.success) {
-            alert(body.message);
-            formAddMedicine.reset(); //Làm rỗng modal
+        //Xử lý phản hồi từ server
+        const result = await res.json();
+
+        if (result.success) {
+            alert(result.message);
+            document.getElementById("formAddMedicine").reset(); //Làm rỗng modal
             $('#addMedicineModal').modal('hide');
             loadMedicines();
+        } else {
+            alert(result.message);
         }
     } catch (error) {
         console.error("Lỗi:", error);
-        alert(error)
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
     }
 });
 
@@ -167,23 +152,36 @@ document.addEventListener("click", async function (e) {
 
     try {
         //Gửi yêu cầu lấy thông tin chi tiết về server 
-        const res = await fetch(`/api/admin/medicines/${medicineId}`);
-        const body = await handleResponse(res);
+        const res = await fetch(`/Admin/api/MedicineApi/updateInfoMedicine?id=${medicineId}`);
+
+        //Thông tin chi tiết
+        const data = await res.json();
+
+        //Kiểm tra dữ liệu
+        if (!res.ok) {
+            alert("Không thể lấy thông tin thuốc!");
+            return;
+        }
+
+        //Lấy các thành phần trong modal
+        const name = document.getElementById("update_name");
+        const unit = document.getElementById("update_unit");
+        const func = document.getElementById("update_function");
 
         //Lưu user ID
-        const data = body.data;
-        update_medicineId.value = data.medicineId;
+        document.getElementById("update_medicineId").value = data.medicineId;
 
         //Hiển thị thông tin
-        update_name.value = data.inforMedicine.name;
-        update_unit.value = data.inforMedicine.unit;
-        update_func.value = data.inforMedicine.function;
+        name.value = data.result.name;
+        unit.value = data.result.unit;
+        func.value = data.result.function;
 
         //Hiển thị modal
         $("#updateMedicineModal").modal("show");
+
     } catch (error) {
         console.error("Lỗi:", error);
-        alert(error)
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
     }
 });
 
@@ -200,33 +198,42 @@ document.addEventListener("click", async function (e) {
 
     try {
         //Lấy dữ liệu từ modal
-        const addMedicine = {
-            name: update_name.value.trim(),
-            unit: update_unit.value,
-            function: update_func.value.trim()
+        const body = {
+            name: document.getElementById("update_name").value.trim(),
+            unit: document.getElementById("update_unit").value,
+            function: document.getElementById("update_function").value.trim()
         };
 
         //Gửi yêu cầu lấy thông tin chi tiết về server 
-        const res = await fetch(`/api/admin/medicines/${medicineId}`, {
+        const res = await fetch(`/Admin/api/MedicineApi/update/${medicineId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(addMedicine)
+            body: JSON.stringify(body)
         });
-        const body = await handleResponse(res);
 
-        if (body.success) {
-            alert(body.message);
-            formUpdateMedicine.reset(); //Làm rỗng modal
+        //Xử lý phản hồi từ server
+        const result = await res.json();
+
+        if (result.success) {
+            alert(result.message);
+            document.getElementById("formUpdateMedicine").reset(); //Làm rỗng modal
             $('#updateMedicineModal').modal('hide');
             loadMedicines(currentPage);
+        } else {
+            alert(result.message);
         }
     } catch (error) {
         console.error("Lỗi:", error);
-        alert(error)
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
     }
 });
 
 //====KHÓA/MỞ KHÓA THUỐC====//
+const lockId = document.getElementById("lockMedicineId");
+const unlockId = document.getElementById("unlockMedicineId");
+const btnLock = document.getElementById("confirmLockBtn");
+const btnUnlock = document.getElementById("confirmUnlockBtn");
+
 /* Khóa thuốc */
 //1. Hiển thị modal xác nhận khóa
 document.addEventListener("click", async function (e) {
@@ -251,16 +258,18 @@ btnLock.addEventListener("click", async function (e) {
 
     try {
         //Gửi yêu cầu khóa thuốc về server 
-        const res = await fetch(`/api/admin/medicines/lock/${medicineId}`, { method: "PUT" });
-        const body = await handleResponse(res);
+        const res = await fetch(`/Admin/api/MedicineApi/lock/${medicineId}`, { method: "PUT" });
+
+        //Thông tin chi tiết
+        const data = await res.json();
 
         //Hiển thị thông báo
         $('#confirmLockModal').modal('hide');
-        alert(body.message);
+        alert(data.message);
         loadMedicines();
     } catch (error) {
         console.error("Lỗi:", error);
-        alert(error)
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
     }
 });
 
@@ -288,54 +297,17 @@ btnUnlock.addEventListener("click", async function (e) {
 
     try {
         //Gửi yêu cầu mở khóa thuốc về server 
-        const res = await fetch(`/api/admin/medicines/unlock/${medicineId}`, { method: "PUT" });
-        const body = await handleResponse(res);
+        const res = await fetch(`/Admin/api/MedicineApi/unlock/${medicineId}`, { method: "PUT" });
+
+        //Thông tin chi tiết
+        const data = await res.json();
 
         //Hiển thị thông báo
         $('#confirmUnlockModal').modal('hide');
-        alert(body.message);
+        alert(data.message);
         loadMedicines();
     } catch (error) {
         console.error("Lỗi:", error);
-        alert(error)
+        alert("Lỗi kết nối với máy chủ! Vui lòng thử lại sau.")
     }
 });
-
-// Xử lý phản hồi từ server
-async function handleResponse(res) {
-    let body = null;
-    try {
-        body = await res.json();
-    } catch {
-        body = null;
-    }
-
-    // Bad Request
-    if (res.status === 400) {
-        throw body?.message || "Dữ liệu gửi lên không hợp lệ.";
-    }
-    // Unauthorized
-    if (res.status === 401) {
-        alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
-        location.href = "/Account/Login";
-        return;
-    }
-    // Forbidden
-    if (res.status === 403) {
-        throw "Bạn không có quyền truy cập chức năng này.";
-    }
-    // API not found
-    if (res.status === 404) {
-        throw body?.message || "API không tồn tại.";
-    }
-    // Server Error
-    if (res.status >= 500) {
-        throw body?.message || "Lỗi máy chủ. Vui lòng thử lại sau.";
-    }
-    // Business Error (success = false)
-    if (!body.success) {
-        throw body?.message || "Xử lý thất bại.";
-    }
-    // SUCCESS
-    return body;
-}

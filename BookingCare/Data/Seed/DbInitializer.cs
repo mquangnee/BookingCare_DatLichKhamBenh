@@ -21,23 +21,7 @@ namespace BookingCare.Data.Seed
             await SeedSpecialty.SeedAsync(dbContext);
             await SeedDoctor.SeedAsync(userManager, dbContext);
             await SeedAdmin.SeedAsync(userManager, dbContext);
-            await SeedPatient.SeedAsync(userManager, dbContext);
-            await SeedAppointment.SeedAsync(dbContext);
             await dbContext.SaveChangesAsync();
-            if (!dbContext.Medicines.Any())
-            {
-                dbContext.Medicines.AddRange(
-                    new Medicine { Name = "Paracetamol 500mg", Unit = "Viên", Function = "Giảm đau, hạ sốt" },
-                    new Medicine { Name = "Amoxicillin 500mg", Unit = "Viên", Function = "Kháng sinh" },
-                    new Medicine { Name = "Vitamin C 500mg", Unit = "Viên", Function = "Tăng sức đề kháng" },
-                    new Medicine { Name = "Oresol", Unit = "Gói", Function = "Bù nước điện giải" },
-                    new Medicine { Name = "Efferalgan 500mg", Unit = "Viên", Function = "Hạ sốt, giảm đau" }
-                );
-
-                await dbContext.SaveChangesAsync();
-            }
-
-
         }
     }
 }

@@ -5,6 +5,7 @@ using BookingCare.Services;
 using BookingCare.Services.Background;
 using BookingCare.Services.Email;
 using BookingCare.Services.Hubs;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,12 @@ namespace BookingCare
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.Configure<ChatbotSettings>(
+                builder.Configuration.GetSection("Chatbot")
+            );
+            builder.Services.AddHttpClient<IChatbotService, ChatbotService>();
+
+
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -24,7 +31,7 @@ namespace BookingCare
             //Kết nối đến SQL Server
             builder.Services.AddDbContext<DataContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration["ConnectionStrings:ConnectedDb"]);
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
             //Add identity
@@ -68,7 +75,6 @@ namespace BookingCare
             //Thêm dịch vụ SignalR, Hosted Service
             builder.Services.AddSignalR();
             builder.Services.AddHostedService<AppointmentStatusService>();
-            builder.Services.AddHostedService<AppointmentNotificationService>();
 
             //Tắt auto validation
             builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -119,19 +125,11 @@ namespace BookingCare
                 name: "Patient",
                 areaName: "Patient",
                 pattern: "Patient/{controller=Home}/{action=Index}/{id?}");
-            //Route cho Area Doctor
-            app.MapAreaControllerRoute(
-                name: "Doctor",
-                areaName: "Doctor",
-                pattern: "Doctor/{controller=Doctors}/{action=Index}/{id?}");
             //Route mặc định
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Account}/{action=Login}/{id?}");
-            app.MapAreaControllerRoute(
-                name: "Doctor",
-                areaName: "Doctor",
-                pattern: "Doctor/{controller=Doctors}/{action=Index}/{id?}");
+
             app.Run();
         }
     }

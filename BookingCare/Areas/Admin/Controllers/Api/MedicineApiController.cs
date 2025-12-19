@@ -4,11 +4,12 @@ using BookingCare.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BookingCare.Areas.Admin.Controllers.Api
 {
     [Area("Admin")]
-    [Route("api/admin/medicines")]
+    [Route("Admin/api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
     public class MedicineApiController : ControllerBase
@@ -20,11 +21,8 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             _dbContext = dbContext;
         }
 
-        //=============================================
-        // 1. Lấy danh sách thuốc
-        // GET: /api/admin/medicines
-        //=============================================
-        [HttpGet]
+        //Lấy danh sách thuốc để phân trang
+        [HttpGet("medicines")]
         public async Task<IActionResult> GetMedicines(string? search = "", int page = 1, int pageSize = 10)
         {
             //Lấy danh sách thuốc
@@ -55,43 +53,24 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             var totalMedicines = await medicines.CountAsync();
 
             //Lấy danh sách hiển thị ở trang muốn xem
-            var listMedicines = await medicines.ToListAsync();
+            var data = await medicines.ToListAsync();
 
-            return Ok(new 
-            { 
-                success = true,
-                data = new
-                {
-                    totalMedicines,
-                    listMedicines
-                }
-            });
+            return Ok(new { totalMedicines, data });
         }
 
-        //=============================================
-        // 2. Thêm thuốc
-        // POST: /api/admin/medicines
-        //=============================================
-        [HttpPost]
+        //Thêm thuốc
+        [HttpPost("create")]
         public async Task<IActionResult> AddMedicine([FromBody] Add_UpdateMedicineDtos medicine)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new 
-                { 
-                    success = false, 
-                    message = "Vui lòng điền đầy đủ thông tin thuốc!"
-                });
+                return BadRequest(new { success = false, message = "Vui lòng điền đầy đủ thông tin thuốc!" });
             }
 
             var med = await _dbContext.Medicines.FirstOrDefaultAsync(m => m.Name == medicine.Name);
             if (med != null)
             {
-                return BadRequest(new 
-                { 
-                    success = false,
-                    message = "Thuốc đã tồn tại trong hệ thông!" 
-                });
+                return BadRequest(new { success = false, message = "Thuốc đã tồn tại trong hệ thông!" });
             }
 
             //Tạo đối tượng Medicine mới
@@ -105,33 +84,22 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             //Thêm thuốc vào hệ thống
             await _dbContext.Medicines.AddAsync(newMedicine);
             await _dbContext.SaveChangesAsync();
-            return Ok(new
-            { 
-                success = true,
-                message = "Thêm thuốc vào hệ thống thành công!" 
-            });
+            return Ok(new { success = true, message = "Thêm thuốc vào hệ thống thành công!" });
         }
 
-        //=============================================
-        // 3. Cập nhật thông tin thuốc
-        // Bước 1: Lấy thông tin thuốc
-        // GET: /api/admin/medicines/id
-        //=============================================
-        [HttpGet("{id}")]
+        //Cập nhật thuốc
+        //1. Lấy thông tin chi tiết thuốc
+        [HttpGet("updateInfoMedicine")]
         public async Task<IActionResult> UpdateMedicineDetails(int id)
         {
             var med = await _dbContext.Medicines.FirstOrDefaultAsync(m => m.Id == id);
             if (med == null)
             {
-                return NotFound(new 
-                { 
-                    success = false,
-                    message = "Không tìm thấy thuốc!" 
-                });
+                return NotFound(new { message = "Không tìm thấy thuốc!" });
             }
 
             //Thông tin thuốc
-            var inforMedicine = new Add_UpdateMedicineDtos
+            var result = new Add_UpdateMedicineDtos
             {
                 Name = med.Name,
                 Unit = med.Unit,
@@ -139,52 +107,29 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             };
             var medicineId = med.Id;
 
-            return Ok(new 
-            { 
-                success = true,
-                data = new
-                {
-                    inforMedicine,
-                    medicineId
-                }
-            });
+            return Ok(new { result, medicineId });
         }
 
-        //=============================================
-        // Bước 2: Cập nhật thông tin thuốc
-        // PUT: /api/admin/medicines/id
-        //=============================================
-        [HttpPut("{id}")]
+        //2. Cập nhật thông tin thuốc
+        [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateMedicine(int id, [FromBody] Add_UpdateMedicineDtos update_medicine)
         {
             //Kiểm tra dữ liệu gửi về hợp lệ không
             if (!ModelState.IsValid)
             {
-                return BadRequest(new 
-                { 
-                    success = false,
-                    message = "Vui lòng điền đầy đủ thông tin thuốc!" 
-                });
+                return BadRequest(new { success = false, message = "Vui lòng điền đầy đủ thông tin thuốc!" });
             }
 
             var med = await _dbContext.Medicines.FirstOrDefaultAsync(m => m.Id == id);
             if (med == null)
             {
-                return NotFound(new 
-                {
-                    success = false,
-                    message = "Không tìm thấy thuốc!"
-                });
+                return NotFound(new { message = "Không tìm thấy thuốc!" });
             }
             
             var tmp = await _dbContext.Medicines.FirstOrDefaultAsync(m => m.Name == update_medicine.Name); 
             if (tmp != null)
             {
-                return BadRequest(new 
-                { 
-                    success = false, 
-                    message = "Tên thuốc đã tồn tại trong hệ thống!" 
-                });
+                return BadRequest(new { success = false, message = "Tên thuốc đã tồn tại trong hệ thống!" });
             }
 
             //Cập nhật thông tin
@@ -193,62 +138,38 @@ namespace BookingCare.Areas.Admin.Controllers.Api
             med.Function = update_medicine.Function;
             med.UpdatedAt = DateTime.Now;
             await _dbContext.SaveChangesAsync();
-            return Ok(new 
-            { 
-                success = true,
-                message = "Cập nhật thông tin thuốc thành công!"
-            });
+
+            return Ok(new { success = true, message = "Cập nhật thông tin thuốc thành công!" });
         }
 
-        //=============================================
-        // 4. Khóa/Mở khóa thuốc
-        // PUT: /api/admin/medicines/lock/id
-        //=============================================
+        //Khóa thuốc
         [HttpPut("lock/{id}")]
         public async Task<IActionResult> LockMedicine(int id)
         {
             var medicine = await _dbContext.Medicines.FirstOrDefaultAsync(m => m.Id == id);
             if (medicine == null)
             {
-                return NotFound(new 
-                { 
-                    success = false, 
-                    message = "Không tìm thấy thuốc!"
-                });
+                return NotFound(new { success = false, message = "Không tìm thấy thuốc!" });
             }
             medicine.Status = "Dừng sử dụng";
             medicine.UpdatedAt = DateTime.Now;
             await _dbContext.SaveChangesAsync();
-            return Ok(new 
-            { 
-                success = true, 
-                message = "Khóa thuốc thành công!" 
-            });
+            return Ok(new { success = true, message = "Khóa thuốc thành công!" });
         }
 
-        //=============================================
-        // PUT: /api/admin/medicines/unlock/id
-        //=============================================
+        //Mở khóa tài khoản
         [HttpPut("unlock/{id}")]
         public async Task<IActionResult> UnlockMedicine(int id)
         {
             var medicine = await _dbContext.Medicines.FirstOrDefaultAsync(m => m.Id == id);
             if (medicine == null)
             {
-                return NotFound(new 
-                { 
-                    success = false, 
-                    message = "Không tìm thấy thuốc!" 
-                });
+                return NotFound(new { success = false, message = "Không tìm thấy thuốc!" });
             }
             medicine.Status = "Đang sử dụng";
             medicine.UpdatedAt = DateTime.Now;
             await _dbContext.SaveChangesAsync();
-            return Ok(new 
-            {
-                success = true,
-                message = "Mở khóa thuốc thành công!" 
-            });
+            return Ok(new { success = true, message = "Mở khóa thuốc thành công!" });
         }
     }
 }
