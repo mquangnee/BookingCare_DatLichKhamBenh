@@ -1,62 +1,86 @@
-﻿let currentPage = 1; //Trang hiện tại
-const pageSize = 10; //Mỗi trang 10 dòng
-let totalPages = 1; //Tổng số trang (sẽ tính lại sau khi gọi API)
-let nameKeyword = "";  //Từ khóa dùng cho search + phân trang
-let filter = "Tất cả";
-let timer;
-
-const searchInput = document.getElementById("searchInput");
-const tableBody = document.getElementById("apptTableBody");
+﻿// Hiển thị danh sách lịch đặt và phân trang
+let currentPage = 1;
+let totalPages = 1;
+const pageSize = 10;
+const tableBody = document.getElementById("appointmentsTable");
 const prevBtn = document.getElementById("prevPage");
 const nextBtn = document.getElementById("nextPage");
 const pageInfo = document.getElementById("pageInfo");
-const preDiagnosis = document.getElementById("presDiagnosis");
-const presInstructions = document.getElementById("presInstructions");
-const tbody = document.getElementById("presMedicines");
+// Tìm kiếm và lọc
+let nameKeyword = "";
+let selectedDate = "";
+let filter = "Tất cả";
+let timer;
+const searchInput = document.getElementById("searchBox");
+const dateFilter = document.getElementById("dateFilter");
+const statusFilter = document.getElementById("statusFilter");
+// Modal thông tin chi tiết lịch khám
+const modalAppointmentDetail = document.querySelector("#AppointmentDetailModal #modalAppointmentDetail");
+const patientName = document.getElementById("PatientName");
+const patientDob = document.getElementById("DateOfBirth");
+const gender = document.getElementById("Gender");
+const appointmentDate = document.getElementById("AppointmentDate");
+const appointmentTime = document.getElementById("AppointmentTime");
+const medicalHistory = document.getElementById("MedicalHistory");
+const reasonForVisit = document.getElementById("ReasonForVisit");
+const medReportBtn = document.getElementById("MedReportBtn");
 
-//====DANH SÁCH LỊCH ĐẶT====//
-//Gọi Api và render dữ liệu
-async function loadAppointments(page = 1, keyword = nameKeyword, filterSelect = filter) {
+// Hiển thị danh sách khi tải trang
+document.addEventListener("DOMContentLoaded", function () {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    selectedDate = `${yyyy}-${mm}-${dd}`;
+    dateFilter.value = selectedDate;
+
+    // Mặc định load danh sách lịch đặt hôm nay
+    loadAppointments(1, selectedDate, nameKeyword, filter);
+
+    dateFilter.addEventListener("change", function () {
+        selectedDate = this.value;
+        loadAppointments(1, selectedDate, nameKeyword, filter);
+    });
+    statusFilter.addEventListener("change", function () {
+        filter = this.value;
+        loadAppointments(1, selectedDate, nameKeyword, filter);
+    });
+    searchInput.addEventListener("keyup", function () {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            nameKeyword = this.value.trim();
+            loadAppointments(1, selectedDate, nameKeyword, filter);
+        }, 300);
+    });
+});
+
+// Load danh sách lịch đặt
+async function loadAppointments(page = 1, date = selectedDate, keyword = "", filterSelect = "Tất cả") {
     try {
+        selectedDate = date;
         currentPage = page;
         nameKeyword = keyword;
         filter = filterSelect;
 
-        //Gửi yêu cầu lấy dữ liệu về server
-        const res = await fetch(`/api/patient/appointments?page=${page}&pageSize=${pageSize}&search=${nameKeyword}&filter=${filter}`);
+        // Lấy dữ liệu từ server
+        const res = await fetch(`/api/doctor/home?date=${selectedDate}&page=${page}&pageSize=${pageSize}&search=${nameKeyword}&filter=${filter}`);
         const body = await handleResponse(res);
 
-        //Cập nhật lại tổng số trang
+        // Hiển thị dữ liệu
         const data = body.data;
         totalPages = Math.ceil(data.totalAppointments / pageSize);
         renderTable(data.listAppointments);
         updatePagination();
     } catch (error) {
         console.error("Lỗi:", error);
-        alert(error)
+        alert(error);
     }
 }
-
-//Tìm kiếm theo tên bác sĩ
-if (searchInput) {
-    searchInput.addEventListener("keyup", function () {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-            const keyword = this.value.trim();
-            loadAppointments(1, keyword); //Tìm kiếm từ trang 1
-        }, 300); //Chờ 300ms sau khi gõ mới gửi yêu cầu
-    });
-}
-
-//Tìm kiếm theo trạng thái
-document.getElementById("statusFilter").addEventListener("change", function () {
-    loadAppointments(1, nameKeyword, this.value); //Tìm kiếm từ trang 1
-});
 
 //Xuất bảng
 function renderTable(data) {
     if (!data || data.length == 0) {
-        tableBody.innerHTML = '<tr><td colspan="8">Không có dữ liệu</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="8">Không có lịch hẹn khám hôm nay</td></tr>';
         return;
     }
 
@@ -75,10 +99,9 @@ function renderTable(data) {
             <td>${stt}</td>
             <td>${appointmentDate}</td>
             <td>${d.appointmentTime}</td>
-            <td>${d.doctorName}</td>
-            <td>${d.roomName}</td>
+            <td>${d.patientName}</td>
             <td>${d.reasonForVisit}</td>
-            <td>${statusHtml}</td>
+            <td style="display: flex; justify-content: center">${statusHtml}</td>
             <td>${actionHtml}</td>
         </tr>`;
     }).join("");
@@ -88,24 +111,19 @@ function renderTable(data) {
 function getActionButton(status, appointmentId) {
     if (status == "Chờ khám") {
         return `
-            <button class="btn btn-danger btn-sm cancel-appointment" data-id="${appointmentId}">
+            <button class="btn btn-info btn-sm rounded-pill detail-appointment" data- data-id="${appointmentId}">
+                <i class="fa-solid fa-circle-info"></i> Chi tiết
+            </button>
+            <button class="btn btn-danger btn-sm rounded-pill cancel-appointment" data-id="${appointmentId}">
                 <i class="fa-solid fa-ban"></i> Hủy lịch
-            </button>
-        `;
-    }
-    if (status == "Hoàn thành") {
-        return `
-            <button class="btn btn-sm text-white get-prescription" data-id="${appointmentId}">
-                Kết quả khám
-            </button>
-        `;
+            </button>`;
     }
     //Disable nút
     return `
-        <button class="btn btn-secondary btn-sm" disabled>
-            Hủy lịch
+        <button class="btn btn-info btn-sm rounded-pill detail-appointment" data-id="${appointmentId}">
+                <i class="fa-solid fa-circle-info"></i> Chi tiết
         </button>
-    `;
+        <button class="btn btn-secondary btn-sm rounded-pill disabled">Hủy lịch</button>`;
 }
 
 //Hiển thị trạng thái
@@ -136,13 +154,9 @@ nextBtn.addEventListener("click", () => {
     if (currentPage < totalPages) loadAppointments(currentPage + 1);
 });
 
-//Lần đầu load
-loadAppointments(currentPage);
-
 //===HỦY LỊCH ĐẶT===//
 const cancelApptId = document.getElementById("cancelApptId");
 const cancelBtn = document.getElementById("confirmCancelBtn");
-
 //1. Hiển thị xác nhận
 document.addEventListener("click", async function (e) {
     const btn = e.target.closest(".cancel-appointment"); //Tìm đúng nút "Hủy"
@@ -164,7 +178,7 @@ cancelBtn.addEventListener("click", async function () {
     }
     try {
         //Gửi yêu cầu hủy lịch về server
-        const res = await fetch(`/api/patient/appointments/${apptId}`, { method: "PUT" });
+        const res = await fetch(`/api/doctor/home/${apptId}`, { method: "PUT" });
         const body = await handleResponse(res);
 
         //Hiển thị thông báo
@@ -177,48 +191,60 @@ cancelBtn.addEventListener("click", async function () {
     }
 });
 
-// Xem kết quả
+// Xem chi tiết lịch đặt và thông tin bệnh nhân
 document.addEventListener("click", async function (e) {
-    const btn = e.target.closest(".get-prescription"); //Tìm đúng nút "Kết quả khám"
+    const btn = e.target.closest(".detail-appointment"); //Tìm đúng nút "Xem chi tiết"
     if (!btn) return;
-
-    //Lấy ID lịch khám
-    const appointmentId = btn.dataset.id;
+    const appointmentId = btn.dataset.id; //Lấy giá trị data-id
+    if (!appointmentId) {
+        alert("Không thể lấy thông tin lịch khám!");
+        return;
+    }
     try {
-        //Gửi yêu cầu thêm tài khoản bác sĩ đến server
-        const res = await fetch(`/api/patient/appointments/prescription/${appointmentId}`);
+        // Gửi yêu cầu lấy thông tin chi tiết về server 
+        const res = await fetch(`/api/doctor/appointment-detail/${appointmentId}`);
         const body = await handleResponse(res);
+
+        //Thông tin chi tiết
         const data = body.data;
-        showPrescription(data);
+        renderInfo(data);
     } catch (error) {
         console.error("Lỗi:", error);
         alert(error)
     }
 });
 
-function showPrescription(report) {
-    presDiagnosis.innerText = report.diagnosis || "Không có dữ liệu";
-    presInstructions.innerText = report.instructions || "Không có dữ liệu";
-
-    tbody.innerHTML = "";
-    if (!report.medicines || report.medicines.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="3" class="text-center text-muted">Không có thuốc nào.</td>
-            </tr>`;
+//Render thông tin chi tiết
+function renderInfo(data) {
+    //Dữ liệu trống
+    if (!data || data.length == 0) {
+        alert("Không thể lấy thông tin lịch khám")
+        $('#AppointmentDetailModal').modal('hide');
         return;
     }
-    report.medicines.forEach((m, index) => {
-        tbody.innerHTML += `
-            <tr>
-                <td>${index + 1}</td>
-                <td>${m.name}</td>
-                <td>${m.dosage}</td>
-                <td>${m.usage}</td>
-            </tr>`;
-    });
-    $("#getPrescription").modal("show");
+    let dateOfBirth = new Date(data.dateOfBirth).toLocaleDateString("vi-VN");
+    let apptDate = new Date(data.appointmentDate).toLocaleDateString("vi-VN")
+    patientName.textContent = data.patientName;
+    patientDob.textContent = dateOfBirth;
+    gender.textContent = data.gender;
+    appointmentDate.textContent = apptDate;
+    appointmentTime.textContent = data.appointmentTime;
+    medicalHistory.textContent = data.medicalHistory;
+    reasonForVisit.textContent = data.reasonForVisit;
+    medReportBtn.dataset.apptId = data.appointmentId;
+    if (data.status == "Chờ khám" || data.status == "Đã hủy") {
+        medReportBtn.disabled = true;
+    } else {
+        medReportBtn.disabled = false;
+    }
+    $('#AppointmentDetailModal').modal('show');
 }
+
+// Chuyển sang trang trả kết quả
+medReportBtn.addEventListener("click", function () {
+    const apptId = medReportBtn.dataset.apptId;
+    window.location.href = `/Doctor/MedicalReport/Index/${apptId}`;
+});
 
 //===CẬP NHẬT TRẠNG THÁI LỊCH HẸN===//
 //Kết nối với hub
@@ -229,18 +255,15 @@ connection.start().then(() => {
 
 //Cập nhật giao diện
 connection.on("StatusChanged", (appointmentId, newStatus) => {
-    const status = document.getElementById(`appt-${appointmentId}"`);
+    const status = document.getElementById(`appt-${appointmentId}`);
     status.textContent = newStatus;
     if (newStatus == "Đang khám") {
-        status.className = "badge-status badge-info`";
+        status.className = "badge-status badge-info";
     }
     if (newStatus == "Hoàn thành") {
         status.className = "badge-status badge-confirmed";
     }
 });
-
-//Xem kết quả khám bệnh
-
 
 // Xử lý phản hồi từ server
 async function handleResponse(res) {

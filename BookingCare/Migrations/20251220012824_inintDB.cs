@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookingCare.Migrations
 {
     /// <inheritdoc />
-    public partial class initDatabase : Migration
+    public partial class inintDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -301,6 +301,7 @@ namespace BookingCare.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Diagnosis = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Instructions = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AppointmentId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -321,9 +322,8 @@ namespace BookingCare.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
                     Dosage = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Instructions = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Usage = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     PrescriptionId = table.Column<int>(type: "int", nullable: false),
                     MedicineId = table.Column<int>(type: "int", nullable: false)
                 },

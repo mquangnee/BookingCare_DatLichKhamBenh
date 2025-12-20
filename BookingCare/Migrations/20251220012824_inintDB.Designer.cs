@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingCare.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20251209032845_initDatabase")]
-    partial class initDatabase
+    [Migration("20251220012824_inintDB")]
+    partial class inintDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -282,6 +282,11 @@ namespace BookingCare.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Instructions")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AppointmentId");
@@ -302,19 +307,16 @@ namespace BookingCare.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Instructions")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
                     b.Property<int>("MedicineId")
                         .HasColumnType("int");
 
                     b.Property<int>("PrescriptionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                    b.Property<string>("Usage")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 

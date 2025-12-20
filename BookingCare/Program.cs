@@ -5,7 +5,6 @@ using BookingCare.Services;
 using BookingCare.Services.Background;
 using BookingCare.Services.Email;
 using BookingCare.Services.Hubs;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +17,12 @@ namespace BookingCare
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Thêm Chatbot
+            builder.Services.Configure<ChatbotSetting>(
+                builder.Configuration.GetSection("Chatbot")
+            );
+            builder.Services.AddHttpClient<IChatbot, Chatbot>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

@@ -1,4 +1,6 @@
-﻿namespace BookingCare.Services.Email
+﻿using BookingCare.Models.DTOs;
+
+namespace BookingCare.Services.Email
 {
     public interface IEmailTemplate
     {
@@ -39,5 +41,8 @@
         string getChangePasswordOtpEmailBody(string fullName, string otp);
         string getChangePasswordSuccessEmailBody(string fullName);
         string getResendChangePassOtpEmailBody(string otp);
+        //****Gửi kết quả khám bệnh****
+        string GeneratePrescriptionTable(List<MedPrescriptionDtos> medicines);
+        string GetMedicalReportEmailBody(string patientName, string diagnosis, string instructions, List<MedPrescriptionDtos> medicines);
     }
 }

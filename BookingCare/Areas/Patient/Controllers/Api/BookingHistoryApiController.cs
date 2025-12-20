@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BookingCare.Areas.Patient.Controllers.Api
 {
@@ -146,12 +145,68 @@ namespace BookingCare.Areas.Patient.Controllers.Api
 
             //Hủy lịch
             appointment.Status = "Đã hủy";
+            appointment.UpdatedAt = DateTime.Now;
             _dbContext.Appointments.Update(appointment);
             await _dbContext.SaveChangesAsync();
             return Ok(new 
             { 
                 success = true, 
                 message = "Hủy lịch đặt thành công!" 
+            });
+        }
+
+        //=============================================
+        // 3. LẤY KẾT QUẢ KHÁM BỆNH
+        // GET: /api/patient/appointments/prescription/id
+        //=============================================
+        [HttpGet("prescription/{appointmentId}")]
+        public async Task<IActionResult> GetPrescription(int appointmentId)
+        {
+            var appointmennt = await _dbContext.Appointments.FirstOrDefaultAsync(a => a.Id == appointmentId);
+            if (appointmennt == null)
+            {
+                return NotFound(new
+                {
+                    success = false,
+                    message = "Không thể lấy thông tin lịch đặt"
+                });
+            }
+            var prescription = await _dbContext.Prescriptions.FirstOrDefaultAsync(p => p.AppointmentId == appointmentId);
+            if (prescription == null)
+            {
+                return NotFound(new
+                {
+                    success = false,
+                    message = "Chưa có kết quả"
+                });
+            }
+            var medicines = await _dbContext.Prescription_Details
+                            .Include(m => m.Medicine)
+                            .Where(p => p.PrescriptionId == prescription.Id)
+                            .Select(m => new MedPrescriptionDtos
+                            {
+                                Name = m.Medicine.Name,
+                                Dosage = m.Dosage,
+                                Usage = m.Usage
+                            })
+                            .ToListAsync();
+            if (medicines == null)
+            {
+                return NotFound(new
+                {
+                    success = false,
+                    message = "Không thể lấy thông tin đơn thuốc"
+                });
+            }
+            return Ok(new
+            {
+                success = true,
+                data = new
+                {
+                    diagnosis = prescription.Diagnosis,
+                    instructions = prescription.Instructions,
+                    medicines
+                }
             });
         }
     }
