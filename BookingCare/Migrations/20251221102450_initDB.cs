@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookingCare.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:BookingCare/Migrations/20251221023234_InitialDatabasee.cs
-    public partial class InitialDatabasee : Migration
-========
-    public partial class inintDB : Migration
->>>>>>>> 2a08dae0ecd7db4d96efd7d935f922ac4cbf5114:BookingCare/Migrations/20251220012824_inintDB.cs
+    public partial class initDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -99,7 +95,8 @@ namespace BookingCare.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    AvatarUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
