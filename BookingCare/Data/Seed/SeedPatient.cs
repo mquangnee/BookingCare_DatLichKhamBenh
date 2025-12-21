@@ -6,7 +6,7 @@ namespace BookingCare.Data.Seed
 {
     public static class SeedPatient
     {
-        public static async Task SeedAsync(UserManager<ApplicationUser> userManager, DataContext dbContext)
+        public static async Task SeedAsync(UserManager<ApplicationUser> _userManager, DataContext _dbContext)
         {
             var patients = new List<ApplicationUser>
             {
@@ -122,18 +122,35 @@ namespace BookingCare.Data.Seed
                 }
             };
 
-            foreach (var patient in patients)
+            foreach (var user in patients)
             {
-                if (await userManager.FindByEmailAsync(patient.Email) == null)
-                {
-                    var result = await userManager.CreateAsync(patient, "Abc@123");
+                var existingUser = await _userManager.FindByEmailAsync(user.Email);
 
-                    if (result.Succeeded)
+                if (existingUser == null)
+                {
+                    var result = await _userManager.CreateAsync(user, "Abc@123");
+
+                    if (!result.Succeeded) continue;
+
+                    await _userManager.AddToRoleAsync(user, "Patient");
+                    existingUser = user;
+                }
+                bool hasPatient = _dbContext.Patients
+                    .Any(p => p.UserId == existingUser.Id);
+
+                if (!hasPatient)
+                {
+                    var patient = new Patient
                     {
-                        await userManager.AddToRoleAsync(patient, "Patient");
-                    }
+                        UserId = existingUser.Id,
+                        MedicalHistory = "Chưa có tiền sử bệnh án"
+                    };
+
+                    await _dbContext.Patients.AddAsync(patient);
                 }
             }
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
+

@@ -11,6 +11,8 @@ namespace BookingCare.Models
         public string Degree { get; set; }
         [Required]
         public int YearsOfExp { get; set; }
+        [Required]
+        public string AvatarUrl { get; set; } = "/images/doctors/avatar_default.jpg";
         //Khóa ngoài với bảng Specialty
         public int SpecialtyId { get; set; }
         public Specialty Specialty { get; set; }

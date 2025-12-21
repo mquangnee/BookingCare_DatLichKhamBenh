@@ -9,6 +9,9 @@ namespace BookingCare.Models
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
+        [Required]
+        [StringLength(200)]
+        public string Description { get; set; }    
         //Quan hệ 1-N với bảng Doctor
         public ICollection<Doctor> Doctors { get; set; }
     }

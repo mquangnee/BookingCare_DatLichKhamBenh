@@ -9,6 +9,7 @@ namespace BookingCare.Data.Seed
     {
         public static async Task SeedAsync(DataContext dbContext)
         {
+            return;
             // ✅ Nếu đã có lịch thì không seed nữa
             if (await dbContext.Appointments.AnyAsync())
                 return;
