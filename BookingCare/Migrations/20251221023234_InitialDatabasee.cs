@@ -6,7 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookingCare.Migrations
 {
     /// <inheritdoc />
+<<<<<<<< HEAD:BookingCare/Migrations/20251221023234_InitialDatabasee.cs
     public partial class InitialDatabasee : Migration
+========
+    public partial class inintDB : Migration
+>>>>>>>> 2a08dae0ecd7db4d96efd7d935f922ac4cbf5114:BookingCare/Migrations/20251220012824_inintDB.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

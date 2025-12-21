@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingCare.Migrations
 {
     [DbContext(typeof(DataContext))]
-<<<<<<<< HEAD:BookingCare/Migrations/20251221023234_InitialDatabasee.Designer.cs
-    [Migration("20251221023234_InitialDatabasee")]
-    partial class InitialDatabasee
-========
-    [Migration("20251220012824_inintDB")]
-    partial class inintDB
->>>>>>>> 2a08dae0ecd7db4d96efd7d935f922ac4cbf5114:BookingCare/Migrations/20251220012824_inintDB.Designer.cs
+    [Migration("20251220013630_initBookingCare")]
+    partial class initBookingCare
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -173,10 +168,6 @@ namespace BookingCare.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AvatarUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Degree")
                         .IsRequired()
@@ -364,11 +355,6 @@ namespace BookingCare.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Name")
                         .IsRequired()
