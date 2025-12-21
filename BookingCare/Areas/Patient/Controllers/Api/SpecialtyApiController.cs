@@ -25,5 +25,7 @@ namespace BookingCare.Areas.Patient.Controllers.Api
             var listSpecialties = await _dbContext.Specialties.Select(s => new { s.Id, s.Name }).ToListAsync();
             return Ok(listSpecialties);
         }
+ 
+
     }
 }

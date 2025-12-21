@@ -1,0 +1,14 @@
+﻿.specialty-card {
+    border: 1px solid #eee;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    background: #fff;
+}
+
+    .specialty-card img {
+        max-width: 160px;
+        height: 120px;
+        object-fit: contain;
+        margin-bottom: 12px;
+    }
