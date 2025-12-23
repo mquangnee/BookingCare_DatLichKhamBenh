@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Chuyên khoa dành cho bạn";
+    Layout = "_Layout";
+}
+<div class="container">
+    <h4>Chuyên khoa dành cho bạn</h4>
+    <div class="list-chuyen-khoa" id="specialtyList"></div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const res = await fetch("/api/AllSpecialty");
+        const data = await res.json();
+
+        const container = document.getElementById("specialtyList");
+        container.innerHTML = data.map(item => `
+    <a href="/Specialty/Detail/${item.id}" class="specialty-item text-decoration-none">
+         <img src="${item.imageUrl}" alt="${item.name}" />
+         <span class="fw-bold d-block mt-2">${item.name}</span>
+     </a>
+    `).join("");
+    });
+</script>

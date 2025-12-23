@@ -7,9 +7,9 @@ namespace BookingCare.Data.Seed
     public static class SeedSpecialty
     {
         public record SpecialtySeed(
-       string Name,
-       string Description,
-       string ImageUrl
+        string Name,
+        string Description,
+        string ImageUrl
 );
 
         public static async Task SeedAsync(DataContext dbContext)
@@ -19,47 +19,47 @@ namespace BookingCare.Data.Seed
     new(
         "Cơ xương khớp",
         "Chẩn đoán và điều trị các bệnh lý về xương, khớp, cơ, dây chằng và cột sống.",
-        "~/images/KhoaCoXuongKhop.png"
+        "/images/KhoaCoXuongKhop.png"
     ),
     new(
         "Thần kinh",
         "Khám và điều trị các bệnh lý liên quan đến hệ thần kinh trung ương và ngoại biên.",
-        "~/images/KhoaThanKinh.png"
+        "/images/KhoaThanKinh.png"
     ),
     new(
         "Tiêu hóa",
         "Chẩn đoán và điều trị các bệnh lý về dạ dày, ruột, gan, mật và hệ tiêu hóa.",
-        "~/images/KhoaTieuHoa.png"
+        "/images/KhoaTieuHoa.png"
     ),
     new(
         "Tim mạch",
         "Khám và điều trị các bệnh lý liên quan đến tim và hệ tuần hoàn.",
-        "~/images/KhoaTimMach.png"
+        "/images/KhoaTimMach.png"
     ),
     new(
         "Tai mũi họng",
         "Khám và điều trị các bệnh lý về tai, mũi, họng và đường hô hấp trên.",
-        "~/images/KhoaTaiMuiHong"
+        "/images/KhoaTaiMuiHong.png"
     ),
     new(
         "Nhi khoa",
         "Chăm sóc, khám và điều trị các bệnh lý ở trẻ em từ sơ sinh đến tuổi vị thành niên.",
-        "~/images/NhiKhoa.png"
+        "/images/NhiKhoa.png"
     ),
     new(
         "Da liễu",
         "Khám và điều trị các bệnh lý về da, tóc, móng và các bệnh da liễu.",
-        "~/images/KhoaDaLieu.png"
+        "/images/KhoaDaLieu.png"
     ),
     new(
         "Nội khoa",
         "Khám và điều trị các bệnh lý nội khoa tổng quát mà không cần can thiệp phẫu thuật.",
-        "~/images/KhoaNoiKhoa.png"
+        "/images/KhoaNoiKhoa.png"
     ),
     new(
         "Nha khoa",
         "Khám, điều trị và chăm sóc các bệnh lý về răng, hàm và khoang miệng.",
-        "~/images/KhoaNhaKhoa.png"
+        "/images/KhoaNhaKhoa.png"
     )
 };
 

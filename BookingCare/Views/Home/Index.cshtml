@@ -1,7 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
 <div class="container my-5">
     <div class="body">
         <div id="homeCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
@@ -22,33 +21,28 @@
         </div>
     </div>
 </div>
-
 <div>
     <section class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="fw-bold">Chuyên khoa</h3>
-            <a href="#" class="btn btn-info text-white rounded-pill px-3">Xem thêm</a>
+            <a asp-controller="Home" asp-action="Index2"
+               class="btn btn-info text-white rounded-pill px-3">
+                Xem thêm
+            </a>
         </div>
-
         <div id="specialtyCarousel" class="carousel slide" data-bs-ride="false">
             <div class="carousel-inner" id="specialtyCarouselInner">
-                <!-- JS render -->
             </div>
-
-            <!-- Prev -->
             <button class="carousel-control-prev" type="button"
                     data-bs-target="#specialtyCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
+                <span class="carousel-control-prev-icon bg-info rounded-circle p-3"></span>
             </button>
-
-            <!-- Next -->
             <button class="carousel-control-next" type="button"
                     data-bs-target="#specialtyCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
+                <span class="carousel-control-next-icon bg-info rounded-circle p-3"></span>
             </button>
         </div>
     </section>
-
     <section class="container">
         <h2 class="text-center mb-4 fw-bold " style="color:#45C3D2">Bác sĩ nổi bật</h2>
         <div class="row g-4">
@@ -102,41 +96,51 @@
             </div>
         </div>
     </section>
-
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
         const res = await fetch("/api/AllSpecialty");
         const data = await res.json();
 
-        const chunkSize = 3; // mỗi slide 3 chuyên khoa
+        const chunkSize = 3;
         const carouselInner = document.getElementById("specialtyCarouselInner");
+
+        carouselInner.innerHTML = ""; 
 
         for (let i = 0; i < data.length; i += chunkSize) {
             const chunk = data.slice(i, i + chunkSize);
-
             const isActive = i === 0 ? "active" : "";
-            let itemsHtml = "";
 
+            let itemsHtml = "";
             chunk.forEach(item => {
-                itemsHtml += `
-                    <div class="col-md-4">
-                        <div class="specialty-card h-100">
-                            <img src="${item.imageUrl}" alt="${item.name}">
-                            <h6 class="fw-bold">${item.name}</h6>
-                        </div>
-                    </div>
-                `;
+            itemsHtml += `
+        <div class="col-md-4">
+            <a href="/Specialty/Detail/${item.id}"
+               class="specialty-card h-100 text-decoration-none text-dark d-block">
+                <img src="${item.imageUrl}" alt="${item.name}">
+                <h6 class="fw-bold mt-2">${item.name}</h6>
+                <p class="mb-0">${item.description ?? ""}</p>
+            </a>
+        </div>
+    `;
+
             });
 
-            carouselInner.innerHTML += `
+            carouselInner.insertAdjacentHTML("beforeend", `
                 <div class="carousel-item ${isActive}">
                     <div class="row g-4">
                         ${itemsHtml}
                     </div>
                 </div>
-            `;
+            `);
         }
+        const carouselElement = document.getElementById("specialtyCarousel");
+        new bootstrap.Carousel(carouselElement, {
+            interval: false,
+            ride: false,
+            wrap: true
+        });
     });
 </script>
+
 
