@@ -1,59 +1,84 @@
 ﻿using BookingCare.Models;
 using BookingCare.Repository;
+using System.Reflection.Metadata;
 
 namespace BookingCare.Data.Seed
 {
     public static class SeedSpecialty
     {
+        public record SpecialtySeed(
+       string Name,
+       string Description,
+       string ImageUrl
+);
+
         public static async Task SeedAsync(DataContext dbContext)
         {
-            // Danh sách chuyên khoa kèm mô tả
-            var specialties = new Dictionary<string, string>
-            {
-                {
-                    "Nội khoa",
-                    "Chuyên khoa Nội khoa chuyên khám, chẩn đoán và điều trị các bệnh lý liên quan đến các cơ quan nội tạng mà không cần can thiệp phẫu thuật."
-                },
-                {
-                    "Ngoại khoa",
-                    "Chuyên khoa Ngoại khoa tập trung điều trị các bệnh lý cần can thiệp phẫu thuật, bao gồm chấn thương và các bệnh lý ngoại khoa."
-                },
-                {
-                    "Sản khoa",
-                    "Chuyên khoa Sản khoa chuyên theo dõi và chăm sóc sức khỏe phụ nữ trong thời kỳ mang thai, sinh nở và sau sinh."
-                },
-                {
-                    "Nhi khoa",
-                    "Chuyên khoa Nhi khoa chuyên khám và điều trị các bệnh lý ở trẻ em từ sơ sinh đến tuổi vị thành niên."
-                },
-                {
-                    "Răng hàm mặt",
-                    "Chuyên khoa Răng Hàm Mặt chuyên khám và điều trị các bệnh lý liên quan đến răng, hàm và khoang miệng."
-                },
-                {
-                    "Mắt",
-                    "Chuyên khoa Mắt chuyên khám và điều trị các bệnh lý về thị giác và nhãn khoa."
-                },
-                {
-                    "Tai mũi họng",
-                    "Chuyên khoa Tai Mũi Họng chuyên khám và điều trị các bệnh lý liên quan đến tai, mũi, họng và đường hô hấp trên."
-                }
-            };
+            var specialties = new List<SpecialtySeed>
+{
+    new(
+        "Cơ xương khớp",
+        "Chẩn đoán và điều trị các bệnh lý về xương, khớp, cơ, dây chằng và cột sống.",
+        "/images/specialties/KhoaCoXuongKhop.png"
+    ),
+    new(
+        "Thần kinh",
+        "Khám và điều trị các bệnh lý liên quan đến hệ thần kinh trung ương và ngoại biên.",
+        "/images/specialties/KhoaThanKinh.png"
+    ),
+    new(
+        "Tiêu hóa",
+        "Chẩn đoán và điều trị các bệnh lý về dạ dày, ruột, gan, mật và hệ tiêu hóa.",
+        "/images/specialties/KhoaTieuHoa.png"
+    ),
+    new(
+        "Tim mạch",
+        "Khám và điều trị các bệnh lý liên quan đến tim và hệ tuần hoàn.",
+        "/images/specialties/KhoaTimMach.png"
+    ),
+    new(
+        "Tai mũi họng",
+        "Khám và điều trị các bệnh lý về tai, mũi, họng và đường hô hấp trên.",
+        "/images/specialties/KhoaTaiMuiHong"
+    ),
+    new(
+        "Nhi khoa",
+        "Chăm sóc, khám và điều trị các bệnh lý ở trẻ em từ sơ sinh đến tuổi vị thành niên.",
+        "/images/specialties/NhiKhoa.png"
+    ),
+    new(
+        "Da liễu",
+        "Khám và điều trị các bệnh lý về da, tóc, móng và các bệnh da liễu.",
+        "/images/specialties/KhoaDaLieu.png"
+    ),
+    new(
+        "Nội khoa",
+        "Khám và điều trị các bệnh lý nội khoa tổng quát mà không cần can thiệp phẫu thuật.",
+        "/images/specialties/KhoaNoiKhoa.png"
+    ),
+    new(
+        "Nha khoa",
+        "Khám, điều trị và chăm sóc các bệnh lý về răng, hàm và khoang miệng.",
+        "/images/specialties/KhoaNhaKhoa.png"
+    )
+};
 
-            foreach (var specialty in specialties)
+
+            foreach (var item in specialties)
             {
-                // Kiểm tra chuyên khoa đã tồn tại chưa
-                if (!dbContext.Specialties.Any(s => s.Name == specialty.Key))
+                if (!dbContext.Specialties.Any(s => s.Name == item.Name))
                 {
-                    var specialtyEntity = new Specialty
+                    await dbContext.Specialties.AddAsync(new Specialty
                     {
-                        Name = specialty.Key,
-                        Description = specialty.Value
-                    };
-
-                    await dbContext.Specialties.AddAsync(specialtyEntity);
+                        Name = item.Name,
+                        Description = item.Description,
+                        AvatarUrl = item.ImageUrl
+                    });
                 }
             }
+
+            await dbContext.SaveChangesAsync();
         }
     }
+
 }
