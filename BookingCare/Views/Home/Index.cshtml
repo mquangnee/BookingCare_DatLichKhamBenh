@@ -1,7 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
 <div class="container my-5">
     <div class="body">
         <div id="homeCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
@@ -22,105 +21,139 @@
         </div>
     </div>
 </div>
-
-
 <div>
-    <section class="mb-5 bg-light py-5">
-        <div class="container">
-            <h2 class="text-center mb-4 fw-bold" style="color:#45C3D2">Giới thiệu các Khoa</h2>
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm h-100">
-                        <img src="~/images/101638-ho-hap-phoi.png" class="card-img-top" alt="Khoa Nội">
-                        <div class="card-body">
-                            <h5 class="card-title">Khoa hô hấp - Phổi</h5>
-                            <p class="card-text">
-                                Điều trị các bệnh lý nội khoa: tim mạch, hô hấp, tiêu hóa, nội tiết, thần kinh.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm h-100">
-                        <img src="~/images/101713-tim-mach.png" class="card-img-top" alt="Khoa Ngoại">
-                        <div class="card-body">
-                            <h5 class="card-title">Khoa Tim Mạch</h5>
-                            <p class="card-text">
-                                Phẫu thuật ngoại khoa, chỉnh hình, tiêu hóa, tiết niệu và chấn thương.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm h-100">
-                        <img src="~/images/101655-nhi-khoa.png" class="card-img-top" alt="Khoa Nhi">
-                        <div class="card-body">
-                            <h5 class="card-title">Khoa Nhi</h5>
-                            <p class="card-text">
-                                Chăm sóc và điều trị toàn diện cho trẻ em với đội ngũ bác sĩ chuyên nghiệp.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+    <section class="container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="fw-bold">Chuyên khoa</h3>
+            <a asp-controller="Home" asp-action="Index2"
+               class="btn btn-info text-white rounded-pill px-3">
+                Xem thêm
+            </a>
+        </div>
+        <div id="specialtyCarousel" class="carousel slide" data-bs-ride="false">
+            <div class="carousel-inner" id="specialtyCarouselInner">
             </div>
+            <button class="carousel-control-prev" type="button"
+                    data-bs-target="#specialtyCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon bg-info rounded-circle p-3"></span>
+            </button>
+            <button class="carousel-control-next" type="button"
+                    data-bs-target="#specialtyCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon bg-info rounded-circle p-3"></span>
+            </button>
         </div>
     </section>
+    <section class="container my-5">
+        <h2 class="text-center mb-4 fw-bold" style="color:#45C3D2">
+            Bác sĩ nổi bật
+        </h2>
+        <a asp-controller="Home" asp-action="Index3"
+           class="btn btn-info text-white rounded-pill px-3 add"
+           style="position: relative; z-index: 10;">
+            Xem thêm
+        </a>
+        <div id="doctorCarousel" class="carousel slide" data-bs-ride="false">
+            <div class="carousel-inner" id="doctorCarouselInner"></div>
 
+            <button class="carousel-control-prev" type="button"
+                    data-bs-target="#doctorCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon bg-info rounded-circle p-3"></span>
+            </button>
 
-    <section class="container">
-        <h2 class="text-center mb-4 fw-bold " style="color:#45C3D2">Bác sĩ nổi bật</h2>
-        <div class="row g-4">
-            <div class="col-md-3 col-sm-6">
-                <div class="card border-0 shadow-sm text-center">
-                    <img src="~/images/153759-anh-bs-7.png"
-                         class="card-img-top rounded-circle mx-auto mt-3"
-                         style="width:150px; height:150px; object-fit: cover;"
-                         alt="BS. Trần Anh">
-                    <div class="card-body">
-                        <h5 class="card-title mb-1">BS. Trần Anh</h5>
-                        <p class="text-muted small">Chuyên khoa Tim mạch</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="card border-0 shadow-sm text-center">
-                    <img src="~/images/152122-anh-bs.png"
-                         class="card-img-top rounded-circle mx-auto mt-3"
-                         style="width:150px; height:150px; object-fit: cover;"
-                         alt="BS. Lê Văn Minh">
-                    <div class="card-body">
-                        <h5 class="card-title mb-1">BS. Lê Văn Minh</h5>
-                        <p class="text-muted small">Chuyên khoa Ngoại tổng hợp</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="card border-0 shadow-sm text-center">
-                    <img src="~/images/152821-anh-bs-3.png"
-                         class="card-img-top rounded-circle mx-auto mt-3"
-                         style="width:150px; height:150px; object-fit: cover;"
-                         alt="BS. Nguyễn Thị Lan">
-                    <div class="card-body">
-                        <h5 class="card-title mb-1">BS. Nguyễn Thị Lan</h5>
-                        <p class="text-muted small">Chuyên khoa Nhi</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="card border-0 shadow-sm text-center">
-                    <img src="~/images/104052-thac-si-bac-si-tran-thi-mai-thy.png"
-                         class="card-img-top rounded-circle mx-auto mt-3"
-                         style="width:150px; height:150px; object-fit: cover;"
-                         alt="BS. Phạm Thu Hà">
-                    <div class="card-body">
-                        <h5 class="card-title mb-1">BS. Phạm Thu Hà Hương</h5>
-                        <p class="text-muted small">Chuyên khoa Da liễu</p>
-                    </div>
-                </div>
-            </div>
+            <button class="carousel-control-next" type="button"
+                    data-bs-target="#doctorCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon bg-info rounded-circle p-3"></span>
+            </button>
         </div>
     </section>
 
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const res = await fetch("/api/AllSpecialty");
+        const data = await res.json();
+
+        const chunkSize = 3;
+        const carouselInner = document.getElementById("specialtyCarouselInner");
+
+        carouselInner.innerHTML = ""; 
+
+        for (let i = 0; i < data.length; i += chunkSize) {
+            const chunk = data.slice(i, i + chunkSize);
+            const isActive = i === 0 ? "active" : "";
+
+            let itemsHtml = "";
+            chunk.forEach(item => {
+            itemsHtml += `
+        <div class="col-md-4">
+            <a href="/Specialty/Detail/${item.id}"
+               class="specialty-card h-100 text-decoration-none text-dark d-block">
+                <img src="${item.imageUrl}" alt="${item.name}">
+                <h6 class="fw-bold mt-2">${item.name}</h6>
+                <p class="mb-0">${item.description ?? ""}</p>
+            </a>
+        </div>
+    `;
+            });
+
+            carouselInner.insertAdjacentHTML("beforeend", `
+                <div class="carousel-item ${isActive}">
+                    <div class="row g-4">
+                        ${itemsHtml}
+                    </div>
+                </div>
+            `);
+        }
+        const carouselElement = document.getElementById("specialtyCarousel");
+        new bootstrap.Carousel(carouselElement, {
+            interval: false,
+            ride: false,
+            wrap: true
+        });
+    });
+        document.addEventListener("DOMContentLoaded", async () => {
+        const res = await fetch("/api/AllDoctor");
+        const data = await res.json();
+
+        const chunkSize = 4; // giống layout cũ
+        const carouselInner = document.getElementById("doctorCarouselInner");
+        carouselInner.innerHTML = "";
+
+        for (let i = 0; i < data.length; i += chunkSize) {
+            const chunk = data.slice(i, i + chunkSize);
+            const isActive = i === 0 ? "active" : "";
+
+            let itemsHtml = "";
+            chunk.forEach(item => {
+    itemsHtml += `
+        <div class="col-md-3 col-sm-6">
+            <a href="/Doctor/Detail/${item.id}"
+               class="doctor-specialty-card h-100 text-decoration-none text-dark d-block">
+                <img src="${item.imageUrl}" alt="${item.name}">
+                <h6 class="fw-bold mt-2">${item.name}</h6>
+                <p class="mb-0">Chuyên khoa ${item.specialty}</p>
+            </a>
+        </div>
+    `;
+
+            });
+
+            carouselInner.insertAdjacentHTML("beforeend", `
+                <div class="carousel-item ${isActive}">
+                    <div class="row g-4">
+                        ${itemsHtml}
+                    </div>
+                </div>
+            `);
+        }
+
+        new bootstrap.Carousel(document.getElementById("doctorCarousel"), {
+            interval: false,
+            ride: false,
+            wrap: true
+        });
+    });
+
+</script>
+
+

@@ -1,0 +1,266 @@
+﻿@{
+    ViewData["Title"] = "Chi tiết bác sĩ";
+    Layout = "_Layout";
+}
+
+<style>
+    :root {
+        --primary-color: #0d6efd;
+        --secondary-color: #0bbcd6;
+        --text-dark: #1a2a3a;
+        --bg-light: #f0f7ff; /* Xanh trắng nhạt */
+        --accent-soft: rgba(11, 188, 214, 0.1);
+    }
+
+    body {
+        background-color: var(--bg-light);
+ 
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* ===== TRANG TRÍ BACKGROUND ===== */
+    .container-wrapper {
+        position: relative;
+        overflow: hidden;
+    }
+
+        .container-wrapper::before, .container-wrapper::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            z-index: -1;
+            background: linear-gradient(135deg, var(--accent-soft) 0%, transparent 100%);
+        }
+
+        .container-wrapper::before {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            right: -100px;
+        }
+
+        .container-wrapper::after {
+            width: 300px;
+            height: 300px;
+            bottom: -50px;
+            left: -100px;
+            background: linear-gradient(225deg, var(--accent-soft) 0%, transparent 100%);
+        }
+
+    /* ===== BLOG SECTION (CẢI TIẾN) ===== */
+    .doctor-blog {
+        background: #ffffff;
+        padding: 50px;
+        border-radius: 30px;
+        box-shadow: 0 20px 60px rgba(13, 110, 253, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        position: relative;
+    }
+
+        /* Tối ưu chữ HÀNH TRÌNH... */
+        .doctor-blog h2 {
+            font-size: 30px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 40px;
+            line-height: 1.3;
+            text-transform: uppercase;
+            letter-spacing: -1px; /* Tạo cảm giác hiện đại */
+            background: linear-gradient(to right, #1a2a3a, #0bbcd6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+            .doctor-blog h2::after {
+                content: "";
+                position: absolute;
+                bottom: -10px;
+                left: 0;
+                width: 80px;
+                height: 6px;
+                background: linear-gradient(90deg, var(--secondary-color), transparent);
+                border-radius: 10px;
+            }
+
+    .blog-text {
+        font-size: 18px;
+        line-height: 1.9;
+        color: #4a5568;
+        font-weight: 400;
+    }
+
+        .blog-text p {
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        /* Chữ cái đầu tiên (Drop Cap) */
+        .blog-text::first-letter {
+            font-size: 75px;
+            font-weight: 900;
+            float: left;
+            margin-right: 15px;
+            line-height: 0.8;
+            color: var(--secondary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 5px;
+        }
+
+    blockquote {
+        background: var(--bg-light);
+        border-left: 6px solid var(--secondary-color);
+        padding: 30px;
+        margin: 40px 0;
+        border-radius: 0 20px 20px 0;
+        font-style: italic;
+        position: relative;
+    }
+
+        blockquote::before {
+            content: "\201C"; /* Dấu ngoặc kép */
+            font-size: 80px;
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            color: var(--secondary-color);
+            opacity: 0.1;
+            font-family: serif;
+        }
+
+    /* ===== DOCTOR CARD (CẢI TIẾN) ===== */
+    .doctor-card {
+        background: #ffffff;
+        border-radius: 30px;
+        padding: 40px 30px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(13, 110, 253, 0.05);
+        position: sticky;
+        top: 40px;
+    }
+
+        .doctor-card img {
+            width: 200px;
+            height: 200px;
+            border: 10px solid var(--bg-light);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .doctor-card:hover img {
+            transform: rotate(3deg) scale(1.05);
+        }
+
+    .btn-booking {
+        background: linear-gradient(135deg, #0bbcd6 0%, #0d6efd 100%);
+        border-radius: 15px;
+        font-size: 17px;
+        letter-spacing: 1px;
+    }
+
+    /* Loading đẹp */
+    .spinner-border {
+        color: var(--secondary-color) !important;
+    }
+</style>
+
+<div class="container-wrapper">
+    <div class="container my-5">
+        <div id="doctor-loading">
+            <div class="spinner-border" role="status" style="width: 4rem; height: 4rem;"></div>
+            <p class="mt-4 text-muted fs-5">Hệ thống đang chuẩn bị hồ sơ bác sĩ...</p>
+        </div>
+
+        <div id="doctor-content" class="row g-5 d-none">
+            <div class="col-lg-8">
+                <article class="doctor-blog">
+                    <h2 id="doctor-blog-title"></h2>
+                    <div id="doctor-blog-content" class="blog-text">
+                    </div>
+                </article>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="doctor-card text-center">
+                    <div class="position-relative d-inline-block mb-4">
+                        <img id="doctor-avatar" src="" class="rounded-circle shadow-sm" alt="Avatar">
+                    </div>
+
+                    <h5 id="doctor-name" class="mb-1"></h5>
+                    <span id="doctor-degree" class="badge bg-light text-primary mb-4 p-2 px-3 rounded-pill border border-primary-subtle"></span>
+
+                    <div class="text-start space-y-3">
+                        <div class="p-3 bg-light rounded-4 mb-2">
+                            <small class="text-muted d-block">Chuyên khoa</small>
+                            <span class="fw-bold text-dark" id="doctor-specialty"></span>
+                        </div>
+                        <div class="p-3 bg-light rounded-4 mb-2">
+                            <small class="text-muted d-block">Kinh nghiệm chuyên môn</small>
+                            <span class="fw-bold text-dark"><span id="doctor-exp"></span> năm công tác</span>
+                        </div>
+                        <div class="p-3 bg-light rounded-4 mb-4">
+                            <small class="text-muted d-block">Vị trí phòng khám</small>
+                            <span class="fw-bold text-dark">Phòng số <span id="doctor-room"></span></span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-booking btn-lg w-100 py-3 shadow-lg">
+                        <i class="bi bi-calendar-check me-2"></i>Đặt lịch khám ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const doctorId = @Html.Raw(ViewBag.DoctorId ?? "null");
+        const loading = document.getElementById("doctor-loading");
+        const content = document.getElementById("doctor-content");
+
+        if (!doctorId) {
+            loading.innerHTML = "<div class='alert alert-info py-5 rounded-4'>Không tìm thấy mã định danh bác sĩ.</div>";
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/AllDoctor/${doctorId}`);
+            if (!res.ok) throw new Error("Thông tin bác sĩ chưa được cập nhật.");
+
+            const doctor = await res.json();
+            const exp = doctor.yearOfExp || "Nhiều";
+
+            // Map data
+            document.getElementById("doctor-name").innerText = doctor.name;
+            document.getElementById("doctor-degree").innerText = doctor.degree || "Bác sĩ Chuyên khoa";
+            document.getElementById("doctor-specialty").innerText = doctor.specialty;
+            document.getElementById("doctor-room").innerText = doctor.roomId || "01";
+            document.getElementById("doctor-exp").innerText = exp;
+            document.getElementById("doctor-avatar").src = doctor.imageUrl || "https://i.ibb.co/6yYvWfK/default-avatar.png";
+
+            document.getElementById("doctor-blog-title").innerText = `Hành trình Y đức của Bác sĩ ${doctor.name}`;
+
+            document.getElementById("doctor-blog-content").innerHTML = `
+                <p>Với hơn <strong>${exp} năm kinh nghiệm</strong> dày dặn trong lĩnh vực chuyên sâu về <strong>${doctor.specialty}</strong>, bác sĩ <strong>${doctor.name}</strong> không chỉ là một chuyên gia giỏi mà còn là một tấm gương về sự tận tụy. Bác sĩ luôn quan niệm rằng mỗi bệnh nhân là một người thân, và sự an tâm của họ chính là thành công lớn nhất của người thầy thuốc.</p>
+
+                <p>Suốt nhiều năm qua, bác sĩ đã trực tiếp xử lý thành công hàng loạt ca lâm sàng từ mức độ cơ bản đến phức tạp. Sự tinh tế trong chẩn đoán và quyết đoán trong phác đồ điều trị đã giúp bác sĩ nhận được sự tin tưởng tuyệt đối từ đồng nghiệp và cộng đồng bệnh nhân.</p>
+
+                <blockquote>
+                    "Y đức không chỉ nằm ở kiến thức chuyên môn vững vàng, mà còn ở sự thấu cảm sâu sắc với nỗi đau của người bệnh. Đó là kim chỉ nam cho mọi hoạt động thăm khám của tôi."
+                </blockquote>
+
+                <p>Bên cạnh việc khám chữa bệnh, bác sĩ còn thường xuyên tham gia các đề tài nghiên cứu khoa học, cập nhật liên tục các kỹ thuật y tế tiên tiến từ các hội nghị quốc tế. Điều này đảm bảo mỗi bệnh nhân khi đến phòng khám số <strong>${doctor.roomId}</strong> đều được tiếp cận với những giải pháp y tế hiện đại và hiệu quả nhất.</p>
+
+                <p>Bác sĩ <strong>${doctor.name}</strong> tin rằng một quy trình điều trị lý tưởng phải đi đôi với sự lắng nghe. Bác sĩ luôn dành thời gian để giải thích chi tiết tình trạng bệnh lý, giúp người bệnh và gia đình hiểu rõ lộ trình hồi phục, từ đó gạt bỏ những rào cản tâm lý lo âu.</p>
+            `;
+
+            loading.style.display = "none";
+            content.classList.remove("d-none");
+
+        } catch (err) {
+            loading.innerHTML = `<div class='alert alert-danger'>${err.message}</div>`;
+        }
+    });
+</script>

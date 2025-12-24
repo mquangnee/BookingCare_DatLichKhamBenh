@@ -1,0 +1,291 @@
+﻿@{
+    ViewData["Title"] = "Chi tiết chuyên khoa";
+    Layout = "_Layout";
+}
+
+<style>
+    :root {
+        --primary-color: #45c3d2;
+        --primary-dark: #1f8fa3;
+        --primary-light: #e6f7fa;
+    }
+    body{
+        background-color:#f0f7ff;
+    }
+    /* ===================== SPECIALTY HEADER ===================== */
+    .specialty-banner {
+        background: linear-gradient(180deg, #45c3d2 0%, #6fd6e0 60%, #ffffff 100%);
+        color: #fff;
+        border-radius: 24px;
+    }
+
+    .img-wrapper img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 16px;
+        border: 4px solid rgba(255,255,255,0.25);
+    }
+
+    .description-text {
+        font-size: 1.05rem;
+        opacity: 0.95;
+        max-width: 900px;
+    }
+
+    /* ===================== SECTION TITLE ===================== */
+    .section-title {
+        margin-top: 40px;
+        margin-bottom: 24px;
+    }
+
+    .title-line {
+        width: 60px;
+        height: 4px;
+        background: var(--primary-color);
+        border-radius: 4px;
+        margin-top: 6px;
+    }
+
+  /* ===================== DOCTOR CARD ===================== */
+    .doctor-card {
+        display: flex;
+        gap: 22px;
+        padding: 24px;
+        background: #fff;
+        /* 👇 HIỆU ỨNG HOVER LUÔN */
+        border-radius: 20px;
+        border: 1px solid var(--primary-color);
+        box-shadow: 0 12px 28px rgba(69, 195, 210, 0.25);
+        position: relative;
+        transition: all 0.35s ease;
+        height: 100%;
+    }
+
+        /* Top gradient line */
+        .doctor-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 5px;
+            width: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+        }
+
+        /* 👇 Hover mạnh hơn */
+        .doctor-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 24px 50px rgba(31, 143, 163, 0.35);
+        }
+
+    /* Avatar */
+    .doctor-avatar-box {
+        position: relative;
+        flex-shrink: 0;
+    }
+
+        .doctor-avatar-box img {
+            width: 115px;
+            height: 115px;
+            border-radius: 50%;
+            object-fit: cover;
+            padding: 4px;
+            background: #fff;
+            border: 3px solid var(--primary-light);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+        }
+
+    .doctor-online {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        width: 14px;
+        height: 14px;
+        background: #2ecc71;
+        border: 3px solid #fff;
+        border-radius: 50%;
+    }
+
+    /* Info */
+    .doctor-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .doctor-degree {
+        background: var(--primary-light);
+        color: var(--primary-dark);
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 6px 14px;
+        border-radius: 999px;
+        width: fit-content;
+        margin-bottom: 6px;
+    }
+
+    .doctor-name {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .doctor-room {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-bottom: 16px;
+    }
+
+        .doctor-room i {
+            color: var(--primary-color);
+            margin-right: 4px;
+        }
+
+    /* Actions */
+    .doctor-actions {
+        margin-top: auto;
+        display: flex;
+        gap: 12px;
+    }
+
+        .doctor-actions .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+            .doctor-actions .btn-outline-primary:hover {
+                background: var(--primary-color);
+                color: #fff;
+            }
+
+        .doctor-actions .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border: none;
+            font-weight: 600;
+        }
+
+    /* Loading */
+    #loading {
+        margin-top: 60px;
+    }
+
+    .doctor-actions {
+        justify-content: center;
+    }
+
+    }
+</style>
+ <body>
+
+    <div class="container mt-5 mb-5">
+
+        <!-- ===================== HEADER ===================== -->
+        <div class="specialty-banner p-4 p-lg-5 mb-5 shadow-sm">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center mb-3 mb-md-0">
+                    <div class="img-wrapper">
+                        <img id="spec-img" src=""
+                             onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-2">
+                            <li class="breadcrumb-item">
+                                <a href="/" class="text-decoration-none text-white">Trang chủ</a>
+                            </li>
+                            <li class="breadcrumb-item active text-white-50">Chuyên khoa</li>
+                        </ol>
+                    </nav>
+
+                    <h1 id="spec-name" class="fw-bold mb-3 display-6">Đang tải...</h1>
+                    <div id="spec-desc" class="description-text"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== DOCTOR LIST ===================== -->
+        <div class="section-title">
+            <h3 class="fw-bold">
+                <i class="bi bi-person-badge-fill text-primary me-2"></i>
+                Đội ngũ bác sĩ
+            </h3>
+            <div class="title-line"></div>
+        </div>
+
+        <div class="row g-4" id="doctor-list"></div>
+
+        <div id="loading" class="text-center">
+            <div class="spinner-border text-primary"></div>
+            <p class="mt-3 text-muted">Đang tải danh sách bác sĩ...</p>
+        </div>
+    </div>
+
+
+ </body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const specialtyId = '@ViewBag.SpecialtyId';
+        const loading = document.getElementById("loading");
+
+        try {
+            const res = await fetch(`/api/AllSpecialty/${specialtyId}`);
+            if (!res.ok) throw new Error("Không tìm thấy chuyên khoa");
+
+            const data = await res.json();
+
+            document.getElementById("spec-name").innerText = data.name;
+            document.getElementById("spec-img").src = data.imageUrl || '';
+            document.getElementById("spec-desc").innerHTML =
+                data.description || "Thông tin chuyên khoa đang được cập nhật.";
+
+            const container = document.getElementById("doctor-list");
+
+            if (data.doctors && data.doctors.length > 0) {
+                container.innerHTML = data.doctors.map(doc => `
+                    <div class="col-xl-6 col-lg-6 col-md-12">
+                        <div class="doctor-card">
+                            <div class="doctor-avatar-box">
+                                <img src="${doc.imageUrl || 'https://via.placeholder.com/150'}">
+                                <span class="doctor-online"></span>
+                            </div>
+
+                            <div class="doctor-info">
+                                <span class="doctor-degree">${doc.degree || 'Bác sĩ'}</span>
+                                <h4 class="doctor-name">${doc.name}</h4>
+
+                                <p class="doctor-room">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                    Phòng khám: ${doc.roomId || 'Đang cập nhật'}
+                                </p>
+
+                                <div class="doctor-actions">
+                                    <a href="/Doctor/Detail/${doc.id}" class="btn btn-outline-primary btn-sm rounded-pill">
+                                        Xem hồ sơ
+                                    </a>
+                                    <button class="btn btn-primary btn-sm rounded-pill px-4">
+                                        Đặt lịch
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join("");
+            } else {
+                container.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <p class="text-muted">Hiện chưa có bác sĩ thuộc chuyên khoa này.</p>
+                    </div>
+                `;
+            }
+
+            loading.style.display = "none";
+
+        } catch (err) {
+            loading.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+        }
+    });
+</script>
