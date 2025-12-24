@@ -50,15 +50,6 @@
         box-shadow: 0 10px 28px rgba(0,0,0,0.06);
     }
 
-        .doctor-card::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(69,195,210,0.12), transparent 60%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
         .doctor-card:hover::before {
             opacity: 1;
         }
@@ -78,16 +69,7 @@
         position: relative;
     }
 
-        .doctor-img-container::after {
-            content: "";
-            position: absolute;
-            width: 170px;
-            height: 170px;
-            border-radius: 50%;
-            background: rgba(69,195,210,0.08);
-            z-index: 0;
-        }
-
+  
         .doctor-img-container img {
             width: 150px;
             height: 150px;
@@ -154,30 +136,39 @@
                 container.innerHTML = `<p class="text-center">Hiện chưa có bác sĩ nào.</p>`;
                 return;
             }
+                container.innerHTML = data.map(item => `
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+            <div class="card h-100 shadow-sm doctor-card border-0">
 
-            container.innerHTML = data.map(item => `
-                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-                    <div class="card h-100 shadow-sm doctor-card border-0">
-                        <a href="/Doctor/Detail/${item.id}" class="text-decoration-none text-dark">
-                            <div class="doctor-img-container">
-                                <img src="${item.imageUrl || '/images/default-doctor.png'}"
-                                     alt="${item.name}"
-                                     onerror="this.src='/images/default-doctor.png'">
-                            </div>
-                            <div class="card-body text-center">
-                                <p class="text-uppercase text-muted small mb-1" style="letter-spacing: 1px;">
-                                    ${item.specialty || 'Chuyên khoa'}
-                                </p>
-                                <h5 class="card-title fw-bold" style="color: #2c3e50;">${item.name}</h5>
-
-                                <button class="btn btn-booking w-100 rounded-pill">
-                                    Đặt lịch hẹn
-                                </button>
-                            </div>
-                        </a>
+                <a href="/Doctor/Detail/${item.id}"
+                   class="text-decoration-none text-dark">
+                    <div class="doctor-img-container">
+                        <img src="${item.imageUrl || '/images/default-doctor.png'}"
+                             alt="${item.name}"
+                             onerror="this.src='/images/default-doctor.png'">
                     </div>
+                </a>
+
+                <div class="card-body text-center">
+                    <p class="text-uppercase text-muted small mb-1">
+                        ${item.specialty || 'Chuyên khoa'}
+                    </p>
+
+                    <h5 class="card-title fw-bold">
+                        ${item.name}
+                    </h5>
+
+           
+    <a href="/Patient/PatientBooking"
+       class="btn btn-booking w-100 rounded-pill"
+       style="position: relative; z-index: 5;">
+       Đặt lịch hẹn
+    </a>
                 </div>
-            `).join("");
+
+            </div>
+        </div>
+    `).join("");
         } catch (error) {
             console.error("Lỗi khi tải dữ liệu bác sĩ:", error);
         }

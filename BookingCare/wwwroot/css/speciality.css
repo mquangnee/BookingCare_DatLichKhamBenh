@@ -1,4 +1,9 @@
-﻿
+﻿.bg-alt {
+    background-color: #EDFAFB;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
 .specialty-card {
     background: #FFFFFF;
     border: 1px solid #f0f0f0;

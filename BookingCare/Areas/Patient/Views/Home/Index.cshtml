@@ -2,9 +2,10 @@
     ViewData["Title"] = "Home Page";
     Layout = "_Layout";
 }
-
+<link rel="stylesheet" href="~/css/foryou.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/speciality.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/list-specility.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/media.css" asp-append-version="true" />
 <div class="container my-5">
     <div class="body">
         <div id="homeCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
@@ -26,6 +27,58 @@
     </div>
 </div>
 <div>
+    <div class="bg-alt">
+
+        <section class="container my-5">
+            <h3 class="fw-bold mb-4">Dành cho bạn</h3>
+            <div class="row text-center gy-4">
+                <!-- Cơ sở y tế -->
+                <div class="col-6 col-md-3">
+                    <a href="/MedicalFacility"
+                       class="for-you-item text-decoration-none text-dark">
+                        <div class="for-you-circle">
+                            <img src="/images/phongkham.png" alt="Cơ sở y tế">
+                        </div>
+                        <p class="fw-semibold mt-3 mb-0">Cơ sở y tế</p>
+                    </a>
+                </div>
+
+                <!-- Bác sĩ -->
+                <div class="col-6 col-md-3">
+                    <a asp-controller="Home" asp-action="Index3"
+                       class="for-you-item text-decoration-none text-dark">
+                        <div class="for-you-circle">
+                            <img src="/images/bacsi.png" alt="Bác sĩ">
+                        </div>
+                        <p class="fw-semibold mt-3 mb-0">Bác sĩ</p>
+                    </a>
+                </div>
+
+                <!-- Chuyên khoa -->
+                <div class="col-6 col-md-3">
+                    <a asp-controller="Home" asp-action="Index2"
+                       class="for-you-item text-decoration-none text-dark">
+                        <div class="for-you-circle">
+                            <img src="/images/chuyenkhoan.png" alt="Chuyên khoa">
+                        </div>
+                        <p class="fw-semibold mt-3 mb-0">Chuyên khoa</p>
+                    </a>
+                </div>
+
+                <!-- Bài viết -->
+                <div class="col-6 col-md-3">
+                    <a href="/Blog"
+                       class="for-you-item text-decoration-none text-dark">
+                        <div class="for-you-circle">
+                            <img src="/images/baoviet.png" alt="Bài viết">
+                        </div>
+                        <p class="fw-semibold mt-3 mb-0">Bài viết</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+  
     <section class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="fw-bold">Chuyên khoa</h3>
@@ -47,30 +100,104 @@
             </button>
         </div>
     </section>
-    <section class="container my-5">
-        <h2 class="text-center mb-4 fw-bold" style="color:#45C3D2">
-            Bác sĩ nổi bật
-        </h2>
-        <a asp-controller="Home" asp-action="Index3"
-           class="btn btn-info text-white rounded-pill px-3 add"
-           style="position: relative; z-index: 10;">
-            Xem thêm
-        </a>
-        <div id="doctorCarousel" class="carousel slide" data-bs-ride="false">
-            <div class="carousel-inner" id="doctorCarouselInner"></div>
+    <div class="bg-alt">
+        <section class="container my-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="fw-bold">Bác sĩ</h3>
+                <a asp-controller="Home" asp-action="Index3"
+                   class="btn btn-info text-white rounded-pill px-3">
+                    Xem thêm
+                </a>
+            </div>
+            <div id="doctorCarousel" class="carousel slide" data-bs-ride="false">
+                <div class="carousel-inner" id="doctorCarouselInner"></div>
+                <button class="carousel-control-prev" type="button"
+                        data-bs-target="#doctorCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon bg-info rounded-circle p-3"></span>
+                </button>
 
-            <button class="carousel-control-prev" type="button"
-                    data-bs-target="#doctorCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon bg-info rounded-circle p-3"></span>
-            </button>
+                <button class="carousel-control-next" type="button"
+                        data-bs-target="#doctorCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon bg-info rounded-circle p-3"></span>
+                </button>
+            </div>
+        </section>
+    </div>
+    <div class="media-section py-5">
+        <div class="container">
+            <h3 class="text-center fw-bold mb-5 section-title">
+                Truyền thông nói về BookingCare
+            </h3>
 
-            <button class="carousel-control-next" type="button"
-                    data-bs-target="#doctorCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon bg-info rounded-circle p-3"></span>
-            </button>
+            <div class="row align-items-center">
+                <!-- VIDEO -->
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="video-wrapper shadow-sm">
+                        <iframe src="https://www.youtube.com/embed/FyDQljKtWnI?start=11"
+                                title="YouTube video player"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+
+                <!-- LOGO BÁO -->
+                <div class="col-lg-6">
+                    <div class="row g-3">
+
+                        <div class="col-6">
+                            <a href="https://vnexpress.net"
+                               target="_blank"
+                               class="media-logo-card">
+                                <img src="/images/vnexpress.png" alt="VNExpress">
+                            </a>
+                        </div>
+
+                        <div class="col-6">
+                            <a href="https://suckhoedoisong.vn"
+                               target="_blank"
+                               class="media-logo-card">
+                                <img src="/images/suckhoedoisong.png" alt="Sức khỏe & Đời sống">
+                            </a>
+                        </div>
+
+                        <div class="col-6">
+                            <a href="https://vietnamnet.vn"
+                               target="_blank"
+                               class="media-logo-card">
+                                <img src="/images/baoviet.png" alt="Vietnamnet">
+                            </a>
+                        </div>
+
+                        <div class="col-6">
+                            <a href="https://vtv.vn"
+                               target="_blank"
+                               class="media-logo-card">
+                                <img src="/images/vtv1.png" alt="VTV">
+                            </a>
+                        </div>
+
+                        <div class="col-6">
+                            <a href="https://vtc.vn"
+                               target="_blank"
+                               class="media-logo-card">
+                                <img src="/images/165432-vtcnewslogosvg.png" alt="VTC News">
+                            </a>
+                        </div>
+
+                        <div class="col-6">
+                            <a href="https://dantri.com.vn"
+                               target="_blank"
+                               class="media-logo-card">
+                                <img src="/images/110757-dantrilogo.png" alt="Dân trí">
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
-    </section>
-
+    </div>
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", async () => {

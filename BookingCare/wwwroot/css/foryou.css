@@ -1,0 +1,32 @@
+﻿.for-you-item {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+    .for-you-item:hover {
+        transform: translateY(-6px);
+    }
+
+.for-you-circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: #FFD84D;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    transition: box-shadow 0.3s ease;
+}
+
+.for-you-item:hover .for-you-circle {
+    box-shadow: 0 18px 35px rgba(0,0,0,0.18);
+}
+
+.for-you-circle img {
+    width: 85%;
+    height: 85%;
+    object-fit: cover;
+    border-radius: 50%;
+}
