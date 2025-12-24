@@ -1,0 +1,182 @@
+﻿
+<style>
+    body{
+        background-color: #f0f7ff;
+    }
+    .doctor-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid #eee;
+        overflow: hidden;
+    }
+
+        .doctor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+
+    .doctor-img-container {
+        height: 220px;
+        overflow: hidden;
+        background-color: #f8f9fa;
+    }
+
+        .doctor-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .btn-booking {
+        background-color: #45C3D2;
+        color: white;
+        border: none;
+        transition: 0.3s;
+    }
+
+        .btn-booking:hover {
+            background-color: #38aab8;
+            color: white;
+        }
+    /* ================= CARD BÁC SĨ ================= */
+    .doctor-card {
+        border-radius: 22px;
+        background: #ffffff;
+        overflow: hidden;
+        position: relative;
+        transition: all 0.4s ease;
+        box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+    }
+
+        .doctor-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(69,195,210,0.12), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .doctor-card:hover::before {
+            opacity: 1;
+        }
+
+        .doctor-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 24px 50px rgba(0,0,0,0.14);
+        }
+
+    /* ================= ẢNH / LOGO BÁC SĨ ================= */
+    .doctor-img-container {
+        height: 240px;
+        background: radial-gradient(circle at top, #f7fcfd, #eef7f9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+        .doctor-img-container::after {
+            content: "";
+            position: absolute;
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            background: rgba(69,195,210,0.08);
+            z-index: 0;
+        }
+
+        .doctor-img-container img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid #45C3D2;
+            background: #fff;
+            z-index: 1;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+            transition: all 0.4s ease;
+        }
+
+    .doctor-card:hover .doctor-img-container img {
+        transform: scale(1.07) rotate(1deg);
+        box-shadow: 0 18px 40px rgba(69,195,210,0.45);
+    }
+
+    /* ================= BODY ================= */
+    .doctor-card .card-body {
+        padding: 24px 22px 28px;
+        text-align: center;
+    }
+
+    /* Chuyên khoa */
+    .doctor-card .text-muted {
+        font-size: 0.72rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #7a8b94 !important;
+        margin-bottom: 6px;
+    }
+
+    /* Tên bác sĩ */
+    .doctor-card h5 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1f2d3d;
+        margin-bottom: 20px;
+    }
+</style>
+<body>
+    <div class="container my-5">
+        <div class="d-flex align-items-center mb-4">
+            <div style="width: 5px; height: 30px; background-color: #45C3D2; margin-right: 15px; border-radius: 10px;"></div>
+            <h3 class="fw-bold mb-0">Bác sĩ nổi bật dành cho bạn</h3>
+        </div>
+
+        <div class="row g-4" id="doctorList">
+        </div>
+    </div>
+</body>
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            const res = await fetch("/api/AllDoctor");
+            const data = await res.json();
+
+            const container = document.getElementById("doctorList");
+
+            if (data.length === 0) {
+                container.innerHTML = `<p class="text-center">Hiện chưa có bác sĩ nào.</p>`;
+                return;
+            }
+
+            container.innerHTML = data.map(item => `
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                    <div class="card h-100 shadow-sm doctor-card border-0">
+                        <a href="/Doctor/Detail/${item.id}" class="text-decoration-none text-dark">
+                            <div class="doctor-img-container">
+                                <img src="${item.imageUrl || '/images/default-doctor.png'}"
+                                     alt="${item.name}"
+                                     onerror="this.src='/images/default-doctor.png'">
+                            </div>
+                            <div class="card-body text-center">
+                                <p class="text-uppercase text-muted small mb-1" style="letter-spacing: 1px;">
+                                    ${item.specialty || 'Chuyên khoa'}
+                                </p>
+                                <h5 class="card-title fw-bold" style="color: #2c3e50;">${item.name}</h5>
+
+                                <button class="btn btn-booking w-100 rounded-pill">
+                                    Đặt lịch hẹn
+                                </button>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            `).join("");
+        } catch (error) {
+            console.error("Lỗi khi tải dữ liệu bác sĩ:", error);
+        }
+    });
+</script>

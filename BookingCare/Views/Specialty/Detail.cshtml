@@ -9,7 +9,9 @@
         --primary-dark: #1f8fa3;
         --primary-light: #e6f7fa;
     }
-
+    body{
+        background-color:#f0f7ff;
+    }
     /* ===================== SPECIALTY HEADER ===================== */
     .specialty-banner {
         background: linear-gradient(180deg, #45c3d2 0%, #6fd6e0 60%, #ffffff 100%);
@@ -175,50 +177,54 @@
 
     }
 </style>
+ <body>
 
-<div class="container mt-5 mb-5">
+    <div class="container mt-5 mb-5">
 
-    <!-- ===================== HEADER ===================== -->
-    <div class="specialty-banner p-4 p-lg-5 mb-5 shadow-sm">
-        <div class="row align-items-center">
-            <div class="col-md-3 text-center mb-3 mb-md-0">
-                <div class="img-wrapper">
-                    <img id="spec-img" src=""
-                         onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+        <!-- ===================== HEADER ===================== -->
+        <div class="specialty-banner p-4 p-lg-5 mb-5 shadow-sm">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center mb-3 mb-md-0">
+                    <div class="img-wrapper">
+                        <img id="spec-img" src=""
+                             onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-2">
+                            <li class="breadcrumb-item">
+                                <a href="/" class="text-decoration-none text-white">Trang chủ</a>
+                            </li>
+                            <li class="breadcrumb-item active text-white-50">Chuyên khoa</li>
+                        </ol>
+                    </nav>
+
+                    <h1 id="spec-name" class="fw-bold mb-3 display-6">Đang tải...</h1>
+                    <div id="spec-desc" class="description-text"></div>
                 </div>
             </div>
-            <div class="col-md-9">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-2">
-                        <li class="breadcrumb-item">
-                            <a href="/" class="text-decoration-none text-white">Trang chủ</a>
-                        </li>
-                        <li class="breadcrumb-item active text-white-50">Chuyên khoa</li>
-                    </ol>
-                </nav>
+        </div>
 
-                <h1 id="spec-name" class="fw-bold mb-3 display-6">Đang tải...</h1>
-                <div id="spec-desc" class="description-text"></div>
-            </div>
+        <!-- ===================== DOCTOR LIST ===================== -->
+        <div class="section-title">
+            <h3 class="fw-bold">
+                <i class="bi bi-person-badge-fill text-primary me-2"></i>
+                Đội ngũ bác sĩ
+            </h3>
+            <div class="title-line"></div>
+        </div>
+
+        <div class="row g-4" id="doctor-list"></div>
+
+        <div id="loading" class="text-center">
+            <div class="spinner-border text-primary"></div>
+            <p class="mt-3 text-muted">Đang tải danh sách bác sĩ...</p>
         </div>
     </div>
 
-    <!-- ===================== DOCTOR LIST ===================== -->
-    <div class="section-title">
-        <h3 class="fw-bold">
-            <i class="bi bi-person-badge-fill text-primary me-2"></i>
-            Đội ngũ bác sĩ
-        </h3>
-        <div class="title-line"></div>
-    </div>
 
-    <div class="row g-4" id="doctor-list"></div>
-
-    <div id="loading" class="text-center">
-        <div class="spinner-border text-primary"></div>
-        <p class="mt-3 text-muted">Đang tải danh sách bác sĩ...</p>
-    </div>
-</div>
+ </body>
 
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
