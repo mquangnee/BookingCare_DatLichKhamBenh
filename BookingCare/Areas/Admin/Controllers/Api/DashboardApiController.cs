@@ -1,6 +1,7 @@
 ﻿using BookingCare.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookingCare.Areas.Admin.Controllers.Api
 {
@@ -163,6 +164,30 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                     message = "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu!"
                 });
             }
+        }
+
+        //=============================================
+        // 4. BIỂU ĐỒ LỊCH KHÁM CỦA BÁC SĨ
+        // GET: /api/admin/dashboard/appointments/appointments-by-doctor/date
+        //=============================================
+        [HttpGet("appointments-by-doctor")]
+        public async Task<IActionResult> GetAppointmentsByDoctor([FromQuery] DateOnly date)
+        {
+            var doctors = await _dbContext.Doctors
+                                    .Include(d => d.User)
+                                    .Select(d => new
+                                    {
+                                        d.Id,
+                                        d.User.FullName,
+                                        TotalAppointments = _dbContext.Appointments.Count(a => a.DoctorId == d.Id && a.AppointmentDate == date)
+                                    })
+                                    .OrderByDescending(d => d.TotalAppointments)
+                                    .ToListAsync();
+            return Ok(new
+            {
+                success = true,
+                data = doctors
+            });
         }
     }
 }

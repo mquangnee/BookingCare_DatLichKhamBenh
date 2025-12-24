@@ -165,8 +165,7 @@ function renderInfo(data) {
         <div class="modal-header">
             <h5 class="modal-title" > Thông tin bác sĩ</h5>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body">`;
+        </div>`;
 
     //Dữ liệu trống
     if (!data || data.length == 0) {
@@ -182,21 +181,25 @@ function renderInfo(data) {
     } 
 
     html += `
-        <p><strong>Mã bác sĩ: </strong>${data.doctorId}</p>
-        <p><strong>Họ tên: </strong>${data.fullName}</p>
-        <p><strong>Email: </strong>${data.email}</p>
-        <p><strong>Số điện thoại: </strong>${data.phoneNumber}</p>
-        <p><strong>Ngày sinh: </strong>${data.dateOfBirth}</p>
-        <p><strong>Giới tính: </strong>${data.gender}</p>
-        <p><strong>Địa chỉ: </strong>${data.address}</p>
-        <p><strong>Bằng cấp: </strong>${data.degree}</p>
-        <p><strong>Chuyên khoa: </strong>${data.specialtyName}</p>
-        <p><strong>Số năm kinh nghiệm: </strong>${data.yearsOfExp}</p>
-        <p><strong>Phòng khám: </strong>${data.roomName}</p>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-    </div>`;
+        <div class="modal-body text-center">
+            <img src="${data.avatarUrl ?? "/images/doctors/avatar_default.jpg"}" class="rounded-circle border shadow mb-3" style="width:130px;height:130px;object-fit:cover" />
+        </div> 
+        <div class="modal-body">
+            <p><strong>Mã bác sĩ:</strong> ${data.doctorId}</p>
+            <p><strong>Họ tên:</strong> ${data.fullName}</p>
+            <p><strong>Email:</strong> ${data.email}</p>
+            <p><strong>Số điện thoại:</strong> ${data.phoneNumber}</p>
+            <p><strong>Ngày sinh:</strong> ${data.dateOfBirth}</p>
+            <p><strong>Giới tính:</strong> ${data.gender}</p>
+            <p><strong>Địa chỉ:</strong> ${data.address}</p>
+            <p><strong>Bằng cấp:</strong> ${data.degree}</p>
+            <p><strong>Chuyên khoa:</strong> ${data.specialtyName}</p>
+            <p><strong>Số năm kinh nghiệm:</strong> ${data.yearsOfExp}</p>
+            <p><strong>Phòng khám:</strong> ${data.roomName}</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+        </div>`;
 
     modalDoctor.innerHTML = html;
     $('#doctorModal').modal('show');
@@ -204,38 +207,41 @@ function renderInfo(data) {
 
 //====THÊM BÁC SĨ====//
 btnAddDoctor.addEventListener("click", async function () {
-    //Lấy dữ liệu từ modal
-    const inforDoctor = {
-        email: create_email.value.trim(),
-        fullName: create_fullName.value.trim(),
-        gender: create_gender.value,
-        dateOfBirth: create_dateOfBirth.value,
-        address: create_address.value.trim(),
-        phoneNumber: create_phoneNumber.value.trim(),
-        specialtyId: create_specialty.value,
-        degree: create_degree.value,
-        yearsOfExp: create_yearsOfExp.value,
-        roomId: create_room.value
-    };
-
     try {
-        //Gửi yêu cầu thêm tài khoản bác sĩ đến server
-        const res = await fetch(`/api/admin/users/doctors`, {
+        const formData = new FormData();
+
+        formData.append("Email", create_email.value.trim());
+        formData.append("FullName", create_fullName.value.trim());
+        formData.append("Gender", create_gender.value);
+        formData.append("DateOfBirth", create_dateOfBirth.value);
+        formData.append("Address", create_address.value.trim());
+        formData.append("PhoneNumber", create_phoneNumber.value.trim());
+        formData.append("SpecialtyId", create_specialty.value);
+        formData.append("Degree", create_degree.value);
+        formData.append("YearsOfExp", create_yearsOfExp.value);
+        formData.append("RoomId", create_room.value);
+
+        const avatarFile = document.getElementById("create_avatar").files[0];
+        if (avatarFile) {
+            formData.append("Avatar", avatarFile);
+        }
+
+        const res = await fetch("/api/admin/users/doctors", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(inforDoctor)
+            body: formData
         });
+
         const body = await handleResponse(res);
 
-        if (body.success) {
-            alert(body.message);
-            formAddDoctor.reset(); //Làm rỗng modal
-            $('#addDoctorModal').modal('hide');
-            loadDoctors();
-        }
+        alert(body.message);
+        formAddDoctor.reset();
+        $("#previewCreateAvatar").attr("src", "/images/default-avatar.png");
+        $("#addDoctorModal").modal("hide");
+        loadDoctors();
+
     } catch (error) {
         console.error("Lỗi:", error);
-        alert(error)
+        alert(error);
     }
 });
 
@@ -267,6 +273,9 @@ document.addEventListener("click", async function (e) {
         const data = body.data;
         update_userId.value = data.userId;
 
+        // Hiển thị avatar hiện tại
+        document.getElementById("previewUpdateAvatar").src = data.avatarUrl ?? "/images/doctors/avatar_default.jpg";
+
         //Hiển thị thông tin
         update_email.value = data.email;
         update_fullName.value = data.fullName;
@@ -287,45 +296,59 @@ document.addEventListener("click", async function (e) {
     }
 });
 
+document.getElementById("update_avatar").addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        document.getElementById("previewUpdateAvatar").src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+});
+
+
 //2. Cập nhật thông tin
 document.addEventListener("click", async function (e) {
-    const btn = e.target.closest("#btnUpdateDoctor"); //Tìm đúng nút "Lưu thông tin"
+    const btn = e.target.closest("#btnUpdateDoctor");
     if (!btn) return;
 
-    const userId = document.getElementById("update_userId").value; //Lấy giá trị userId
+    const userId = update_userId.value;
     if (!userId) {
         alert("Không thể lấy Id bác sĩ!");
         return;
     }
 
     try {
-        //Lấy dữ liệu từ modal
-        const inforDoctor = {
-            address: update_address.value.trim(),
-            phoneNumber: update_phoneNumber.value.trim(),
-            specialtyId: update_specialty.value,
-            degree: update_degree.value,
-            yearsOfExp: update_yearsOfExp.value,
-            roomId: update_room.value
-        };
+        const formData = new FormData();
 
-        //Gửi yêu cầu lấy thông tin chi tiết về server 
-        const res = await fetch(`/api/admin/users/doctors/${userId}/edit`, { 
+        formData.append("Address", update_address.value.trim());
+        formData.append("PhoneNumber", update_phoneNumber.value.trim());
+        formData.append("SpecialtyId", update_specialty.value);
+        formData.append("Degree", update_degree.value);
+        formData.append("YearsOfExp", update_yearsOfExp.value);
+        formData.append("RoomId", update_room.value);
+
+        const avatarFile = document.getElementById("update_avatar").files[0];
+        if (avatarFile) {
+            formData.append("Avatar", avatarFile);
+        }
+
+        const res = await fetch(`/api/admin/users/doctors/${userId}/edit`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(inforDoctor)
+            body: formData
         });
+
         const body = await handleResponse(res);
 
-        if (body.success) {
-            alert(body.message);
-            formUpdateDoctor.reset(); //Làm rỗng modal
-            $('#updateDoctorModal').modal('hide');
-            loadDoctors(currentPage);
-        }
+        alert(body.message);
+        formUpdateDoctor.reset();
+        $("#updateDoctorModal").modal("hide");
+        loadDoctors(currentPage);
+
     } catch (error) {
         console.error("Lỗi:", error);
-        alert(error)
+        alert(error);
     }
 });
 
@@ -402,6 +425,18 @@ btnUnlock.addEventListener("click", async function (e) {
         console.error("Lỗi:", error);
         alert(error)
     }
+});
+
+//Load ảnh
+document.getElementById("create_avatar").addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        document.getElementById("previewCreateAvatar").src = e.target.result;
+    };
+    reader.readAsDataURL(file);
 });
 
 //====HÀM LOAD DROPDOWNS====//

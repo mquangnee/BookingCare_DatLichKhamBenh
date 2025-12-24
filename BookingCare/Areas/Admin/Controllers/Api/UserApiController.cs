@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BookingCare.Areas.Admin.Controllers.Api
 {
@@ -116,7 +117,8 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                 Degree = doctor.Doctor.Degree,
                 YearsOfExp = doctor.Doctor.YearsOfExp,
                 SpecialtyName = doctor.Doctor.Specialty.Name,
-                RoomName = doctor.Doctor.Room.Name
+                RoomName = doctor.Doctor.Room.Name,
+                AvatarUrl = doctor.Doctor.AvatarUrl
             };
             
             return Ok(new
@@ -131,7 +133,7 @@ namespace BookingCare.Areas.Admin.Controllers.Api
         // POST: /api/admin/users/doctors
         //=============================================
         [HttpPost("doctors")]
-        public async Task<IActionResult> AddDoctor([FromBody] AddDoctor doctor)
+        public async Task<IActionResult> AddDoctor([FromForm] AddDoctor doctor)
         {
             if (!ModelState.IsValid)
             {
@@ -163,6 +165,22 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                 });
             }
 
+            // Lưu ảnh
+            string avatarPath = "/images/doctors/avatar_default.jpg";
+            if (doctor.Avatar != null)
+            {
+                var folder = Path.Combine("wwwroot/images/doctors");
+                Directory.CreateDirectory(folder);
+
+                var fileName = Guid.NewGuid() + Path.GetExtension(doctor.Avatar.FileName);
+                var filePath = Path.Combine(folder, fileName);
+
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await doctor.Avatar.CopyToAsync(stream);
+
+                avatarPath = "/images/doctors/" + fileName;
+            }
+
             //Tạo đối tượng ApplicationUser mới
             var newDoctor = new ApplicationUser
             {
@@ -188,7 +206,8 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                     Degree = doctor.Degree,
                     YearsOfExp = doctor.YearsOfExp,
                     SpecialtyId = doctor.SpecialtyId,
-                    RoomId = doctor.RoomId
+                    RoomId = doctor.RoomId,
+                    AvatarUrl = avatarPath
                 };
                 await _dbContext.Doctors.AddAsync(doctorEntity);
                 await _dbContext.SaveChangesAsync();
@@ -249,7 +268,8 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                 Degree = doctor.Doctor.Degree,
                 YearsOfExp = doctor.Doctor.YearsOfExp,
                 SpecialtyId = doctor.Doctor.SpecialtyId,
-                RoomId = doctor.Doctor.RoomId
+                RoomId = doctor.Doctor.RoomId,
+                AvatarUrl = doctor.Doctor.AvatarUrl
             };
 
             return Ok(new 
@@ -264,7 +284,7 @@ namespace BookingCare.Areas.Admin.Controllers.Api
         // PUT: /api/admin/users/doctors/id/edit
         //=============================================
         [HttpPut("doctors/{id}/edit")]
-        public async Task<IActionResult> UpdateDoctor(string id, [FromBody] UpdateDoctor update_doctor)
+        public async Task<IActionResult> UpdateDoctor(string id, [FromForm] UpdateDoctor update_doctor)
         {
             //Kiểm tra dữ liệu gửi về hợp lệ không
             if (!ModelState.IsValid)
@@ -301,6 +321,21 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                 }
                 doctor.Doctor.RoomId = update_doctor.RoomId;
             }
+            // Update avatar
+            if (update_doctor.Avatar != null)
+            {
+                var folder = Path.Combine("wwwroot/images/doctors");
+                Directory.CreateDirectory(folder);
+
+                var fileName = Guid.NewGuid() + Path.GetExtension(update_doctor.Avatar.FileName);
+                var filePath = Path.Combine(folder, fileName);
+
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await update_doctor.Avatar.CopyToAsync(stream);
+
+                doctor.Doctor.AvatarUrl = "/images/doctors/" + fileName;
+            }
+
             doctor.Address = update_doctor.Address;
             doctor.PhoneNumber = update_doctor.PhoneNumber;
             doctor.Doctor.Degree = update_doctor.Degree;
