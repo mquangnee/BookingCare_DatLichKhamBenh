@@ -20,7 +20,7 @@ namespace BookingCare.Controllers.Api
             {
                 id = s.Id ,
                 name = s.Name ,
-                imageUrl = s.AvatarUrl,
+                imageUrl = s.ImageUrl,
                 description = s.Description,
             }).ToListAsync();
             return Ok(specialties);
@@ -34,7 +34,7 @@ namespace BookingCare.Controllers.Api
                 {
                     id = s.Id,
                     name = s.Name,
-                    imageUrl = s.AvatarUrl,
+                    imageUrl = s.ImageUrl,
                     description = s.Description
                 })
                 .FirstOrDefaultAsync();

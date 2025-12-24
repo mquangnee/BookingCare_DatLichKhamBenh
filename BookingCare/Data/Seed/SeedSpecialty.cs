@@ -38,7 +38,7 @@ namespace BookingCare.Data.Seed
                 new(
                     "Tai mũi họng",
                     "Khám và điều trị các bệnh lý về tai, mũi, họng và đường hô hấp trên.",
-                    "/images/specialties/KhoaTaiMuiHong"
+                    "/images/specialties/KhoaTaiMuiHong.png"
                 ),
                 new(
                     "Nhi khoa",
