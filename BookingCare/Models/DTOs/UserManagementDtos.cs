@@ -41,6 +41,9 @@ namespace BookingCare.Models.DTOs
 
         //Thông tin phòng
         public string RoomName { get; set; }
+        
+        //Ảnh
+        public string AvatarUrl { get; set; }
     }
 
     //DTP thêm tài khoản bác sĩ
@@ -85,6 +88,7 @@ namespace BookingCare.Models.DTOs
 
         [Required]
         public int RoomId { get; set; }
+        public IFormFile? Avatar { get; set; }
     }
 
     //Dto lấy thông tin chi tiết bác sĩ cập nhật
@@ -109,6 +113,7 @@ namespace BookingCare.Models.DTOs
 
         //Thông tin phòng
         public int RoomId { get; set; }
+        public string? AvatarUrl { get; set; }
     }
 
     //Dto cập nhật thông tin bác sĩ
@@ -136,6 +141,7 @@ namespace BookingCare.Models.DTOs
 
         [Required]
         public int RoomId { get; set; }
+        public IFormFile? Avatar { get; set; }
     }
 
     //Dto lấy thông tin chi tiết bệnh nhân

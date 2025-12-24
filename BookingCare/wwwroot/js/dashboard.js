@@ -6,6 +6,10 @@ const totalCanceledApptToday = document.getElementById("totalCanceledApptToday")
 const totalCount = document.getElementById("totalCount");
 const ctxDaily = document.getElementById("bookingChart");
 const ctxStatus = document.getElementById("appointmentPieChart");
+let doctorChart = null;
+let doctorData = [];
+let currentPage = 1;
+const pageSize = 5;
 
 // Tổng quan dashboard
 async function loadDashboard() {
@@ -118,6 +122,112 @@ async function loadAppointmentPieChart() {
         alert(error)
     }
 }
+document.getElementById("btnLoadStat").addEventListener("click", loadDoctorAppointments);
+
+async function loadDoctorAppointments() {
+    try {
+        const date = document.getElementById("statDate").value;
+
+        let url = "/api/admin/dashboard/appointments-by-doctor";
+        if (date) url += `?date=${date}`;
+
+        const res = await fetch(url);
+        const body = await handleResponse(res);
+
+        doctorData = body.data;
+        currentPage = 1;
+        renderDoctorPage();
+    } catch (error) {
+        console.error("Lỗi:", error);
+        alert(error)
+    }
+}
+
+function renderDoctorPage() {
+    const tbody = document.getElementById("doctorStatBody");
+    tbody.innerHTML = "";
+
+    if (doctorData.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="3" class="text-muted py-4">
+                    Không có dữ liệu
+                </td>
+            </tr>`;
+        return;
+    }
+
+    const start = (currentPage - 1) * pageSize;
+    const end = start + pageSize;
+    const pageItems = doctorData.slice(start, end);
+
+    pageItems.forEach((item, index) => {
+        const badgeClass =
+            item.totalAppointments === 0 ? "badge-light"
+                : item.totalAppointments < 3 ? "badge-info"
+                    : item.totalAppointments < 6 ? "badge-warning"
+                        : "badge-danger";
+
+        tbody.innerHTML += `
+            <tr>
+                <td>${start + index + 1}</td>
+                <td class="text-left">
+                    <i class="fa-solid fa-user-doctor text-primary mr-2"></i>
+                    ${item.fullName}
+                </td>
+                <td>
+                    <span class="badge ${badgeClass} px-3 py-2">
+                        ${item.totalAppointments}
+                    </span>
+                </td>
+            </tr>`;
+    });
+
+    renderPagination();
+}
+
+function renderPagination() {
+    const totalPages = Math.ceil(doctorData.length / pageSize);
+    const pagination = document.getElementById("pagination");
+    const info = document.getElementById("paginationInfo");
+
+    pagination.innerHTML = "";
+    info.textContent = `Trang ${currentPage} / ${totalPages} • ${doctorData.length} bác sĩ`;
+
+    pagination.innerHTML += `
+        <li class="page-item ${currentPage === 1 ? "disabled" : ""}">
+            <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">‹</a>
+        </li>
+    `;
+
+    for (let i = 1; i <= totalPages; i++) {
+        pagination.innerHTML += `
+            <li class="page-item ${i === currentPage ? "active" : ""}">
+                <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+            </li>
+        `;
+    }
+
+    pagination.innerHTML += `
+        <li class="page-item ${currentPage === totalPages ? "disabled" : ""}">
+            <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">›</a>
+        </li>
+    `;
+}
+
+function changePage(page) {
+    if (page < 1) return;
+    if (page > Math.ceil(doctorData.length / pageSize)) return;
+
+    currentPage = page;
+    renderDoctorPage();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("statDate").value = today;
+    loadDoctorStat();
+});
 
 // Xử lý phản hồi từ server
 async function handleResponse(res) {

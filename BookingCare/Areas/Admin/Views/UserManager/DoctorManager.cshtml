@@ -71,6 +71,21 @@
                 <form id="formAddDoctor">
                     <div class="row g-3">
 
+                        <!-- Ảnh đại diện -->
+                        <div class="col-md-12 text-center">
+                            <label class="form-label fw-semibold d-block">Ảnh đại diện</label>
+
+                            <img id="previewCreateAvatar"
+                                 src="/images/doctors/avatar_default.jpg"
+                                 class="rounded-circle border shadow-sm mb-2"
+                                 style="width:120px;height:120px;object-fit:cover" />
+
+                            <input type="file"
+                                   id="create_avatar"
+                                   class="form-control mt-2"
+                                   accept="image/*" />
+                        </div>
+
                         <!-- Email -->
                         <div class="col-md-6">
                             <label for="create_email" class="form-label fw-semibold">Email</label>
@@ -181,6 +196,21 @@
 
                         <!-- User ID -->
                         <input type="hidden" id="update_userId">
+
+                        <!-- Ảnh đại diện -->
+                        <div class="col-md-12 text-center mb-3">
+                            <label class="form-label fw-semibold d-block">Ảnh đại diện</label>
+
+                            <img id="previewUpdateAvatar"
+                                 src="/images/doctors/avatar_default.jpg"
+                                 class="rounded-circle border shadow-sm mb-2"
+                                 style="width:120px;height:120px;object-fit:cover" />
+
+                            <input type="file"
+                                   id="update_avatar"
+                                   class="form-control mt-2"
+                                   accept="image/*" />
+                        </div>
 
                         <!-- Email -->
                         <div class="col-md-6">
