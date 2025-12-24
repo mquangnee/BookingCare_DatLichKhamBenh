@@ -12,15 +12,12 @@ namespace BookingCare.Data.Seed
         {
             var doctors = new List<(string Email, string FullName, string Gender, DateOnly Dob, string SpecialtyName, string RoomName, int YearsExp)>
             {
-                // ✅ Bác sĩ cũ (Nội khoa)
                 ("ngokhactai03011970@gmail.com", "Ngô Khắc Tài", "Nam", new DateOnly(1970, 1, 3), "Nội khoa", "P101", 20),
-
-                // ✅ 5 bác sĩ mới – TÊN THẬT
-                ("nguyenvanthang12061978@gmail.com", "Nguyễn Văn Thắng", "Nam", new DateOnly(1978, 6, 12), "Ngoại khoa", "P102", 18),
-                ("tranthilan15031982@gmail.com", "Trần Thị Lan", "Nữ", new DateOnly(1982, 3, 15), "Sản khoa", "P103", 16),
+                ("nguyenvanthang12061978@gmail.com", "Nguyễn Văn Thắng", "Nam", new DateOnly(1978, 6, 12), "Cơ xương khớp", "P102", 18),
+                ("tranthilan15031982@gmail.com", "Trần Thị Lan", "Nữ", new DateOnly(1982, 3, 15), "Tiêu hóa", "P103", 16),
                 ("levanhung22091985@gmail.com", "Lê Văn Hùng", "Nam", new DateOnly(1985, 9, 22), "Nhi khoa", "P104", 14),
-                ("phamthimai08111980@gmail.com", "Phạm Thị Mai", "Nữ", new DateOnly(1980, 11, 8), "Răng hàm mặt", "P105", 15),
-                ("hoangvanphuc04041977@gmail.com", "Hoàng Văn Phúc", "Nam", new DateOnly(1977, 4, 4), "Mắt", "P106", 17)
+                ("phamthimai08111980@gmail.com", "Phạm Thị Mai", "Nữ", new DateOnly(1980, 11, 8), "Tim mạch", "P105", 15),
+                ("hoangvanphuc04041977@gmail.com", "Hoàng Văn Phúc", "Nam", new DateOnly(1977, 4, 4), "Da liễu", "P106", 17)
             };
 
             foreach (var item in doctors)
