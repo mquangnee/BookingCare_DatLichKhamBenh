@@ -19,12 +19,12 @@ namespace BookingCare.Areas.Patient.Controllers.Api
         }
 
         [HttpGet("morningShift/{doctorId}/{bookingDate}")]
-        public async Task<IActionResult> CheckTimeSlotMorning (int doctorId, DateOnly bookingDate)
+        public async Task<IActionResult> CheckTimeSlotMorning(int doctorId, DateOnly bookingDate)
         {
             var timeSlot = new List<string> { "07:00-07:30", "07:30-08:00", "08:00-08:30", "08:30-09:00", "09:00-09:30", "09:30-10:00", "10:00-10:30", "10:30-11:00" };
-            
+
             //Danh sách kiểm tra
-            var result = new List<object> ();
+            var result = new List<object>();
 
             //Ngày hôm nay
             var today = DateOnly.FromDateTime(DateTime.Now);
@@ -60,7 +60,7 @@ namespace BookingCare.Areas.Patient.Controllers.Api
                             check
                         });
                     }
-                }          
+                }
             }
             else
             {

@@ -144,7 +144,7 @@ namespace BookingCare.Data.Seed
                     {
                         UserId = existingUser.Id,
                         MedicalHistory = "Chưa có tiền sử bệnh án"
-                    };
+                    };  
 
                     await _dbContext.Patients.AddAsync(patient);
                 }

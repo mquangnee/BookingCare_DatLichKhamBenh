@@ -40,6 +40,7 @@ namespace BookingCare.Controllers.Api
                     from d in _dbContext.Doctors
                     join u in _dbContext.Users on d.UserId equals u.Id
                     join s in _dbContext.Specialties on d.SpecialtyId equals s.Id
+                    join r in _dbContext.Rooms on d.RoomId equals r.Id
                     where d.Id == id
                     select new
                     {
@@ -48,8 +49,8 @@ namespace BookingCare.Controllers.Api
                         imageUrl = d.AvatarUrl,
                         degree = d.Degree,
                         specialty = s.Name,
-                        roomId = d.RoomId,
-                        YearofExp = d.YearsOfExp
+                        roomName = d.Room.Name,
+                        YearOfExp = d.YearsOfExp
                      
                     }
                 ).FirstOrDefaultAsync();

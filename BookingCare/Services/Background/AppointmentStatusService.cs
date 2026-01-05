@@ -36,34 +36,42 @@ namespace BookingCare.Services.Background
             var now = DateTime.Now;
 
             //Lấy các lịch ở trạng thái "Chờ khám" hoặc "Đang khám"
-            var apppointments = await db.Appointments.Where(a => a.AppointmentDate == DateOnly.FromDateTime(now) && (a.Status == "Chờ khám" || a.Status == "Đang khám")).ToListAsync();
+            var apppointments = await db.Appointments
+                                .Where(a =>
+                                    a.AppointmentDate <= DateOnly.FromDateTime(now) &&
+                                    (a.Status == "Chờ khám" || a.Status == "Đang khám"))
+                                .ToListAsync();
 
-            foreach(var appt in apppointments)
+            foreach (var appt in apppointments)
             {
                 var parts = appt.AppointmentTime.Split("-");
-                var startTime = TimeOnly.ParseExact(parts[0], "HH:mm"); //Lấy giờ bắt đầu lịch khám
-                var endTime = TimeOnly.ParseExact(parts[1], "HH:mm"); //Lấy giờ kết thúc lịch khám
+                var startTime = TimeOnly.ParseExact(parts[0], "HH:mm");
+                var endTime = TimeOnly.ParseExact(parts[1], "HH:mm");
 
-                var start = appt.AppointmentDate.ToDateTime(startTime); //Thời gian bắt đầu lịch khám (ngày + giờ)
-                var end = appt.AppointmentDate.ToDateTime(endTime); //Thời gian kết thúc lịch khám (ngày + giờ)
+                var start = appt.AppointmentDate.ToDateTime(startTime);
+                var end = appt.AppointmentDate.ToDateTime(endTime);
 
                 if (now < start)
-                {
-                    continue; //Chưa đến giờ khám
-                }
+                    continue;
 
-                //Cập nhật trạng thái lịch khám
-                if (appt.Status == "Chờ khám" && (now > start || now < end))
+                if (now >= start && now < end)
                 {
-                    appt.Status = "Đang khám";
-                    await _hub.Clients.All.SendAsync("StatusChanged", appt.Id, "Đang khám"); //Gửi về client với trạng thái mới
+                    if (appt.Status != "Đang khám")
+                    {
+                        appt.Status = "Đang khám";
+                        await _hub.Clients.All.SendAsync("StatusChanged", appt.Id, "Đang khám");
+                    }
                 }
-                if (appt.Status == "Đang khám" && now > end)
+                else if (now >= end)
                 {
-                    appt.Status = "Hoàn thành";
-                    await _hub.Clients.All.SendAsync("StatusChanged", appt.Id, "Hoàn thành"); //Gửi về client với trạng thái mới
+                    if (appt.Status != "Hoàn thành")
+                    {
+                        appt.Status = "Hoàn thành";
+                        await _hub.Clients.All.SendAsync("StatusChanged", appt.Id, "Hoàn thành");
+                    }
                 }
             }
+
             //Lưu xuống db
             await db.SaveChangesAsync();
         }

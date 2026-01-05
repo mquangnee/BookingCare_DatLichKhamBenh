@@ -232,13 +232,13 @@
             if (!res.ok) throw new Error("Thông tin bác sĩ chưa được cập nhật.");
 
             const doctor = await res.json();
-            const exp = doctor.yearOfExp || "Nhiều";
+            const exp = doctor.yearOfExp;
 
             // Map data
             document.getElementById("doctor-name").innerText = doctor.name;
             document.getElementById("doctor-degree").innerText = doctor.degree || "Bác sĩ Chuyên khoa";
             document.getElementById("doctor-specialty").innerText = doctor.specialty;
-            document.getElementById("doctor-room").innerText = doctor.roomId || "01";
+            document.getElementById("doctor-room").innerText = doctor.roomName;
             document.getElementById("doctor-exp").innerText = exp;
             document.getElementById("doctor-avatar").src = doctor.imageUrl || "https://i.ibb.co/6yYvWfK/default-avatar.png";
 
@@ -253,7 +253,7 @@
                     "Y đức không chỉ nằm ở kiến thức chuyên môn vững vàng, mà còn ở sự thấu cảm sâu sắc với nỗi đau của người bệnh. Đó là kim chỉ nam cho mọi hoạt động thăm khám của tôi."
                 </blockquote>
 
-                <p>Bên cạnh việc khám chữa bệnh, bác sĩ còn thường xuyên tham gia các đề tài nghiên cứu khoa học, cập nhật liên tục các kỹ thuật y tế tiên tiến từ các hội nghị quốc tế. Điều này đảm bảo mỗi bệnh nhân khi đến phòng khám số <strong>${doctor.roomId}</strong> đều được tiếp cận với những giải pháp y tế hiện đại và hiệu quả nhất.</p>
+                <p>Bên cạnh việc khám chữa bệnh, bác sĩ còn thường xuyên tham gia các đề tài nghiên cứu khoa học, cập nhật liên tục các kỹ thuật y tế tiên tiến từ các hội nghị quốc tế. Điều này đảm bảo mỗi bệnh nhân khi đến phòng khám số <strong>${doctor.roomName}</strong> đều được tiếp cận với những giải pháp y tế hiện đại và hiệu quả nhất.</p>
 
                 <p>Bác sĩ <strong>${doctor.name}</strong> tin rằng một quy trình điều trị lý tưởng phải đi đôi với sự lắng nghe. Bác sĩ luôn dành thời gian để giải thích chi tiết tình trạng bệnh lý, giúp người bệnh và gia đình hiểu rõ lộ trình hồi phục, từ đó gạt bỏ những rào cản tâm lý lo âu.</p>
             `;

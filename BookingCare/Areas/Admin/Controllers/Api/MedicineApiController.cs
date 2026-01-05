@@ -27,38 +27,36 @@ namespace BookingCare.Areas.Admin.Controllers.Api
         [HttpGet]
         public async Task<IActionResult> GetMedicines(string? search = "", int page = 1, int pageSize = 10)
         {
-            //Lấy danh sách thuốc
-            var medicines = _dbContext.Medicines
-                            .OrderBy(m => m.Id)
-                            .Skip((page - 1) * pageSize)
-                            .Take(pageSize)
-                            .Select(m => new MedicineDtos
-                            {
-                                Id = m.Id,
-                                Name = m.Name,
-                                Unit = m.Unit,
-                                Function = m.Function,
-                                CreatedAt = m.CreatedAt,
-                                UpdatedAt = m.UpdatedAt,
-                                Status = m.Status
-                            });
+            var query = _dbContext.Medicines.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                medicines = medicines.Where(m =>
-                            m.Name.Contains(search) ||
-                            (m.Function != null && m.Function.Contains(search))
+                query = query.Where(m =>
+                    m.Name.Contains(search) ||
+                    (m.Function != null && m.Function.Contains(search))
                 );
             }
 
-            //Tổng số thuốc
-            var totalMedicines = await medicines.CountAsync();
+            var totalMedicines = await query.CountAsync();
 
-            //Lấy danh sách hiển thị ở trang muốn xem
-            var listMedicines = await medicines.ToListAsync();
+            var listMedicines = await query
+                .OrderBy(m => m.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(m => new MedicineDtos
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    Unit = m.Unit,
+                    Function = m.Function,
+                    CreatedAt = m.CreatedAt,
+                    UpdatedAt = m.UpdatedAt,
+                    Status = m.Status
+                })
+                .ToListAsync();
 
-            return Ok(new 
-            { 
+            return Ok(new
+            {
                 success = true,
                 data = new
                 {
@@ -176,14 +174,15 @@ namespace BookingCare.Areas.Admin.Controllers.Api
                     message = "Không tìm thấy thuốc!"
                 });
             }
-            
-            var tmp = await _dbContext.Medicines.FirstOrDefaultAsync(m => m.Name == update_medicine.Name); 
-            if (tmp != null)
+
+            var isDuplicate = await _dbContext.Medicines.AnyAsync(m => m.Name == update_medicine.Name && m.Id != id);
+
+            if (isDuplicate)
             {
-                return BadRequest(new 
-                { 
-                    success = false, 
-                    message = "Tên thuốc đã tồn tại trong hệ thống!" 
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Tên thuốc đã tồn tại trong hệ thống!"
                 });
             }
 

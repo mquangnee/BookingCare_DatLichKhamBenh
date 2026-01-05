@@ -113,6 +113,8 @@ namespace BookingCare.Areas.Doctor.Controllers.Api
                 prescriptionDetails.Add(pres_detail);
             }
             await _dbContext.Prescription_Details.AddRangeAsync(prescriptionDetails);
+            appointment.Status = "Hoàn thành";
+            _dbContext.Appointments.Update(appointment);
             await _dbContext.SaveChangesAsync();
             
             //Gửi email cho bệnh nhân

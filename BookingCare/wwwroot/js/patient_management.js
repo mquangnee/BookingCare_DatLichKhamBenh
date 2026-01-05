@@ -155,7 +155,7 @@ function renderInfo(data) {
     }
 
     html += `
-        <p><strong>Mã bác sĩ: </strong>${data.patientId}</p>
+        <p><strong>Mã bệnh nhân: </strong>${data.patientId}</p>
         <p><strong>Họ tên: </strong>${data.fullName}</p>
         <p><strong>Email: </strong>${data.email}</p>
         <p><strong>Số điện thoại: </strong>${data.phoneNumber}</p>

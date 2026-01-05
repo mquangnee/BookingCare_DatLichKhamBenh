@@ -195,29 +195,35 @@ document.addEventListener("click", async function (e) {
         alert(error)
     }
 });
-
 function showPrescription(report) {
     presDiagnosis.innerText = report.diagnosis || "Không có dữ liệu";
     presInstructions.innerText = report.instructions || "Không có dữ liệu";
 
     tbody.innerHTML = "";
+
     if (!report.medicines || report.medicines.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="3" class="text-center text-muted">Không có thuốc nào.</td>
+                <td colspan="4" class="text-center text-muted">
+                    Không có thuốc nào.
+                </td>
             </tr>`;
-        return;
+    } else {
+        report.medicines.forEach((m, index) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${m.name}</td>
+                    <td>${m.dosage}</td>
+                    <td>${m.usage}</td>
+                </tr>`;
+        });
     }
-    report.medicines.forEach((m, index) => {
-        tbody.innerHTML += `
-            <tr>
-                <td>${index + 1}</td>
-                <td>${m.name}</td>
-                <td>${m.dosage}</td>
-                <td>${m.usage}</td>
-            </tr>`;
-    });
-    $("#getPrescription").modal("show");
+
+    const modal = new bootstrap.Modal(
+        document.getElementById("getPrescription")
+    );
+    modal.show();
 }
 
 //===CẬP NHẬT TRẠNG THÁI LỊCH HẸN===//
@@ -229,10 +235,10 @@ connection.start().then(() => {
 
 //Cập nhật giao diện
 connection.on("StatusChanged", (appointmentId, newStatus) => {
-    const status = document.getElementById(`appt-${appointmentId}"`);
+    const status = document.getElementById(`appt-${appointmentId}`);
     status.textContent = newStatus;
     if (newStatus == "Đang khám") {
-        status.className = "badge-status badge-info`";
+        status.className = "badge-status badge-info";
     }
     if (newStatus == "Hoàn thành") {
         status.className = "badge-status badge-confirmed";
